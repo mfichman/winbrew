@@ -216,11 +216,13 @@ class Formula:
         self.manifest.files.append(tf)
 
     def copy(self, path):
-        td = winbrew.home
         for root, dirs, files in os.walk(path):
-            td = os.path.join(winbrew.home, root.replace(path, ''))
+            td = os.path.join(winbrew.home, root)
             for fn in files:
+                if not os.path.exists(td):
+                    os.makedirs(td)
                 tf = os.path.join(td, fn)
+                print os.path.join(root, fn)
                 shutil.copyfile(os.path.join(root, fn), tf)
                 self.manifest.files.append(tf)
 
