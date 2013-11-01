@@ -17,7 +17,7 @@ class Cmake(winbrew.Formula):
         self.bin('cmcldeps.exe')
         self.bin('cmw9xcom.exe')
         self.cd('..')
-        self.install('share')
+        self.copy('share')
 
     def test(self):
         pass

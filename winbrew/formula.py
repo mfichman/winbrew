@@ -215,7 +215,7 @@ class Formula:
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
 
-    def install(self, path):
+    def copy(self, path):
         td = winbrew.home
         for root, dirs, files in os.walk(path):
             td = os.path.join(winbrew.home, root.replace(path, ''))
