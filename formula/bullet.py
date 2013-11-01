@@ -8,7 +8,7 @@ class Bullet(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('bullet-2.8.2-r2704')
+        self.cd('bullet-2.82-r2704')
         self.cmake()
         self.nmake()
 
