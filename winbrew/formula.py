@@ -166,7 +166,7 @@ class Formula:
                     shutil.copyfile(os.path.join(root, fn), tf)
                     self.manifest.files.append(tf)
 
-    def includes(self, path):
+    def includes(self, path, dest=''):
         """
         Specify a folder containing C or C++ header files.  All header files in
         the folder are copied to the winbrew library folder.
@@ -174,7 +174,7 @@ class Formula:
         if path[-1] != '\\':
             path += '\\'
         for root, dirs, files in os.walk(path):
-            td = os.path.join(winbrew.include_path, root.replace(path, ''))
+            td = os.path.join(winbrew.include_path, dest, root.replace(path, ''))
             for fn in files:
                 header_files = ('.h', '.hpp', '.hh')
                 if os.path.splitext(fn)[1] in header_files:
@@ -221,7 +221,6 @@ class Formula:
                 if not os.path.exists(td):
                     os.makedirs(td)
                 tf = os.path.join(td, fn)
-                print os.path.join(root, fn)
                 shutil.copyfile(os.path.join(root, fn), tf)
                 self.manifest.files.append(tf)
 
