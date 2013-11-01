@@ -130,7 +130,7 @@ class Formula:
         """
         subprocess.check_call(('nmake',)+args)
 
-    def cmake(self, cwd='.', args=cmake_args):
+    def cmake(self, args=cmake_args):
         """
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
