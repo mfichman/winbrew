@@ -134,20 +134,19 @@ class Formula:
         """
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
-        os.environ['CMAKE_ROOT'] = winbrew.lib_path
         subprocess.check_call(('cmake',)+args)
 
-    def scons(self, cwd='.', args=()):
+    def scons(self, args=()):
         """
         Run scons.  Optionally, the caller can set arguments to pass to scons.
         """
         pass
 
-    def msbuild(self, cwd='.', args=msbuild_args):
+    def msbuild(self, args=msbuild_args):
         """
         Run msbuild.  Optionally, the caller can set arguments to pass to msbuild.
         """
-        subprocess.check_call(('msbuild',)+msbuild_args)
+        subprocess.check_call(('msbuild',)+args)
 
     def libs(self, path):
         """
