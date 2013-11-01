@@ -12,7 +12,7 @@ class Bullet(winbrew.Formula):
         self.cmake(('-G', 'Visual Studio 10'))
         self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',))
         self.libs('lib\\Release')
-        self.includes('src')
+        self.includes('src', dest='bullet')
 
     def test(self):
         pass

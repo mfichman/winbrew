@@ -82,10 +82,12 @@ class Formula:
         os.chdir(self.workdir)
         if self.ext == '.zip':
             self.unzip()
-        elif self.ext == '.tar.gz':
+        elif self.ext == '.gz':
             self.untar()
         elif self.ext == '.tgz':
             self.untar()
+        elif self.ext == '.bz2':
+            self.untar(compression='bz2')
         else:
             raise Exception('unknown file type')
 
@@ -111,11 +113,11 @@ class Formula:
         zf = zipfile.ZipFile(fd)
         zf.extractall()
 
-    def untar(self):
+    def untar(self, compression='gz'):
         """
         Extract the downloaded tar file into the current working directory
         """
-        tf = tarfile.open(self.filename, mode='r:gz')
+        tf = tarfile.open(self.filename, mode='r:%s' % compression)
         tf.extractall()
 
     def system(self, cmd):
@@ -176,7 +178,7 @@ class Formula:
         for root, dirs, files in os.walk(path):
             td = os.path.join(winbrew.include_path, dest, root.replace(path, ''))
             for fn in files:
-                header_files = ('.h', '.hpp', '.hh')
+                header_files = ('.h', '.hpp', '.hh', '.inl')
                 if os.path.splitext(fn)[1] in header_files:
                     if not os.path.exists(td):
                         os.makedirs(td)
@@ -233,7 +235,8 @@ class Formula:
         """
         try:
             full_name = 'winbrew.formula.%s' % name
-            path = os.path.join(winbrew.formula_path, '%s.py' % name)
+            #path = os.path.join(winbrew.formula_path, '%s.py' % name)
+            path = os.path.join('formula', '%s.py' % name)
             module = imp.load_source(full_name, path)
         except IOError, e:
             raise Exception('formula "%s" not found' % name)

@@ -93,7 +93,6 @@ def install(args):
              
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
-    parser.prog
     subparsers = parser.add_subparsers(dest='command')
 
     sub = subparsers.add_parser('install', help='install packages')
