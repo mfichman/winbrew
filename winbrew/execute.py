@@ -73,12 +73,11 @@ def update(args):
     """
     Update by cloning formulas from the git repository.
     """
-    print winbrew.formula_path
-    if not os.path.exists(winbrew.formula_path):
-        cmd = ('git', 'clone', winbrew.formula_url, winbrew.formula_path)
+    if not os.path.exists(winbrew.home):
+        cmd = ('git', 'clone', winbrew.formula_url, winbrew.home)
         subprocess.check_call(cmd, shell=True)
     else:
-        os.chdir(winbrew.formula_path)
+        os.chdir(winbrew.home)
         cmd = ('git', 'pull')
         subprocess.check_call(cmd, shell=True)
 

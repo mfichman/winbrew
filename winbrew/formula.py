@@ -10,7 +10,6 @@ import shutil
 import shlex
 import imp
 import winbrew
-import winbrew.formulas
 import pickle
 
 # Default arguments for the supported build tools
@@ -223,15 +222,11 @@ class Formula:
         if the module isn't found there, falls back to the default installation.
         """
         try:
-            full_name = 'winbrew.formulas.%s' % name
-            path = os.path.join(winbrew.formula_path, 'winbrew\\formulas\\%s.py' % name)
+            full_name = 'winbrew.formula.%s' % name
+            path = os.path.join(winbrew.formula_path, '%s.py' % name)
             module = imp.load_source(full_name, path)
         except IOError, e:
-            try:
-                __import__(full_name)
-                module = sys.modules[full_name]
-            except ImportError, e:
-                raise Exception('formula "%s" not found' % name)
+            raise Exception('formula "%s" not found' % name)
         return getattr(module, name.title())
 
 
