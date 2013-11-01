@@ -9,7 +9,7 @@ setup(
     license = 'MIT',
     keywords = ('installer', 'windows', 'package'),
     url = 'http://github.com/mfichman/winbrew',
-    packages = ['winbrew', 'winbrew.formulas'],
+    packages = ['winbrew'],
     entry_points = {
         'console_scripts': (
             'winbrew = winbrew.execute:main'

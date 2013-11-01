@@ -134,6 +134,7 @@ class Formula:
         """
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
+        os.environ['CMAKE_ROOT'] = winbrew.bin_path
         subprocess.check_call(('cmake',)+args)
 
     def scons(self, cwd='.', args=()):

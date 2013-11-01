@@ -47,7 +47,10 @@ class InstallPlan:
         """
         Install all packages in the install plan
         """
-        #os.environ['PATH'] = os.pathsep.join(os.environ['PATH'], 
+        os.environ['PATH'] = os.pathsep.join((
+            os.environ['PATH'], 
+            winbrew.bin_path,
+        ))
         for formula in self:
             formula.download()
         for formula in self:

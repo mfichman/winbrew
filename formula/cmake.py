@@ -16,6 +16,7 @@ class Cmake(winbrew.Formula):
         self.bin('cmcldeps.exe')
         self.bin('cmw9xcom.exe')
         self.libs('.')
+        os.makedirs('Modules')
 
     def test(self):
         pass
