@@ -1,7 +1,7 @@
 import winbrew
 
 class Bullet(winbrew.Formula):
-    url = 'https://github.com/LaurentGomila/SFML/archive/2.1.zip'
+    url = 'https://bullet.googlecode.com/files/bullet-2.82-r2704.zip'
     homepage = ''
     sha1 = ''
     build_deps = ('cmake',)
