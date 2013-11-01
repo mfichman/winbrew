@@ -4,7 +4,7 @@ class Sdl(winbrew.Formula):
     url = 'http://libsdl.org/release/SDL2-2.0.1.zip'
     homepage = ''
     sha1 = ''
-    build_deps = ('cmake,')
+    build_deps = ('cmake',)
     deps = ()
 
     def install(self):
