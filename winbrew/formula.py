@@ -134,7 +134,7 @@ class Formula:
         """
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
-        os.environ['CMAKE_ROOT'] = winbrew.bin_path
+        os.environ['CMAKE_ROOT'] = winbrew.lib_path
         subprocess.check_call(('cmake',)+args)
 
     def scons(self, cwd='.', args=()):
@@ -214,6 +214,15 @@ class Formula:
             tf = os.path.join(td, os.path.split(path)[-1])
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
+
+    def install(self, path):
+        td = winbrew.home
+        for root, dirs, files in os.walk(path):
+            td = os.path.join(winbrew.home, root.replace(path, ''))
+            for fn in files:
+                tf = os.path.join(td, fn)
+                shutil.copyfile(os.path.join(root, fn), tf)
+                self.manifest.files.append(tf)
 
     @staticmethod
     def formula_by_name(name):
