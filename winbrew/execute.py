@@ -3,6 +3,7 @@ import itertools
 import argparse
 import sys
 import os
+import subprocess
 
 class InstallException(Exception):
     pass
@@ -72,7 +73,14 @@ def update(args):
     """
     Update by cloning formulas from the git repository.
     """
-    pass
+    print winbrew.formula_path
+    if not os.path.exists(winbrew.formula_path):
+        cmd = ('git', 'clone', winbrew.formula_url, winbrew.formula_path)
+        subprocess.check_call(cmd, shell=True)
+    else:
+        os.chdir(winbrew.formula_path)
+        cmd = ('git', 'pull')
+        subprocess.check_call(cmd, shell=True)
 
 def install(args):
     try:
@@ -91,6 +99,8 @@ def main():
 
     sub = subparsers.add_parser('uninstall', help='install packages')
     sub.add_argument('package', type=str, nargs='+', help='packages to install')
+
+    sub = subparsers.add_parser('update', help='update formulas')
 
     args = parser.parse_args()
 

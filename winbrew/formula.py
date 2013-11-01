@@ -10,6 +10,7 @@ import shutil
 import shlex
 import imp
 import winbrew
+import winbrew.formulas
 import pickle
 
 # Default arguments for the supported build tools
@@ -223,7 +224,7 @@ class Formula:
         """
         try:
             full_name = 'winbrew.formulas.%s' % name
-            path = os.path.join(winbrew.formula_path, '%s.py' % name)
+            path = os.path.join(winbrew.formula_path, 'winbrew\\formulas\\%s.py' % name)
             module = imp.load_source(full_name, path)
         except IOError, e:
             try:
