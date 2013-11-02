@@ -10,7 +10,7 @@ class Sfr(winbrew.Formula):
     def install(self):
         self.scons() 
         self.libs('lib')
-        self.include('include')
+        self.includes('include')
 
     def test(self):
         pass
