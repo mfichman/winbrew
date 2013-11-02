@@ -242,8 +242,7 @@ class Formula:
         """
         try:
             full_name = 'winbrew.formula.%s' % name
-            #path = os.path.join(winbrew.formula_path, '%s.py' % name)
-            path = os.path.join('formula', '%s.py' % name)
+            path = os.path.join(winbrew.formula_path, '%s.py' % name)
             module = imp.load_source(full_name, path)
         except IOError, e:
             raise Exception('formula "%s" not found' % name)
