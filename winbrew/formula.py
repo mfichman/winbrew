@@ -66,14 +66,18 @@ class Formula:
         if not os.path.exists(self.workdir):
             os.makedirs(self.workdir)
         os.chdir(self.workdir)
-        # FIXME: Git support
-        if os.path.exists(self.filename): 
-            return # FIXME: Check hash instead
-        stream = urllib2.urlopen(self.url)
-        fd = open(self.filename, 'wb')
-        fd.write(stream.read())
-        fd.close()
-        self.unpack()
+        if self.ext == '.git':
+            if not os.path.exists(self.name):
+                subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
+        else:
+            # FIXME: Git support
+            if os.path.exists(self.filename): 
+                return # FIXME: Check hash instead
+            stream = urllib2.urlopen(self.url)
+            fd = open(self.filename, 'wb')
+            fd.write(stream.read())
+            fd.close()
+            self.unpack()
 
     def unpack(self):
         """
@@ -97,6 +101,8 @@ class Formula:
         """
         print('installing %s' % self.name)
         os.chdir(self.workdir)
+        if self.ext == '.git':
+            os.chdir(self.name)
         self.install()
 
     def cd(self, path):
@@ -142,7 +148,8 @@ class Formula:
         """
         Run scons.  Optionally, the caller can set arguments to pass to scons.
         """
-        pass
+        print os.getcwd()
+        subprocess.check_call(('scons',)+args, shell=True)
 
     def msbuild(self, args=msbuild_args):
         """
