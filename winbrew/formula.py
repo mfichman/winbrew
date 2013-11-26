@@ -14,7 +14,7 @@ import pickle
 
 # Default arguments for the supported build tools
 cmake_args = ('-G', 'NMake Makefiles')
-msbuild_args = ('/P:Configuration=Release',)
+msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
 
 class Manifest:
     """
