@@ -9,7 +9,7 @@ class Bullet(winbrew.Formula):
 
     def install(self):
         self.cd('bullet-2.82-r2704')
-        self.cmake(('-G', 'Visual Studio 12', '-DBUILD_DEMOS=off', '-DBUILD_EXTRAS=off'))
+        self.cmake(('-G', 'Visual Studio 12', '-DBUILD_DEMOS=OFF', '-DBUILD_EXTRAS=OFF', '-DBUILD_SHARED_LIBS=ON'))
         self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',))
         self.libs('lib\\Release')
         self.includes('src', dest='bullet')
