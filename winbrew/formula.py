@@ -13,7 +13,7 @@ import winbrew
 import pickle
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'NMake Makefiles')
+cmake_args = ('-G', 'NMake Makefiles', '-DCMAKE_BUILD_TYPE=Release')
 msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
 
 class Manifest:
