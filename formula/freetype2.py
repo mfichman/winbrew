@@ -10,7 +10,7 @@ class Freetype2(winbrew.Formula):
     def install(self):
         self.cd('freetype-2.5.2')
         self.cmake(('-G', 'Visual Studio 12'))
-        self.msbuild(winbrew.msbuild_args+('freetype.sln'))
+        self.msbuild(winbrew.msbuild_args+('freetype.sln',))
 
     def test(self):
         pass
