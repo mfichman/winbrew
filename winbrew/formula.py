@@ -16,6 +16,9 @@ import pickle
 cmake_args = ('-G', 'NMake Makefiles', '-DCMAKE_BUILD_TYPE=Release')
 msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
 
+class FormulaException(Exception):
+    pass
+
 class Manifest:
     """
     Stores a list of all files installed by a formula.  This class is used to 
@@ -245,7 +248,7 @@ class Formula:
             path = os.path.join(winbrew.formula_path, '%s.py' % name)
             module = imp.load_source(full_name, path)
         except IOError, e:
-            raise Exception('formula "%s" not found' % name)
+            raise FormulaException('formula "%s" not found' % name)
         return getattr(module, name.title())
 
 

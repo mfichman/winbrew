@@ -105,14 +105,19 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == 'install':
-        install(args)
-    elif args.command == 'uninstall':
-        uninstall(args)
-    elif args.command == 'update':
-        update(args)
-    else:
-        sys.stderr.write('error: unknown command')
+    try:
+        if args.command == 'install':
+            install(args)
+        elif args.command == 'uninstall':
+            uninstall(args)
+        elif args.command == 'update':
+            update(args)
+        else:
+            sys.stderr.write('error: unknown command')
+            sys.exit(1)
+    except winbrew.FormulaException, e:
+        sys.stderr.write('error: %s\n' % str(e))
+        sys.stderr.flush()
         sys.exit(1)
         
     
