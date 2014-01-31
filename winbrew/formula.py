@@ -11,6 +11,7 @@ import shlex
 import imp
 import winbrew
 import pickle
+import argparse
 
 # Default arguments for the supported build tools
 cmake_args = ('-G', 'NMake Makefiles', '-DCMAKE_BUILD_TYPE=Release')
@@ -55,11 +56,30 @@ class Formula:
     header/library directories.
     """
     def __init__(self):
+        self.options = {}
         self.filename = os.path.split(self.url)[1]
         self.ext = os.path.splitext(self.filename)[1]
         self.name = self.__class__.__name__.lower()
         self.workdir = os.path.join(winbrew.cache_path, self.name)
         self.manifest = Manifest(self.name)
+
+    def parse_options(self, args):
+        """
+        Parse formula options.
+        """
+        parser = argparse.ArgumentParser(prog=self.name)
+        for name, desc in self.options.iteritems(): 
+            parser.add_option('--%s' % name, type=bool, help=desc)
+        parser.add_argument('remainder', nargs=argparse.REMAINDER)
+        self.selected_options = parser.parse_args(args)
+        return self.selected_options.remainder
+
+    def option(self, name):
+        """
+        Returns the value of the selected option, as set by the user.  If the
+        option is not set, then return the default value.
+        """
+        return getattr(name, self.selected_options)
 
     def download(self):
         """

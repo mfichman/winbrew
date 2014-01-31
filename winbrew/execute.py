@@ -20,21 +20,21 @@ class InstallPlan:
         for formula in formulas:
             self.visit(formula)
 
-    def visit(self, name):
+    def visit(self, formula):
         """
         Visit the node with the given name and all children in a depth-first
         search.  
         """
-        if name in self.temp:
+        if formula.name in self.temp:
             raise InstallException('circular dependency')
-        if name not in self.marked:
-            formula = winbrew.Formula.formula_by_name(name)
-            self.temp.add(name)
-            for dep in itertools.chain(formula.deps, formula.build_deps):
+        if formula.name not in self.marked:
+            self.temp.add(formula.name)
+            for dep_name in itertools.chain(formula.deps, formula.build_deps):
+                dep = winbrew.Formula.formula_by_name(dep_name)()
                 self.visit(dep) 
-            self.temp.remove(name)
-            self.marked.add(name)
-            self.order.append(formula())
+            self.temp.remove(formula.name)
+            self.marked.add(formula.name)
+            self.order.append(formula)
 
     def __iter__(self):
         """
@@ -84,9 +84,23 @@ def update(args):
         cmd = ('git', 'pull')
         subprocess.check_call(cmd, shell=True)
 
+def formula_from_args(args, name):
+    """
+    Parse formulas/formula arguments.
+    """
+    formula = winbrew.Formula.formula_by_name(name)()
+    args = formula.parse_options(args)
+    return (formula, args)
+
 def install(args):
+    package = args.package
     try:
-        InstallPlan(args.package).execute()
+        formulas = []
+        while len(package) > 0:
+            name = package.pop(0)
+            (formula, package) = formula_from_args(package, name)
+            formulas.append(formula)
+        InstallPlan(formulas).execute()
     except InstallException, e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
@@ -95,13 +109,13 @@ def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
     subparsers = parser.add_subparsers(dest='command')
 
-    sub = subparsers.add_parser('install', help='install packages')
-    sub.add_argument('package', type=str, nargs='+', help='packages to install')
+    sub = subparsers.add_parser('install', help='Install packages')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='Packages to install')
 
-    sub = subparsers.add_parser('uninstall', help='install packages')
-    sub.add_argument('package', type=str, nargs='+', help='packages to install')
+    sub = subparsers.add_parser('uninstall', help='Uninstall packages')
+    sub.add_argument('package', type=str, nargs='+', help='Packages to uninstall')
 
-    sub = subparsers.add_parser('update', help='update formulas')
+    sub = subparsers.add_parser('update', help='Update formulas from server')
 
     args = parser.parse_args()
 
