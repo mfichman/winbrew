@@ -8,7 +8,6 @@ class Glew(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('glew-1.10.0')
         self.msbuild(winbrew.msbuild_args+('build\\vc10\\glew_static.vcxproj',))
         self.libs('lib\\Release\\Win32')
         self.includes('include')

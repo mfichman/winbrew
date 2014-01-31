@@ -8,7 +8,7 @@ class Premake(winbrew.Formula):
     deps = ('')
 
     def install(self):
-        self.cd('premake-4.3\\build\\vs2010')
+        self.cd('build\\vs2010')
         self.msbuild()
         self.cd('..\\..\\bin\\release')
         self.bin('premake4.exe')

@@ -8,7 +8,7 @@ class Luajit(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('LuaJIT-2.0.2\\src')
+        self.cd('src')
         self.system('msvcbuild.bat')
         self.include('lua.hpp', dest='luajit\\lua.hpp')
         self.include('luajit.h', dest='luajit\\luajit.h')

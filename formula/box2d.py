@@ -8,7 +8,7 @@ class Box2D(winbrew.Formula):
     deps = ('')
 
     def install(self):
-        self.cd('Box2D_v2.2.1\\Build\\vs2010')
+        self.cd('Build\\vs2010')
         self.msbuild(winbrew.msbuild_args+('Box2D.vcxproj',))
         self.libs('bin\\Release')
         self.includes('..\\..\\Box2D', dest='Box2D')

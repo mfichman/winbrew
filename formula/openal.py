@@ -8,7 +8,6 @@ class Openal(winbrew.Formula):
     deps = ()
 
     def install(self): 
-        self.cd('openal-soft-1.15.1')
         self.cmake(('-G', 'Visual Studio 10'))
         self.msbuild(winbrew.msbuild_args+('OpenAL32.vcxproj',))
         self.includes('include')

@@ -8,7 +8,6 @@ class Sfml(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('SFML-2.1')
         self.cmake()
         self.nmake()
         self.libs('lib')
