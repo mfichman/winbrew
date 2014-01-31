@@ -21,7 +21,7 @@ class Bullet(winbrew.Formula):
             '-DUSE_DOUBLE_PRECISION=%s' % ('ON' if self.option('double-precision') else 'OFF'), 
             '-DBUILD_DEMOS=%s' % ('ON' if self.option('build-demos') else 'OFF'),
             '-DBUILD_EXTRAS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
-            '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF',
+            '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
         ))
         self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',))
         self.libs('lib\\Release')
