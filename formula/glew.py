@@ -11,7 +11,7 @@ class Glew(winbrew.Formula):
         # Workaround for broken RC compiler in Visual Studio 2013.  See http://sourceforge.net/p/glew/bugs/201/
         import re
         fd = open('build\\glew.rc')
-        text = re.sub('VALUE "Comments".*$', '', fd.read())
+        text = re.sub('VALUE "Comments".*', '', fd.read())
         fd.close()
         fd = open('build\\glew.rc', 'w')
         fd.write(text)
