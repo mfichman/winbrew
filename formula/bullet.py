@@ -2,7 +2,7 @@ import winbrew
 
 class Bullet(winbrew.Formula):
     url = 'https://bullet.googlecode.com/files/bullet-2.82-r2704.zip'
-    homepage = ''
+    homepage = 'http://bulletphysics.org'
     sha1 = ''
     build_deps = ('cmake',)
     deps = ()
@@ -10,7 +10,7 @@ class Bullet(winbrew.Formula):
     def install(self):
         self.cd('bullet-2.82-r2704')
         self.cmake(('-G', 'Visual Studio 12', 
-            '-DUSE_DOBULE_PRECISION=ON', 
+            '-DUSE_DOUBLE_PRECISION=ON', 
             '-DBUILD_DEMOS=OFF', 
             '-DBUILD_EXTRAS=OFF', 
             '-DBUILD_SHARED_LIBS=OFF'))

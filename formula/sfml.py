@@ -2,7 +2,7 @@ import winbrew
 
 class Sfml(winbrew.Formula):
     url = 'https://github.com/LaurentGomila/SFML/archive/2.1.zip'
-    homepage = ''
+    homepage = 'http://sfml-dev.org'
     sha1 = ''
     build_deps = ('cmake',)
     deps = ()

@@ -2,7 +2,7 @@ import winbrew
 
 class Glew(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/glew/glew/1.10.0/glew-1.10.0.zip'
-    homepage = ''
+    homepage = 'http://glew.sourceforge.net'
     sha1 = ''
     build_deps = ()
     deps = ()

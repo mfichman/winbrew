@@ -2,7 +2,7 @@ import winbrew
 
 class Premake(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/premake/Premake/4.3/premake-4.3-src.zip'
-    homepage = ''
+    homepage = 'http://premake.sourceforge.net'
     sha1 = ''
     build_deps = ()
     deps = ('')

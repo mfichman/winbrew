@@ -3,7 +3,7 @@ import os
 
 class Sdl(winbrew.Formula):
     url = 'http://libsdl.org/release/SDL2-2.0.1.zip'
-    homepage = ''
+    homepage = 'http://libsdl.org'
     sha1 = ''
     build_deps = ('cmake',)
     deps = ()

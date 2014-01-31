@@ -3,7 +3,7 @@ import os
 
 class Cmake(winbrew.Formula):
     url = 'http://www.cmake.org/files/v2.8/cmake-2.8.12-win32-x86.zip'
-    homepage = ''
+    homepage = 'http://www.cmake.org'
     sha1 = ''
     build_deps = ()
     deps = ()

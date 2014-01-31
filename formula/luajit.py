@@ -2,7 +2,7 @@ import winbrew
 
 class Luajit(winbrew.Formula):
     url = 'http://luajit.org/download/LuaJIT-2.0.2.zip'
-    homepage = ''
+    homepage = 'http://luajit.org'
     sha1 = ''
     build_deps = ()
     deps = ()

@@ -2,7 +2,7 @@ import winbrew
 
 class Box2D(winbrew.Formula):
     url = 'https://box2d.googlecode.com/files/Box2D_v2.2.1.zip'
-    homepage = ''
+    homepage = 'http://box2d.org'
     sha1 = ''
     build_deps = ()
     deps = ('')
