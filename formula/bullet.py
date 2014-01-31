@@ -9,7 +9,7 @@ class Bullet(winbrew.Formula):
     options = {
         'double-precision': 'Use double precision',
         'build-demos': 'Build demo application',
-        'build-extra': 'Build extra library',
+        'build-extras': 'Build extra library',
         'shared': 'Build shared libraries',
     }
 
