@@ -9,7 +9,7 @@ class Cmake(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('cmake-2.8.12-win32-x86\\bin')
+        self.cd('bin')
         self.bin('cmake.exe')
         self.bin('cmake-gui.exe')
         self.bin('cpack.exe')

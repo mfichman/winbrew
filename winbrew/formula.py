@@ -95,6 +95,7 @@ class Formula:
         if self.ext == '.git':
             if not os.path.exists(self.name):
                 subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
+            self.unpack_name = self.name
         else:
             if not os.path.exists(self.filename): 
                 stream = urllib2.urlopen(self.url)
@@ -125,8 +126,7 @@ class Formula:
         """
         print('installing %s' % self.name)
         os.chdir(self.workdir)
-        if self.ext == '.git':
-            os.chdir(self.name)
+        os.chdir(self.unpack_name)
         self.install()
 
     def cd(self, path):
@@ -142,7 +142,7 @@ class Formula:
         fd = open(self.filename, 'rb')
         zf = zipfile.ZipFile(fd)
         zf.extractall()
-        self.unpack_name = os.path.commonprefix(zipfile.namelist())
+        self.unpack_name = os.path.commonprefix(zf.namelist())
 
     def untar(self, compression='gz'):
         """
@@ -150,7 +150,7 @@ class Formula:
         """
         tf = tarfile.open(self.filename, mode='r:%s' % compression)
         tf.extractall()
-        self.unpack_name = os.path.commonprefix(zipfile.namelist())
+        self.unpack_name = os.path.commonprefix(tf.getnames())
 
     def system(self, cmd):
         """
