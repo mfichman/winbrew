@@ -142,6 +142,7 @@ class Formula:
         fd = open(self.filename, 'rb')
         zf = zipfile.ZipFile(fd)
         zf.extractall()
+        self.unpack_name = os.path.commonprefix(zipfile.namelist())
 
     def untar(self, compression='gz'):
         """
@@ -149,6 +150,7 @@ class Formula:
         """
         tf = tarfile.open(self.filename, mode='r:%s' % compression)
         tf.extractall()
+        self.unpack_name = os.path.commonprefix(zipfile.namelist())
 
     def system(self, cmd):
         """
