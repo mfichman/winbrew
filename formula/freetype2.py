@@ -8,11 +8,8 @@ class Freetype2(winbrew.Formula):
     deps = ('')
 
     def install(self):
-        #self.cd('Box2D_v2.2.1\\Build\\vs2010')
-        #self.msbuild(winbrew.msbuild_args+('Box2D.vcxproj',))
-        #self.libs('bin\\Release')
-        #self.includes('..\\..\\Box2D', dest='Box2D')
-        pass
+        self.cd('freetype-2.5.2')
+        self.cmake(('-G', 'Visual Studio 12'))
 
     def test(self):
         pass
