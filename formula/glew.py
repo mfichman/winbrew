@@ -7,7 +7,7 @@ class Glew(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def broken_rc_workaround(self)
+    def broken_rc_workaround(self):
         # Workaround for broken RC compiler in Visual Studio 2013.  See http://sourceforge.net/p/glew/bugs/201/
         import re
         fd = open('build\\glew.rc')
