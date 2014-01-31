@@ -54,6 +54,8 @@ class InstallPlan:
         for formula in self:
             formula.download()
         for formula in self:
+            formula.unpack()
+        for formula in self:
             formula.setup()
             formula.manifest.save()
 

@@ -82,7 +82,7 @@ class Formula:
         Returns the value of the selected option, as set by the user.  If the
         option is not set, then return the default value.
         """
-        return hasattr(self.selected_options, name.replace('-', '_'))
+        return getattr(self.selected_options, name.replace('-', '_'))
 
     def download(self):
         """
@@ -96,19 +96,17 @@ class Formula:
             if not os.path.exists(self.name):
                 subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
         else:
-            # FIXME: Git support
-            if os.path.exists(self.filename): 
-                return # FIXME: Check hash instead
-            stream = urllib2.urlopen(self.url)
-            fd = open(self.filename, 'wb')
-            fd.write(stream.read())
-            fd.close()
-            self.unpack()
+            if not os.path.exists(self.filename): 
+                stream = urllib2.urlopen(self.url)
+                fd = open(self.filename, 'wb')
+                shutil.copyfileobj(stream, fd)
+                fd.close()
 
     def unpack(self):
         """
         Extract the project from its zip/tar file if necessary
         """
+        print('unpacking %s' % self.name)
         os.chdir(self.workdir)
         if self.ext == '.zip':
             self.unzip()
