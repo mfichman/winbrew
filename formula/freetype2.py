@@ -8,7 +8,7 @@ class Freetype2(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.system('jam -sJAM_TOOLSET=VISUALC')
+        self.system('jam -sJAM_TOOLSET=VISUALC', '-sFT2_BUILD_INCLUDE=freetype2')
         #self.cmake(('-G', 'Visual Studio 12'))
         #self.msbuild(winbrew.msbuild_args+('freetype.sln',))
         #self.includes('include', 'freetype2')
