@@ -11,7 +11,7 @@ class Freetype2(winbrew.Formula):
         #self.cmake(('-G', 'Visual Studio 12'))
         #self.msbuild(winbrew.msbuild_args+('freetype.sln',))
         self.includes('include')
-        self.lib('objs\\freetype2.lib')
+        self.libs('objs')
         self.system('jam -sJAM_TOOLSET=VISUALC')
 
     def test(self):
