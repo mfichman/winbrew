@@ -126,7 +126,10 @@ class Formula:
         """
         print('installing %s' % self.name)
         os.chdir(self.workdir)
-        os.chdir(self.unpack_name)
+        try:
+            os.chdir(self.unpack_name)
+        except OSError, e:
+            pass # Unpack name was not a directory
         self.install()
 
     def cd(self, path):
