@@ -12,7 +12,7 @@ class Freetype2(winbrew.Formula):
         #self.msbuild(winbrew.msbuild_args+('freetype.sln',))
         #self.includes('include')
         #self.libs('Release')
-        self.system('jam')
+        self.system('jam -sJAM_TOOLSET=VISUALC')
 
     def test(self):
         pass
