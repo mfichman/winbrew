@@ -261,6 +261,14 @@ class Formula:
                 tf = os.path.join(td, fn)
                 shutil.copyfile(os.path.join(root, fn), tf)
                 self.manifest.files.append(tf)
+    
+    def error(self, msg):
+        """
+        Indicates that there was an error while building the package.
+        """
+        sys.stderr.write('error: %s: %s' % (self.name, msg))
+        sys.stderr.flush()
+        sys.exit(1)
 
     @staticmethod
     def formula_by_name(name):
