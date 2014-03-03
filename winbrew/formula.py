@@ -117,6 +117,8 @@ class Formula:
             self.untar()
         elif self.ext == '.bz2':
             self.untar(compression='bz2')
+        elif self.ext == '.msi':
+            self.msi()
         else:
             raise Exception('unknown file type')
 
@@ -138,6 +140,13 @@ class Formula:
         """
         os.chdir(path)
 
+    def msi(self):
+        """
+        Install a MSI-style installer
+        """
+        self.system('msiexec /i %s' % self.filename)
+        self.unpack_name = '.'
+
     def unzip(self):
         """
         Unzip the downloaded zip file into the current working directory
@@ -155,11 +164,11 @@ class Formula:
         tf.extractall()
         self.unpack_name = os.path.commonprefix(tf.getnames())
 
-    def system(self, cmd):
+    def system(self, cmd, shell=False):
         """
         Run a build command.  Used by formulas in the install() method
         """
-        subprocess.check_call(shlex.split(cmd))
+        subprocess.check_call(shlex.split(cmd), shell=shell)
 
     def nmake(self, args=()):
         """
@@ -203,6 +212,15 @@ class Formula:
                     tf = os.path.join(td, fn)
                     shutil.copyfile(os.path.join(root, fn), tf)
                     self.manifest.files.append(tf)
+
+    def lib(self, path):
+        """
+        Specify a library file to be installed.
+        """
+        base = os.path.split(path)[1]
+        tf = os.path.join(winbrew.lib_path, base)
+        shutil.copyfile(path, tf)
+        self.manifest.files.append(tf)
 
     def includes(self, path, dest=''):
         """

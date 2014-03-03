@@ -2,8 +2,8 @@ import winbrew
 import os
 import glob
 
-class Sdl(winbrew.Formula):
-    url = 'https://www.libsdl.org/release/SDL-1.2.15.zip'
+class Sdl2(winbrew.Formula):
+    url = 'http://libsdl.org/release/SDL2-2.0.1.zip'
     homepage = 'http://libsdl.org'
     sha1 = ''
     deps = ()
@@ -30,8 +30,8 @@ class Sdl(winbrew.Formula):
     def install(self):
         self.directx()
         self.cd('VisualC')
-        self.msbuild(winbrew.msbuild_args+('/p:VCBuildAdditionalOptions=/useenv', 'SDL.sln'))
-        self.libs('SDL\\Release')
-        self.cd('..')
-        self.includes('include', 'SDL')
+        self.msbuild(winbrew.msbuild_args+('/p:VCBuildAdditionalOptions=/useenv', 'SDL_VS2010.sln'))
+        self.includes('include', 'SDL2')
 
+    def test(self):
+        pass
