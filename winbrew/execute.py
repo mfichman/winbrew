@@ -110,6 +110,25 @@ def install(args):
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
 
+def edit(args):
+    """
+    Edit a package.
+    """
+    path = os.path.join(winbrew.formula_path, '%s.py' % args.name)
+    if not os.path.exists(path):
+        sys.stderr.write('error: file formula not found: %s\n' % args.name)
+        sys.exit(1)
+
+    editor = os.environ.get('EDITOR', 'notepad') 
+    try:
+        subprocess.check_call((editor, path), shell=True)
+    except subprocess.CalledProcessError, e:
+        pass
+    except SystemError, e:
+        sys.stderr.write('error: %s\n' % str(e))
+        sys.stderr.flush()
+        sys.exit(1)
+
 def create(args):
     """
     Create a new package.
@@ -117,9 +136,8 @@ def create(args):
     base = os.path.split(args.url)[1]
     base = base.split('.')[0]
     base = base.split('-')[0]
+    base = base.split('_')[0]
     name = args.name or base
-    path = os.path.join(winbrew.formula_path, '%s.py' % name)
-    editor = os.environ.get('EDITOR', 'notepad') 
 
     template = """
 import winbrew
@@ -138,19 +156,14 @@ class %(name)s(winbrew.Formula):
         pass
 """
 
+    path = os.path.join(winbrew.formula_path, '%s.py' % name)
     if not os.path.exists(path):
         fd = open(path, 'w')
         fd.write(template % {'name': name.title(), 'url': args.url})
         fd.close()
 
-    try:
-        subprocess.check_call((editor, path), shell=True)
-    except subprocess.CalledProcessError, e:
-        pass
-    except SystemError, e:
-        sys.stderr.write('error: %s\n' % str(e))
-        sys.stderr.flush()
-        sys.exit(1)
+    args.name = name
+    edit(args)
              
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
@@ -159,6 +172,9 @@ def main():
     sub = subparsers.add_parser('create', help='create a new package')
     sub.add_argument('url', type=str, help='package source URL')
     sub.add_argument('-n', '--name', type=str, help='package name', default=None)
+
+    sub = subparsers.add_parser('edit', help='edit a package')
+    sub.add_argument('name', type=str, help='package source name')
 
     sub = subparsers.add_parser('install', help='install packages')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
@@ -174,6 +190,8 @@ def main():
         
         if args.command == 'create':
             create(args)
+        elif args.command == 'edit':
+            edit(args)
         elif args.command == 'install':
             install(args)
         elif args.command == 'uninstall':

@@ -29,14 +29,15 @@ class Manifest:
     def __init__(self, name):
         self.files = []
         self.name = name
-        self.path = os.path.join(winbrew.manifest_path, self.name)
+        self.path = os.path.abspath(os.path.join(winbrew.manifest_path, self.name))
 
     def save(self):
         """
         Write the manifest to the manifest file directory 
         """
-        if not os.path.exists(winbrew.manifest_path):
-            os.makedirs(winbrew.manifest_path)
+        dirs = os.path.split(self.path)[0]
+        if not os.path.exists(dirs):
+            os.makedirs(dirs)
         with open(self.path, 'wb') as fd:
             pickle.dump(self.files, fd, pickle.HIGHEST_PROTOCOL)
         
@@ -59,7 +60,7 @@ class Formula:
         self.filename = os.path.split(self.url)[1]
         self.ext = os.path.splitext(self.filename)[1]
         self.name = self.__class__.__name__.lower()
-        self.workdir = os.path.join(winbrew.cache_path, self.name)
+        self.workdir = os.path.abspath(os.path.join(winbrew.cache_path, self.name))
         self.manifest = Manifest(self.name)
         try:
             self.options
