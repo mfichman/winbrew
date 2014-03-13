@@ -95,6 +95,9 @@ def formula_from_args(args, name):
     return (formula, args)
 
 def install(args):
+    """
+    Install a package and dependencies.
+    """
     package = args.package
     try:
         formulas = []
@@ -106,23 +109,72 @@ def install(args):
     except InstallException, e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
+
+def create(args):
+    """
+    Create a new package.
+    """
+    base = os.path.split(args.url)[1]
+    base = base.split('.')[0]
+    base = base.split('-')[0]
+    name = args.name or base
+    path = os.path.join(winbrew.formula_path, '%s.py' % name)
+    editor = os.environ.get('EDITOR', 'notepad') 
+
+    template = """
+import winbrew
+
+class %(name)s(winbrew.Formula):
+    url = '%(url)s'
+    homepage = ''
+    sha1 = ''
+    build_deps = ()
+    deps = ()
+
+    def install(self):
+        pass
+
+    def test(self):
+        pass
+"""
+
+    if not os.path.exists(path):
+        fd = open(path, 'w')
+        fd.write(template % {'name': name.title(), 'url': args.url})
+        fd.close()
+
+    try:
+        subprocess.check_call((editor, path), shell=True)
+    except subprocess.CalledProcessError, e:
+        pass
+    except SystemError, e:
+        sys.stderr.write('error: %s\n' % str(e))
+        sys.stderr.flush()
+        sys.exit(1)
              
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
     subparsers = parser.add_subparsers(dest='command')
 
-    sub = subparsers.add_parser('install', help='Install packages')
-    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='Packages to install')
+    sub = subparsers.add_parser('create', help='create a new package')
+    sub.add_argument('url', type=str, help='package source URL')
+    sub.add_argument('-n', '--name', type=str, help='package name', default=None)
 
-    sub = subparsers.add_parser('uninstall', help='Uninstall packages')
-    sub.add_argument('package', type=str, nargs='+', help='Packages to uninstall')
+    sub = subparsers.add_parser('install', help='install packages')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
-    sub = subparsers.add_parser('update', help='Update formulas from server')
+    sub = subparsers.add_parser('uninstall', help='uninstall packages')
+    sub.add_argument('package', type=str, nargs='+', help='packages to uninstall')
+
+    sub = subparsers.add_parser('update', help='update formulas from server')
 
     args = parser.parse_args()
 
     try:
-        if args.command == 'install':
+        
+        if args.command == 'create':
+            create(args)
+        elif args.command == 'install':
             install(args)
         elif args.command == 'uninstall':
             uninstall(args)
