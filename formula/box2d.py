@@ -16,9 +16,10 @@ class Box2D(winbrew.Formula):
             '-DBOX2D_BUILD_STATIC=%s' % ('OFF' if self.option('shared') else 'ON'),
             '-DBOX2D_BUILD_DYNAMIC=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DBOX2D_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-demos') else 'OFF'),
+            '-DCMAKE_CXX_FLAGS_RELEASE=/MT',
         ))
 
-        self.msbuild(winbrew.msbuild_args+('Box2D.sln',))
+        self.msbuild(winbrew.msbuild_args+('Box2D.sln','/p:RuntimeLibrary=0'))
         self.libs('Box2D\\Release')
         self.includes('Box2D', dest='Box2D')
 
