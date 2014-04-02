@@ -214,12 +214,17 @@ class Formula:
                     shutil.copyfile(os.path.join(root, fn), tf)
                     self.manifest.files.append(tf)
 
-    def lib(self, path):
+    def lib(self, path, dest=''):
         """
         Specify a library file to be installed.
         """
-        base = os.path.split(path)[1]
-        tf = os.path.join(winbrew.lib_path, base)
+        td = os.path.join(winbrew.lib_path, os.path.dirname(dest))
+        if not os.path.exists(td):
+            os.makedirs(td)
+        if dest:
+            tf = os.path.join(td, os.path.basename(dest))
+        else:
+            tf = os.path.join(td, os.path.split(path)[-1])
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
 
