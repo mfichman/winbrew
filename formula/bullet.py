@@ -24,6 +24,7 @@ class Bullet(winbrew.Formula):
         config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
         self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',config))
         self.includes('src', dest='bullet')
+        self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
 
     def test(self):
         pass

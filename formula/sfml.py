@@ -6,11 +6,22 @@ class Sfml(winbrew.Formula):
     sha1 = ''
     build_deps = ('cmake',)
     deps = ()
+    
+    options = {
+        'shared': 'Build shared libraries',
+        'build-examples': 'Build example programs',
+        'debug': 'Build debug libraries', 
+    }
 
     def install(self):
-        self.cmake()
-        self.nmake()
-        self.libs('lib')
+        self.cmake(('-G', 'Visual Studio 12',
+            #'-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
+            #'-DSFML_USE_STATIC_STD_LIBS=%s' % ('OFF' if self.option('shared') else 'ON'),
+            #'-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
+        ))
+        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
+        self.msbuild(winbrew.msbuild_args+('SFML.sln',config))
+        self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
         self.includes('include')
 
     def test(self):
