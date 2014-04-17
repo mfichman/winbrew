@@ -11,6 +11,7 @@ class Bullet(winbrew.Formula):
         'build-demos': 'Build demo application',
         'build-extras': 'Build extra library',
         'shared': 'Build shared libraries',
+        'debug': 'Build debug libraries',
     }
 
     def install(self):
@@ -20,8 +21,8 @@ class Bullet(winbrew.Formula):
             '-DBUILD_EXTRAS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
         ))
-        self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',))
-        self.libs('lib\\Release')
+        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
+        self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',config))
         self.includes('src', dest='bullet')
 
     def test(self):
