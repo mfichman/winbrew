@@ -1,4 +1,5 @@
 
+from manifest import Manifest
 from formula import Formula
 from formula import FormulaException
 from formula import cmake_args

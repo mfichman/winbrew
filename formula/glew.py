@@ -17,9 +17,20 @@ class Glew(winbrew.Formula):
         fd.write(text)
         fd.close()
 
+    def multi_threaded_dll_workaround(self):
+        fd = open('build\\vc10\\glew_static.vcxproj')
+        output = fd.read().replace(
+            '<RuntimeLibrary>MultiThreaded</RuntimeLibrary>', 
+            '<RuntimeLibrary>MultiThreadedDll</RuntimeLibrary>')
+        fd = open('build\\vc10\\glew_static.vcxproj', 'w')
+        fd.write(output)
+        fd.close()
+
     def install(self):
         self.broken_rc_workaround()
-        self.msbuild(winbrew.msbuild_args+('build\\vc10\\glew_static.vcxproj',))
+        self.multi_threaded_dll_workaround()
+        
+        self.msbuild(winbrew.msbuild_args+('build\\vc10\\glew_static.vcxproj','/p:Configuration=Release'))
         self.libs('lib\\Release\\Win32')
         self.includes('include')
 

@@ -10,8 +10,8 @@ import shutil
 import shlex
 import imp
 import winbrew
-import pickle
 import argparse
+from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
 cmake_args = ('-G', 'NMake Makefiles', '-DCMAKE_BUILD_TYPE=Release')
@@ -19,35 +19,6 @@ msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
 
 class FormulaException(Exception):
     pass
-
-class Manifest:
-    """
-    Stores a list of all files installed by a formula.  This class is used to 
-    deteremine which files to uninstall, and to check for conflicts between
-    formulas.
-    """
-    def __init__(self, name):
-        self.files = []
-        self.name = name
-        self.path = os.path.abspath(os.path.join(winbrew.manifest_path, self.name))
-
-    def save(self):
-        """
-        Write the manifest to the manifest file directory 
-        """
-        dirs = os.path.split(self.path)[0]
-        if not os.path.exists(dirs):
-            os.makedirs(dirs)
-        with open(self.path, 'wb') as fd:
-            pickle.dump(self.files, fd, pickle.HIGHEST_PROTOCOL)
-        
-    def load(self):
-        """ 
-        Read the manifest from the manifest file directory
-        """
-        with open(self.path, 'rb') as fd:
-            self.files = pickle.load(fd) 
-        
 
 class Formula:
     """
@@ -154,16 +125,22 @@ class Formula:
         """ 
         fd = open(self.filename, 'rb')
         zf = zipfile.ZipFile(fd)
-        zf.extractall()
         self.unpack_name = os.path.commonprefix(zf.namelist())
+        if os.path.exists(self.unpack_name):
+            pass # already extracted
+        else:
+            zf.extractall()
 
     def untar(self, compression='gz'):
         """
         Extract the downloaded tar file into the current working directory
         """
         tf = tarfile.open(self.filename, mode='r:%s' % compression)
-        tf.extractall()
         self.unpack_name = os.path.commonprefix(tf.getnames())
+        if os.path.exists(self.unpack_name):
+            pass 
+        else:
+            tf.extractall()
 
     def system(self, cmd, shell=False):
         """
@@ -276,9 +253,12 @@ class Formula:
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
 
-    def copy(self, path):
+    def copy(self, path, dest=''):
+        """
+        Copies files found at 'path' to a subfolder of winbrew.home
+        """
         for root, dirs, files in os.walk(path):
-            td = os.path.join(winbrew.home, root)
+            td = os.path.join(winbrew.home, dest, root)
             for fn in files:
                 if not os.path.exists(td):
                     os.makedirs(td)

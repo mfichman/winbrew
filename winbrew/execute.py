@@ -13,10 +13,12 @@ class InstallPlan:
     Executes a topological sort to determine the order in which to install
     packages.
     """
-    def __init__(self, formulas):
+    def __init__(self, formulas, args):
         self.marked = set()
         self.temp = set()
         self.order = []
+        self.args = args
+        self.preinstalled = []
         for formula in formulas:
             self.visit(formula)
 
@@ -34,7 +36,11 @@ class InstallPlan:
                 self.visit(dep) 
             self.temp.remove(formula.name)
             self.marked.add(formula.name)
-            self.order.append(formula)
+            if self.args.force or not formula.manifest.installed:
+                # Only install a package if it's not already installed
+                self.order.append(formula)
+            else:
+                self.preinstalled.append(formula)
 
     def __iter__(self):
         """
@@ -51,6 +57,8 @@ class InstallPlan:
             os.environ['PATH'], 
             winbrew.bin_path,
         ))
+        for formula in self.preinstalled:
+            print('%s already installed' % formula.name)
         for formula in self:
             formula.download()
         for formula in self:
@@ -66,13 +74,25 @@ def uninstall(args):
     """
     for name in args.package:
         formula = winbrew.Formula.formula_by_name(name)()
+        if not args.force and not formula.manifest.installed:
+            print('%s is not installed' % formula.name)
+            continue 
         formula.manifest.load()
         for fn in formula.manifest.files:
             try:
-                print('removing %s' % fn)
                 os.remove(fn)
             except OSError, e:
                 pass
+        formula.manifest.delete()
+
+def test(args):
+    """ 
+    Test a package.
+    """
+    for name in args.package:
+        formula = winbrew.Formula.formula_by_name(name)()
+        formula.test()
+    print('PASS')
 
 def update(args):
     """
@@ -105,7 +125,7 @@ def install(args):
             name = package.pop(0)
             (formula, package) = formula_from_args(package, name)
             formulas.append(formula)
-        InstallPlan(formulas).execute()
+        InstallPlan(formulas, args).execute()
     except InstallException, e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
@@ -177,10 +197,15 @@ def main():
     sub.add_argument('name', type=str, help='package source name')
 
     sub = subparsers.add_parser('install', help='install packages')
+    sub.add_argument('--force', '-f', action='store_true', help='force package install (completely reinstall it)')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
     sub = subparsers.add_parser('uninstall', help='uninstall packages')
+    sub.add_argument('--force', '-f', action='store_true', help='force package uninstall')
     sub.add_argument('package', type=str, nargs='+', help='packages to uninstall')
+
+    sub = subparsers.add_parser('test', help='test packages')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to test')
 
     sub = subparsers.add_parser('update', help='update formulas from server')
 
@@ -198,6 +223,8 @@ def main():
             uninstall(args)
         elif args.command == 'update':
             update(args)
+        elif args.command == 'test':
+            test(args)
         else:
             sys.stderr.write('error: unknown command')
             sys.exit(1)

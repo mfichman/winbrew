@@ -10,7 +10,7 @@ class Bullet(winbrew.Formula):
         'double-precision': 'Use double precision',
         'build-demos': 'Build demo application',
         'build-extras': 'Build extra library',
-        'shared': 'Build shared libraries',
+        'shared': 'Build shared libraries', # Doesn't quite work
         'debug': 'Build debug libraries',
     }
 
@@ -20,6 +20,7 @@ class Bullet(winbrew.Formula):
             '-DBUILD_DEMOS=%s' % ('ON' if self.option('build-demos') else 'OFF'),
             '-DBUILD_EXTRAS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
+            '-DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON',
         ))
         config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
         self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',config))
