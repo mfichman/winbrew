@@ -6,3 +6,6 @@ class Perl(winbrew.Formula):
     sha1 = ''
     build_deps = ()
     deps = ()
+
+    def install(self):
+        pass

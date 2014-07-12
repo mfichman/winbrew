@@ -4,7 +4,7 @@ class Openssl(winbrew.Formula):
     url = 'http://www.openssl.org/source/openssl-1.0.1g.tar.gz'
     homepage = 'http://www.openssl.org'
     sha1 = ''
-    build_deps = ()
+    build_deps = ('perl')
     deps = ()
 
     def install(self):
