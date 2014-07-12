@@ -49,6 +49,17 @@ class Manifest:
             return True
         except IOError, e:
             return False
+
+    @staticmethod
+    def all():
+        """ 
+        List all installed packages
+        """
+        manifest = []
+        for fn in os.listdir(winbrew.manifest_path):
+            manifest.append(Manifest(fn))
+        return manifest
+            
             
         
 

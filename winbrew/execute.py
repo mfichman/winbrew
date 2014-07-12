@@ -184,7 +184,14 @@ class %(name)s(winbrew.Formula):
 
     args.name = name
     edit(args)
-             
+
+def freeze(args):
+    """
+    Output installed packages.
+    """
+    print('\n'.join([manifest.name for manifest in winbrew.Manifest.all()]))
+     
+
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
     subparsers = parser.add_subparsers(dest='command')
@@ -207,6 +214,8 @@ def main():
     sub = subparsers.add_parser('test', help='test packages')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to test')
 
+    sub = subparsers.add_parser('freeze', help='output installed packages')
+
     sub = subparsers.add_parser('update', help='update formulas from server')
 
     args = parser.parse_args()
@@ -225,6 +234,8 @@ def main():
             update(args)
         elif args.command == 'test':
             test(args)
+        elif args.command == 'freeze':
+            freeze(args)
         else:
             sys.stderr.write('error: unknown command')
             sys.exit(1)
