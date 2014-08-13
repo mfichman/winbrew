@@ -15,6 +15,7 @@ class Luajit(winbrew.Formula):
         self.include('lua.h', dest='luajit\\lua.h')
         self.include('lualib.h', dest='luajit\\lualib.h')
         self.include('lauxlib.h', dest='luajit\\lauxlib.h')
+        self.include('luaconf.h', dest='luajit\\luaconf.h')
 
         luafiles = [
             'bc', 'bcsave', 'dis_arm', 'dis_mips', 'dis_mipsel', 
