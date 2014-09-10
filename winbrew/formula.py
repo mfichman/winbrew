@@ -11,10 +11,11 @@ import shlex
 import imp
 import winbrew
 import argparse
+import hashlib
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'NMake Makefiles', '-DCMAKE_BUILD_TYPE=Release')
+cmake_args = ('-G', 'Visual Studio 12')
 msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
 
 class FormulaException(Exception):
@@ -74,6 +75,41 @@ class Formula:
                 fd = open(self.filename, 'wb')
                 shutil.copyfileobj(stream, fd)
                 fd.close()
+
+    def sha1_update_for_file(self, sha1, filename):
+        """
+        Verify one file
+        """
+        fd = open(filename)
+        chunk_size = 8192
+        while True:
+            data = fd.read(chunk_size)
+            if not data:
+                break
+            sha1.update(data)
+
+    def verify(self):
+        """
+        Check the downloaded package against the hash
+        """
+        if self.sha1 == '':
+            raise FormulaException("can't verify package %s: no hash in formula file" % self.name)
+
+        sha1 = hashlib.sha1()
+
+        if os.path.isfile(self.filename):
+            self.sha1_update_for_file(sha1, self.filename)
+        elif os.path.isdir(self.workdir):
+            for subdir, dirs, files in os.walk(self.workdir):
+                files = [f for f in files if not f[0] == '.']
+                dirs[:] = [d for d in dirs if not d[0] == '.']
+                for file in files:
+                    self.sha1_update_for_file(sha1, os.path.join(subdir, file))
+        else:
+            raise FormulaException("can't verify package %s: downloaded file not found" % self.name)
+
+        if self.sha1 != sha1.hexdigest():
+            raise FormulaException("can't verify package %s: hash doesn't match" % self.name)
 
     def unpack(self):
         """
@@ -164,7 +200,6 @@ class Formula:
         """
         Run scons.  Optionally, the caller can set arguments to pass to scons.
         """
-        print os.getcwd()
         subprocess.check_call(('scons',)+args, shell=True)
 
     def msbuild(self, args=msbuild_args):

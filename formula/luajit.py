@@ -3,7 +3,7 @@ import winbrew
 class Luajit(winbrew.Formula):
     url = 'http://luajit.org/download/LuaJIT-2.0.2.zip'
     homepage = 'http://luajit.org'
-    sha1 = ''
+    sha1 = '1cf0df6f0eaf6e0f149c498f1b96b55303dc9e87'
     build_deps = ()
     deps = ()
 
@@ -29,4 +29,4 @@ class Luajit(winbrew.Formula):
         self.bin('luajit.exe')
     
     def test(self):
-        pass
+        self.system('luajit -v')

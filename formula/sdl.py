@@ -5,7 +5,8 @@ import glob
 class Sdl(winbrew.Formula):
     url = 'https://www.libsdl.org/release/SDL-1.2.15.zip'
     homepage = 'http://libsdl.org'
-    sha1 = ''
+    sha1 = 'f5e8916122845908975529a55891dcf8360be146'
+    build_deps = ()
     deps = ()
 
     def directx(self):

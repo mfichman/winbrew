@@ -12,4 +12,4 @@ class Scons(winbrew.Formula):
         self.system('python setup.py install')
 
     def test(self):
-        pass
+        self.system('scons -v')

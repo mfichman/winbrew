@@ -3,7 +3,7 @@ import winbrew
 class Freetype2(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/freetype/freetype2/2.5.2/freetype-2.5.2.tar.bz2'
     homepage = 'http://freetype.org'
-    sha1 = ''
+    sha1 = '72731cf405b9f7c0b56d144130a8daafa262b729'
     build_deps = ('cmake',)
     deps = ()
 
@@ -12,7 +12,7 @@ class Freetype2(winbrew.Formula):
     }
 
     def install(self):
-        self.cmake(('-G', 'Visual Studio 12'))
+        self.cmake(winbrew.cmake_args)
         config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
         self.msbuild(winbrew.msbuild_args+('freetype.vcxproj',config))
         self.libs('Debug' if self.option('debug') else 'Release')

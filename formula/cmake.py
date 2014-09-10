@@ -4,7 +4,7 @@ import os
 class Cmake(winbrew.Formula):
     url = 'http://www.cmake.org/files/v2.8/cmake-2.8.12-win32-x86.zip'
     homepage = 'http://www.cmake.org'
-    sha1 = ''
+    sha1 = '1038e39d91d51bc4d27690c024a58a998eb9be7a'
     build_deps = ()
     deps = ()
 
@@ -21,4 +21,4 @@ class Cmake(winbrew.Formula):
         self.copy('share')
 
     def test(self):
-        pass
+        self.system('cmake --version')

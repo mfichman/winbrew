@@ -4,7 +4,7 @@ import os
 class Glfw(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/glfw/glfw/3.0.4/glfw-3.0.4.zip'
     homepage = 'http://www.glfw.org'
-    sha1 = ''
+    sha1 = '1b7b3e4afe6d17726ad57a119942d9a533af6910'
     build_deps = ('cmake',)
     deps = ()
     options = {
@@ -15,7 +15,7 @@ class Glfw(winbrew.Formula):
     }
 
     def install(self):
-        self.cmake(('-G', 'Visual Studio 12',
+        self.cmake(self.cmake_args+(
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DGLFW_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
             '-DGLFW_BUILD_TESTS=%s' % ('ON' if self.option('build-tests') else 'OFF'),

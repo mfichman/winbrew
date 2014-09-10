@@ -3,7 +3,7 @@ import winbrew
 class Premake(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/premake/Premake/4.3/premake-4.3-src.zip'
     homepage = 'http://premake.sourceforge.net'
-    sha1 = ''
+    sha1 = '8f37a3599121580f18b578811162b9b49a2e122f'
     build_deps = ()
     deps = ('')
 
@@ -14,4 +14,4 @@ class Premake(winbrew.Formula):
         self.bin('premake4.exe')
 
     def test(self):
-        pass
+        self.system('premake4 --version')

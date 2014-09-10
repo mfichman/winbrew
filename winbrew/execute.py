@@ -61,6 +61,7 @@ class InstallPlan:
             print('%s already installed' % formula.name)
         for formula in self:
             formula.download()
+            formula.verify()
         for formula in self:
             formula.unpack()
         for formula in self:
@@ -113,6 +114,15 @@ def formula_from_args(args, name):
     formula = winbrew.Formula.formula_by_name(name)()
     args = formula.parse_options(args)
     return (formula, args)
+
+def download(args):
+    """
+    Download a formula, but don't unpack or install it
+    """
+    for name in args.package:
+        formula = winbrew.Formula.formula_by_name(name)()
+        formula.download()
+        formula.verify()
 
 def install(args):
     """
@@ -218,6 +228,9 @@ def main():
 
     sub = subparsers.add_parser('update', help='update formulas from server')
 
+    sub = subparsers.add_parser('download', help='download formulas without installing them')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to download')
+
     args = parser.parse_args()
 
     try:
@@ -236,6 +249,8 @@ def main():
             test(args)
         elif args.command == 'freeze':
             freeze(args)
+        elif args.command == 'download':
+            download(args)
         else:
             sys.stderr.write('error: unknown command')
             sys.exit(1)
