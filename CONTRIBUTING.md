@@ -35,8 +35,8 @@ At minimum, you should fill in the `url`, `homepage`, `sha1`, and `deps` attribu
 * `build_deps` is a list of dependencies that WinBrew installs when building
   your package. Be sure to include build systems like `cmake` here!
 
-Set up formula build instructions
----------------------------------
+Code up the formula build instructions
+--------------------------------------
 
 In `install`, you need to insert code to build the package and install
 libraries, headers, executables, etc. Windows packages have a wide variety of
