@@ -1,6 +1,6 @@
 import winbrew
 import os
-import pickle
+import sqlite3
 
 class Manifest:
     """
@@ -8,58 +8,70 @@ class Manifest:
     determine which files to uninstall, and to check for conflicts between
     formulas.
     """
+
     def __init__(self, name):
         self.files = []
         self.name = name
-        self.path = os.path.abspath(os.path.join(winbrew.manifest_path, self.name))
 
     def save(self):
         """
         Write the manifest to the manifest file directory 
         """
-        dirs = os.path.split(self.path)[0]
-        if not os.path.exists(dirs):
-            os.makedirs(dirs)
-        with open(self.path, 'wb') as fd:
-            pickle.dump(self.files, fd, pickle.HIGHEST_PROTOCOL)
-        
+        for path in self.files:
+            query = 'REPLACE INTO InstalledFile (path, formula) VALUES (?, ?)'
+            self.db().cursor().execute(query, (path, self.name))
+        self.db().commit()        
+
     def load(self):
         """ 
         Read the manifest from the manifest file directory
         """
-        try:
-            with open(self.path, 'rb') as fd:
-                self.files = pickle.load(fd) 
-        except IOError, e:
-            self.files = []
+        query = 'SELECT path FROM InstalledFile WHERE formula=?'
+        results = self.db().cursor().execute(query, (self.name,))
+        self.files = [result[0] for result in results]
 
     def delete(self):
         """
         Delete the manifest
         """
-        os.remove(self.path)
+        query = 'DELETE FROM InstalledFile WHERE formula=?'
+        self.db().cursor().execute(query, (self.name,))
+        self.db().commit()        
 
     @property
     def installed(self):
         """
         Returns true if the Manifest indicates the formula is installed
         """
-        try:
-            open(self.path, 'rb').close()
-            return True
-        except IOError, e:
-            return False
+        query = 'SELECT DISTINCT formula FROM InstalledFile WHERE formula=? LIMIT 1'
+        results = self.db().cursor().execute(query, (self.name,))
+        return len(list(results)) > 0
 
     @staticmethod
     def all():
         """ 
         List all installed packages
         """
-        manifest = []
-        for fn in os.listdir(winbrew.manifest_path):
-            manifest.append(Manifest(fn))
-        return manifest
-            
-            
+        query = 'SELECT DISTINCT formula FROM InstalledFile'
+        results = self.db().cursor().execute(query)
+        return [Manifest(result[0]) for result in results]
+        # FIXME: This may be inefficient
+
+    @classmethod
+    def db(self):
+        if not getattr(self, '_db', None):
+            self._db = sqlite3.connect(os.path.join(winbrew.manifest_path, 'manifest.db'))
+            self.migrate()
+        return self._db
         
+    @classmethod
+    def migrate(self):
+        """
+        Execute database migrations
+        """
+        installedFile = """CREATE TABLE IF NOT EXISTS InstalledFile (
+            path TEXT NOT NULL UNIQUE,
+            formula TEXT NOT NULL,
+            PRIMARY KEY(path, formula))"""
+        self._db.cursor().execute(installedFile)
 

@@ -151,13 +151,22 @@ def edit(args):
 
     editor = os.environ.get('EDITOR', 'notepad') 
     try:
-        subprocess.check_call((editor, path), shell=True)
+        subprocess.check_call((editor, path))
     except subprocess.CalledProcessError, e:
         pass
     except SystemError, e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.stderr.flush()
         sys.exit(1)
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else: 
+            raise 
 
 def create(args):
     """
@@ -188,6 +197,7 @@ class %(name)s(winbrew.Formula):
 
     path = os.path.join(winbrew.formula_path, '%s.py' % name)
     if not os.path.exists(path):
+        mkdir_p(os.path.split(path)[0]) 
         fd = open(path, 'w')
         fd.write(template % {'name': name.title(), 'url': args.url})
         fd.close()
