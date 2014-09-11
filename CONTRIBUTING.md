@@ -33,7 +33,7 @@ At minimum, you should fill in the `url`, `homepage`, `sha1`, and `deps` attribu
 * `sha1` is the SHA-1 hash of the downloaded package.
 * `deps` is a list of dependencies that WinBrew installs before the package is installed.
 * `build_deps` is a list of dependencies that WinBrew installs when building
-  your package. Be sure to include build systems, like `cmake` here!
+  your package. Be sure to include build systems like `cmake` here!
 
 Set up formula build instructions
 ---------------------------------
