@@ -12,7 +12,7 @@ build systems: CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plet
 
 Other package managers for Windows distribute software that's packaged via `msiexec` (or similar). These package managers aren't designed for developers, and don't really follow the "Homebrew spirit":
 
-* Don't duplicate what the system gives you already
+* Don't duplicate what the system gives
 * Use the default system compilers
 * Build from source
 * Formulae are simple scripts
