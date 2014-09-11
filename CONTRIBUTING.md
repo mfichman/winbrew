@@ -1,6 +1,8 @@
 Contributing to Winbrew
 =======================
 
+This document explains how to create a new formula and contribute it to the mainline repository.
+
 Create a new formula
 --------------------
 
