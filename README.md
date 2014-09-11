@@ -27,5 +27,5 @@ Basic usage
 Want to contribute?
 -------------------
 
-Winbrew needs authors to write additional formulae! For more info, read [CONTRIBUTING.md](https://github.com/mfichman/winbrew/master/CONTRIBUTING.md).
+Winbrew needs authors to write additional formulae! For more info, read [CONTRIBUTING.md](https://github.com/mfichman/winbrew/blob/master/CONTRIBUTING.md).
 
