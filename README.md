@@ -7,16 +7,15 @@ A homebrew-inspired package manager for Windows.
 Installing Winbrew
 ------------------
 
-1. Download and install [Microsoft Visual Studio](http://www.visualstudio.com/). 
-   The express version works fine too!
-
-2. Install Winbrew using `pip`:
+Download and install [Microsoft Visual Studio](http://www.visualstudio.com/), then install Winbrew using `pip`:
 
     pip install winbrew    
 
-3. Add these directories to your PATH environment variable:
+To use files installed by Winbrew in your builds, you might want to set these environment variables:
 
     set PATH=%PATH%;C:\WinBrew\lib;C:\WinBrew\bin
+    set LIB=%LIB%;C:\WinBrew\lib
+    set INCLUDE=%INCLUDE%;C:\WinBrew\include
 
 
 Basic usage
@@ -24,11 +23,9 @@ Basic usage
 
     winbrew install <package>
 
-That's it!
-
 
 Want to contribute?
 -------------------
 
-Please read CONTRIBUTING.md!
+Winbrew needs authors to write additional formulae! For more info, read [CONTRIBUTING.md](https://github.com/mfichman/winbrew/master/CONTRIBUTING.md).
 
