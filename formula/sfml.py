@@ -18,7 +18,7 @@ class Sfml(winbrew.Formula):
             #'-DSFML_USE_STATIC_STD_LIBS=%s' % ('OFF' if self.option('shared') else 'ON'),
         ))
         config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
-        self.msbuild(winbrew.msbuild_args+('SFML.sln',config))
+        self.msbuild(winbrew.msbuild_args+('SFML.sln', config))
         self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
         self.includes('include')
 
