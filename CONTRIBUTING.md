@@ -31,8 +31,8 @@ At minimum, you should fill in the `url`, `homepage`, `sha1`, and `deps` attribu
 * `url` is the download URL for the package.
 * `homepage` is a link to the package's homepage.
 * `sha1` is the SHA-1 hash of the downloaded package.
-* `deps` is a list of dependencies that WinBrew installs before the package is installed.
-* `build_deps` is a list of dependencies that WinBrew installs when building
+* `deps` is a list of dependencies that Winbrew installs before the package is installed.
+* `build_deps` is a list of dependencies that Winbrew installs when building
   your package. Be sure to include build systems like `cmake` here!
 
 Code up the formula build instructions
@@ -41,7 +41,7 @@ Code up the formula build instructions
 In `install`, you need to insert code to build the package and install
 libraries, headers, executables, etc. Windows packages have a wide variety of
 build systems; you need to select the build system the new package uses.
-WinBrew has support for a few build systems built-in. **Note that all build
+Winbrew has support for a few build systems built-in. **Note that all build
 commands are run in the root directory of the unpacked source zip/tar.** Here
 are some examples:
 
@@ -77,7 +77,7 @@ Specify files to install
 -------------------------
 
 When creating a new package, you need to indicate what build output (headers,
-libraries, exeutables) WinBrew should install. This is done with the `libs`,
+libraries, exeutables) Winbrew should install. This is done with the `libs`,
 `includes`, and `bin` commands:
 
     def install(self):
@@ -172,14 +172,14 @@ contributing!
 Maintaining a private version
 -----------------------------
 
-If, for some reason, your formula can't be accepted into the mainline winbrew
-repository, you can host your own repository. To set this up, take the following
-steps:
+If, for some reason, your formula can't be accepted into the mainline Winbrew
+repository, you can always fork a private repository. Here's how you configure 
+Winbrew to work with a private repository:
 
-1. Create your private repository
+1. Create your private fork of the mainline Winbrew repository
 2. Delete `C:\WinBrew`, if it exists
-3. Clone the repository to `C:\WinBrew`
+3. Clone your private fork to `C:\WinBrew`
 4. Add `C:\WinBrew\bin` and `C:\WinBrew\lib` to your PATH environment variable
 
-Alternatively, you can install your repository to a custom location, and set
+Alternatively, install the private repository to a custom location, and set
 the `WINBREW_HOME` environment variable to the custom location.
