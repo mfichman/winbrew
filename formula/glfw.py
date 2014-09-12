@@ -4,7 +4,7 @@ import os
 class Glfw(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/glfw/glfw/3.0.4/glfw-3.0.4.zip'
     homepage = 'http://www.glfw.org'
-    sha1 = '1b7b3e4afe6d17726ad57a119942d9a533af6910'
+    sha1 = '2d6e71611ece30b31bf08160e8c58bbc7d2d019b'
     build_deps = ('cmake',)
     deps = ()
     options = {

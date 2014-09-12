@@ -5,7 +5,7 @@ import glob
 class Sdl(winbrew.Formula):
     url = 'https://www.libsdl.org/release/SDL-1.2.15.zip'
     homepage = 'http://libsdl.org'
-    sha1 = 'f5e8916122845908975529a55891dcf8360be146'
+    sha1 = '10019967393dc786186b45e9e1e7a32de6f8699d'
     build_deps = ()
     deps = ()
 
