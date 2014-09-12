@@ -8,7 +8,7 @@ Why Winbrew?
 
 Windows has a tricky ecosystem when it comes to building and packaging native (C/C++) software. Unlike Unix developers,
 who have mostly settled on Autotools (`./configure`, `make install`) Windows developers use many
-build systems: CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plethora of build systems makes finding/building dependencies for a particular Visual Studio runtime version a real pain. 
+build systems: CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plethora of build systems makes finding/building dependencies for the latest Visual Studio runtime version a real pain. 
 
 Other Windows package managers distribute software that's packaged for `msiexec` (or similar). These package managers aren't designed for developers, and don't really follow the "Homebrew spirit":
 
