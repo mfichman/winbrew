@@ -5,7 +5,7 @@ import glob
 class Sdl2(winbrew.Formula):
     url = 'http://libsdl.org/release/SDL2-2.0.3.zip'
     homepage = 'http://libsdl.org'
-    sha1 = '9283f1ce25b8f3155b6960b214cb6a706c285e27'
+    sha1 = '6da4247162bb2477a36529f9db71f579fd3e5f6f'
     build_deps = ()
     deps = ()
 
@@ -31,10 +31,7 @@ class Sdl2(winbrew.Formula):
     def install(self):
         self.directx()
         self.cd('VisualC')
-        self.msbuild(winbrew.msbuild_args+(
-            '/p:VCBuildAdditionalOptions=/useenv', 
-            '/p:VCBuildAdditionalOptions=/arch:SSE2',
-            'SDL_VS2010.sln'))
+        self.msbuild(winbrew.msbuild_args+('SDL_VS2013.sln'))
         self.includes('include', 'SDL2')
 
     def test(self):
