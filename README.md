@@ -23,7 +23,7 @@ Winbrew provides all of the above for Windows development work.
 Installing Winbrew
 ------------------
 
-Download and install [Microsoft Visual Studio](http://www.visualstudio.com/), then install Winbrew using `pip`:
+Download and install [Microsoft Visual Studio 2013](http://www.visualstudio.com/), then install Winbrew using `pip`:
 
     pip install winbrew    
 
