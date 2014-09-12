@@ -31,7 +31,7 @@ class Sdl2(winbrew.Formula):
     def install(self):
         self.directx()
         self.cd('VisualC')
-        self.msbuild(winbrew.msbuild_args+('SDL_VS2013.sln'))
+        self.msbuild(winbrew.msbuild_args+('SDL_VS2013.sln',))
         self.includes('include', 'SDL2')
 
     def test(self):
