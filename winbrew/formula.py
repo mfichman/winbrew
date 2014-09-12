@@ -57,6 +57,18 @@ class Formula:
         """
         return getattr(self.selected_options, name.replace('-', '_'))
 
+    def install(self):
+        """
+        Installs the package.
+        """
+        pass
+
+    def test(self):
+        """
+        Tests the package.
+        """
+        pass
+
     def download(self):
         """
         Download from the source URL via HTTP or git

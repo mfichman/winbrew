@@ -3,7 +3,9 @@ import itertools
 import argparse
 import sys
 import os
+import errno
 import subprocess
+import util
 
 class InstallException(Exception):
     pass
@@ -99,13 +101,9 @@ def update(args):
     """
     Update by cloning formulas from the git repository.
     """
-    if not os.path.exists(winbrew.home):
-        cmd = ('git', 'clone', winbrew.formula_url, winbrew.home)
-        subprocess.check_call(cmd, shell=True)
-    else:
-        os.chdir(winbrew.home)
-        cmd = ('git', 'pull')
-        subprocess.check_call(cmd, shell=True)
+    os.chdir(winbrew.home)
+    cmd = ('git', 'pull')
+    subprocess.check_call(cmd)
 
 def formula_from_args(args, name):
     """
@@ -159,15 +157,6 @@ def edit(args):
         sys.stderr.flush()
         sys.exit(1)
 
-def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else: 
-            raise 
-
 def create(args):
     """
     Create a new package.
@@ -197,7 +186,7 @@ class %(name)s(winbrew.Formula):
 
     path = os.path.join(winbrew.formula_path, '%s.py' % name)
     if not os.path.exists(path):
-        mkdir_p(os.path.split(path)[0]) 
+        util.mkdir_p(os.path.split(path)[0]) 
         fd = open(path, 'w')
         fd.write(template % {'name': name.title(), 'url': args.url})
         fd.close()
@@ -210,7 +199,12 @@ def freeze(args):
     Output installed packages.
     """
     print('\n'.join([manifest.name for manifest in winbrew.Manifest.all()]))
-     
+
+def init():
+    if not os.path.exists(os.path.join(winbrew.home, '.git')):
+        cmd = ('git', 'clone', winbrew.formula_url, winbrew.home)
+        print(' '.join(cmd))
+        subprocess.check_call(cmd)
 
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
@@ -244,6 +238,7 @@ def main():
     args = parser.parse_args()
 
     try:
+        init()
         
         if args.command == 'create':
             create(args)

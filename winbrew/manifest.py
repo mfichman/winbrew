@@ -1,6 +1,7 @@
 import winbrew
 import os
 import sqlite3
+import util
 
 class Manifest:
     """
@@ -47,8 +48,8 @@ class Manifest:
         results = self.db().cursor().execute(query, (self.name,))
         return len(list(results)) > 0
 
-    @staticmethod
-    def all():
+    @classmethod
+    def all(self):
         """ 
         List all installed packages
         """
@@ -60,6 +61,7 @@ class Manifest:
     @classmethod
     def db(self):
         if not getattr(self, '_db', None):
+            util.mkdir_p(winbrew.manifest_path)
             self._db = sqlite3.connect(os.path.join(winbrew.manifest_path, 'manifest.db'))
             self.migrate()
         return self._db

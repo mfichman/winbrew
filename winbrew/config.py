@@ -8,5 +8,4 @@ include_path = os.path.join(home, 'include')
 bin_path = os.path.join(home, 'bin')
 cache_path = os.path.join(home, 'cache')
 manifest_path = os.path.join(home, 'manifest')
-
 formula_url = 'https://github.com/mfichman/winbrew.git'
