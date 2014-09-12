@@ -13,12 +13,8 @@ class InstallPlanTest(winbrewtest.TestCase):
         assert(plan == ['cmake', 'sfml']) 
 
     def test_multiple(self): 
-        formula = [winbrew.Formula.formula_by_name(n)() for n in ('openssl',)]
-        print formula
+        formula = [winbrew.Formula.formula_by_name(n)() for n in ('openssl','sfml')]
         plan = winbrew.execute.InstallPlan(formula, MockArgs())
         plan = [p.name for p in plan]
-        assert(plan == ['cmake', 'sfml']) 
+        assert(plan == ['perl', 'openssl', 'cmake', 'sfml']) 
 
-
-if __name__ == '__main__':
-    InstallPlanTest().test_multiple()

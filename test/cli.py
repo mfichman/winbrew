@@ -31,12 +31,10 @@ class CliTest(winbrewtest.TestCase):
         self.check_command('edit NewPkg', path+'\n')
 
     def test_install(self):
-        os.environ['WINBREW_PATH'] = os.path.join('..', 'formula')
         self.check_command('install cmake') 
         assert(os.path.isfile(os.path.join(self.winbrew_home, 'bin', 'cmake.exe')))
 
     def test_freeze(self):
-        os.environ['WINBREW_PATH'] = os.path.join('..', 'formula')
         self.check_command('install cmake') 
         self.check_command('freeze', 'cmake\n')
 
