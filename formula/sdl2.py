@@ -31,7 +31,10 @@ class Sdl2(winbrew.Formula):
     def install(self):
         self.directx()
         self.cd('VisualC')
-        self.msbuild(winbrew.msbuild_args+('/p:VCBuildAdditionalOptions=/useenv', 'SDL_VS2010.sln'))
+        self.msbuild(winbrew.msbuild_args+(
+            '/p:VCBuildAdditionalOptions=/useenv', 
+            '/p:VCBuildAdditionalOptions=/arch:SSE2',
+            'SDL_VS2010.sln'))
         self.includes('include', 'SDL2')
 
     def test(self):
