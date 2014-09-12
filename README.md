@@ -39,7 +39,7 @@ Basic usage
 
     winbrew install <package>
     
-Winbrew installs all packages to C:\Winbrew by default, but you can change this by setting WINBREW_HOME.
+Winbrew installs all packages to C:\Winbrew by default, but you can change this by setting `WINBREW_HOME`.
 
 
 Want to contribute?
