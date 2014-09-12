@@ -121,7 +121,7 @@ class Formula:
             raise FormulaException("can't verify package %s: downloaded file not found" % self.name)
 
         if self.sha1 != sha1.hexdigest():
-            raise FormulaException("can't verify package %s: hash doesn't match" % self.name)
+            raise FormulaException("can't verify package %s: hash doesn't match: %s" % (self.name, sha1.hexdigest()))
 
     def unpack(self):
         """

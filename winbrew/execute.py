@@ -103,7 +103,7 @@ def update(args):
     """
     os.chdir(winbrew.home)
     cmd = ('git', 'pull')
-    subprocess.check_call(cmd)
+    subprocess.check_call(cmd, shell=True)
 
 def formula_from_args(args, name):
     """
@@ -149,7 +149,7 @@ def edit(args):
 
     editor = os.environ.get('EDITOR', 'notepad') 
     try:
-        subprocess.check_call((editor, path))
+        subprocess.check_call((editor, path), shell=True)
     except subprocess.CalledProcessError, e:
         pass
     except SystemError, e:
@@ -204,7 +204,7 @@ def init():
     if not os.path.exists(os.path.join(winbrew.home, '.git')):
         cmd = ('git', 'clone', winbrew.formula_url, winbrew.home)
         print(' '.join(cmd))
-        subprocess.check_call(cmd)
+        subprocess.check_call(cmd, shell=True)
 
 def main():
     parser = argparse.ArgumentParser(prog='winbrew', description='Package installer for Windows')
