@@ -3,7 +3,7 @@ import winbrew
 class Freetype2(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/freetype/freetype2/2.5.2/freetype-2.5.2.tar.bz2'
     homepage = 'http://freetype.org'
-    sha1 = '2d6e71611ece30b31bf08160e8c58bbc7d2d019b'
+    sha1 = '72731cf405b9f7c0b56d144130a8daafa262b729'
     build_deps = ('cmake',)
     deps = ()
 

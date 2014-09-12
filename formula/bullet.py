@@ -3,7 +3,7 @@ import winbrew
 class Bullet(winbrew.Formula):
     url = 'https://bullet.googlecode.com/files/bullet-2.82-r2704.zip'
     homepage = 'http://bulletphysics.org'
-    sha1 = 'a786496427c090dfcc3810ab7f3017b75cec2bad'
+    sha1 = 'f4b3332ad074aef3f8c1b731c1b7b385d3386d31'
     build_deps = ('cmake',)
     deps = ()
     options = {

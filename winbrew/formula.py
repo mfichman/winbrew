@@ -92,7 +92,7 @@ class Formula:
         """
         Verify one file
         """
-        fd = open(filename)
+        fd = open(filename, 'rb')
         chunk_size = 8192
         while True:
             data = fd.read(chunk_size)
