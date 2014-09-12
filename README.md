@@ -10,7 +10,7 @@ Windows has a tricky ecosystem when it comes to building and packaging native (C
 where most developers have settled on Autotools (`./configure`, `make install`) Windows developers use many
 build systems: CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plethora of build systems makes finding/building dependencies for a particular Visual Studio runtime version a real pain. 
 
-Other package managers for Windows distribute software that's packaged via `msiexec` (or similar). These package managers aren't designed for developers, and don't really follow the "Homebrew spirit":
+Other Windows package managers distribute software that's packaged for `msiexec` (or similar). These package managers aren't designed for developers, and don't really follow the "Homebrew spirit":
 
 * Don't duplicate what the system gives
 * Use the default system compilers
@@ -38,6 +38,8 @@ Basic usage
 -----------
 
     winbrew install <package>
+    
+Winbrew installs all packages to C:\Winbrew by default, but you can change this by setting WINBREW_HOME.
 
 
 Want to contribute?
