@@ -139,6 +139,8 @@ class Formula:
             self.untar(compression='bz2')
         elif self.ext == '.msi':
             self.msi()
+        elif self.ext == '.git':
+            pass
         else:
             raise Exception('unknown file type')
 
