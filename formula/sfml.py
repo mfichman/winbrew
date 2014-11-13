@@ -1,26 +1,29 @@
 import winbrew
 
 class Sfml(winbrew.Formula):
-    url = 'https://github.com/LaurentGomila/SFML/archive/2.1.zip'
-    homepage = 'http://sfml-dev.org'
-    sha1 = 'ff345985a301bbee350b1193f48f712acc656fc6'
+    url = 'https://github.com/LaurentGomila/SFML/archive/master.zip'
+    homepage = 'http://www.sfml-dev.org'
+    sha1 = 'b669c20d13629d73071b5153956d46d0e75f3e7a'
     build_deps = ('cmake',)
     deps = ()
     
     options = {
         'build-examples': 'Build example programs',
-        'debug': 'Build debug libraries', 
     }
 
     def install(self):
         self.cmake(winbrew.cmake_args+(
             '-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
-            #'-DSFML_USE_STATIC_STD_LIBS=%s' % ('OFF' if self.option('shared') else 'ON'),
+            '-DBUILD_SHARED_LIBS=FALSE',
         ))
-        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
-        self.msbuild(winbrew.msbuild_args+('SFML.sln', config))
-        self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
+        self.msbuild(winbrew.msbuild_args+('SFML.sln', '/p:Configuration=Debug'))
+        self.msbuild(winbrew.msbuild_args+('SFML.sln', '/p:Configuration=Release'))
+        # Compile debug AND release versions, b/c CSFML requires both
+        self.libs('lib\\Debug')
+        self.libs('lib\\Release')
+        self.libs('extlibs\\libs-msvc\\x86')
         self.includes('include')
+        self.copy('cmake\\Modules', 'share\\cmake-2.8\\Modules')
 
     def test(self):
         pass

@@ -104,9 +104,6 @@ class Formula:
         """
         Check the downloaded package against the hash
         """
-        if self.sha1 == '':
-            raise FormulaException("can't verify package %s: no hash in formula file" % self.name)
-
         sha1 = hashlib.sha1()
 
         if os.path.isfile(self.filename):
@@ -301,6 +298,12 @@ class Formula:
             tf = os.path.join(td, os.path.split(path)[-1])
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
+
+    def mkdir(self, path):
+        try:
+            os.makedirs(os.path.join(winbrew.home, path))
+        except OSError, e:
+            pass
 
     def copy(self, path, dest=''):
         """
