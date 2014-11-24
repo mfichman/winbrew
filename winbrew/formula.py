@@ -76,15 +76,20 @@ class Formula:
         Download from the source URL via HTTP or git
         """
         print('downloading %s' % self.name)
-        if not os.path.exists(self.workdir):
-            os.makedirs(self.workdir)
-        os.chdir(self.workdir)
         if self.ext == '.git':
+            path = os.path.join(self.workdir, self.name)
             if not os.path.exists(self.name):
+                util.rm_rf(self.workdir)
+                util.mkdir_p(self.workdir)
+                os.chdir(self.workdir)
                 subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
             self.unpack_name = self.name
         else:
-            if not os.path.exists(self.filename): 
+            path = os.path.join(self.workdir, self.filename)
+            if not os.path.exists(path): 
+                util.rm_rf(self.workdir)
+                util.mkdir_p(self.workdir)
+                os.chdir(self.workdir)
                 stream = urllib2.urlopen(self.url)
                 fd = open(self.filename, 'wb')
                 shutil.copyfileobj(stream, fd)

@@ -1,5 +1,6 @@
 import errno
 import os
+import shutil
 
 def mkdir_p(path):
     try:
@@ -9,4 +10,7 @@ def mkdir_p(path):
             pass
         else: 
             raise 
+
+def rm_rf(path):
+    shutil.rmtree(path, ignore_errors=True)
 
