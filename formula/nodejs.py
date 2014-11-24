@@ -14,7 +14,7 @@ class Nodejs(winbrew.Formula):
         self.bin('deps\\npm\\bin\\npm')
         self.bin('deps\\npm\\bin\\npm.cmd')
         self.cd('deps')
-        self.copy('npm', 'bin\\node_modules')
+        self.copy('npm', 'bin\\node_modules\\npm')
 
     def test(self):
         self.system('node -v')

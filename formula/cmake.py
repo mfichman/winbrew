@@ -9,11 +9,8 @@ class Cmake(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cd('bin')
-        self.bin('cmake.exe')
-        self.libs('.')
-        self.cd('..')
-        self.copy('share')
+        self.bin('bin\\cmake.exe')
+        self.copy('share', 'share')
 
     def test(self):
         self.system('cmake --version')

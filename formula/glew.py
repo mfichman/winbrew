@@ -31,7 +31,10 @@ class Glew(winbrew.Formula):
         self.multi_threaded_dll_workaround()
         
         self.msbuild(winbrew.msbuild_args+('build\\vc10\\glew_static.vcxproj','/p:Configuration=Release'))
-        self.libs('lib\\Release\\Win32')
+        self.msbuild(winbrew.msbuild_args+('build\\vc10\\glew_shared.vcxproj','/p:Configuration=Release'))
+
+        self.lib('lib\\Release\\Win32\\glew32s.lib', 'glew.lib')
+        self.lib('bin\\Release\\Win32\\glew32.dll', 'glew.dll')
         self.includes('include')
 
     def test(self):

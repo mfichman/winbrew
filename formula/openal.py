@@ -8,10 +8,10 @@ class Openal(winbrew.Formula):
     deps = ()
 
     def install(self): 
-        self.cmake(winbrew.cmake_args)
+        self.cmake(winbrew.cmake_args+('-DBUILD_SHARED_LIBS=OFF',))
         self.msbuild(winbrew.msbuild_args+('OpenAL32.vcxproj',))
         self.includes('include')
-        self.libs('Release')
+        self.lib('Release\\openal32.lib', 'openal.lib')
 
     def test(self):
         pass

@@ -10,22 +10,21 @@ class Bullet(winbrew.Formula):
         'double-precision': 'Use double precision',
         'build-demos': 'Build demo application',
         'build-extras': 'Build extra library',
-        'shared': 'Build shared libraries', # Doesn't quite work
-        'debug': 'Build debug libraries',
     }
 
     def install(self):
-        self.cmake(winbrew.cmake_args+( 
+        cmake_args = (
             '-DUSE_DOUBLE_PRECISION=%s' % ('ON' if self.option('double-precision') else 'OFF'), 
             '-DBUILD_DEMOS=%s' % ('ON' if self.option('build-demos') else 'OFF'),
             '-DBUILD_EXTRAS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
-            '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON',
+        )
+
+        self.cmake_build('build', winbrew.cmake_args+cmake_args+(
+            '-DBUILD_SHARED_LIBS=OFF',
         ))
-        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
-        self.msbuild(winbrew.msbuild_args+('BULLET_PHYSICS.sln',config))
+        self.libs('build\\lib\\Release')
         self.includes('src', dest='bullet')
-        self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
 
     def test(self):
         pass

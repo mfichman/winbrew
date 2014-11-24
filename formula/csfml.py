@@ -12,18 +12,24 @@ class Csfml(winbrew.Formula):
 
     options = {
         'build-examples': 'Build example programs',
-        'debug': 'Build debug libraries', 
-        'shared': 'Build shared libraries',
     }
 
     def install(self):
-        self.cmake(winbrew.cmake_args+(
-            '-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
-            '-DBUILD_SHARED_LIBS=TRUE',
+        os.environ['PATH'] = ';'.join((
+            os.path.join(winbrew.cache_path, 'sfml\\sfml-master\\extlibs\\libs-msvc\\x86'),
+            os.path.join(winbrew.cache_path, 'sfml\\sfml-master\\build-static\\lib\\Release'),
+            os.environ.get('PATH', ''),
         ))
-        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
-        self.msbuild(winbrew.msbuild_args+('CSFML.sln', config))
-        self.libs('lib\\%s' % ('Debug' if self.option('debug') else 'Release'))
+        
+        self.cmake_build('build', winbrew.cmake_args+(
+             '-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
+             '-DBUILD_SHARED_LIBS=TRUE',
+        ))
+        self.lib('build\\lib\\Release\\csfml-audio-2.dll', 'csfml-audio.dll')
+        self.lib('build\\lib\\Release\\csfml-graphics-2.dll', 'csfml-graphics.dll')
+        self.lib('build\\lib\\Release\\csfml-network-2.dll', 'csfml-network.dll')
+        self.lib('build\\lib\\Release\\csfml-window-2.dll', 'csfml-window.dll')
+        self.lib('build\\lib\\Release\\csfml-system-2.dll', 'csfml-system.dll')
         self.includes('include')
 
     def test(self):

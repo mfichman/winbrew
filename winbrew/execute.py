@@ -86,6 +86,13 @@ def uninstall(args):
                 os.remove(fn)
             except OSError, e:
                 pass
+            # Clean up parent directories if empty
+            while True:
+                fn, end = os.path.split(fn)
+                try:
+                    os.rmdir(fn)
+                except OSError, e:
+                    break
         formula.manifest.delete()
 
 def test(args):

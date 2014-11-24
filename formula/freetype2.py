@@ -1,4 +1,5 @@
 import winbrew
+import os
 
 class Freetype2(winbrew.Formula):
     url = 'http://downloads.sourceforge.net/project/freetype/freetype2/2.5.2/freetype-2.5.2.tar.bz2'
@@ -7,15 +8,12 @@ class Freetype2(winbrew.Formula):
     build_deps = ('cmake',)
     deps = ()
 
-    options = {
-        'debug': 'Build debug libraries', 
-    }
-
     def install(self):
-        self.cmake(winbrew.cmake_args)
-        config = '/p:Configuration=%s' % ('Debug' if self.option('debug') else 'Release')
-        self.msbuild(winbrew.msbuild_args+('freetype.vcxproj',config))
-        self.libs('Debug' if self.option('debug') else 'Release')
+        self.cmake_build('build', winbrew.cmake_args+(
+            '-DCMAKE_CXX_FLAGS=-D_CRT_SECURE_NO_WARNINGS',
+            '-DBUILD_SHARED_LIBS=OFF',
+        ))
+        self.lib('build\\Release\\freetype.lib')
         self.includes('include')
 
     def test(self):

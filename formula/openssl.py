@@ -1,4 +1,5 @@
 import winbrew
+import os
 
 class Openssl(winbrew.Formula):
     url = 'http://www.openssl.org/source/openssl-1.0.1g.tar.gz'
@@ -8,7 +9,8 @@ class Openssl(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.system('perl Configure VC-WIN32 no-asm --prefix=C:\\Winbrew\\lib\\OpenSSL')
+        os.environ['PATH'] = ';'.join((os.environ['PATH'], os.path.join(winbrew.cache_path, 'perl\\perl\\bin')))
+        self.system('perl Configure VC-WIN32 no-asm --prefix=%s', os.path.join(winbrew.cache_path, 'openssl'))
         self.system('ms\\\\do_ms.bat')
         self.system('nmake -f ms\\\\nt.mak')
         self.lib('out32\\libeay32.lib')

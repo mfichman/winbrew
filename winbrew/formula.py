@@ -12,6 +12,8 @@ import imp
 import winbrew
 import argparse
 import hashlib
+import util
+import re
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
@@ -163,7 +165,7 @@ class Formula:
         """
         Install a MSI-style installer
         """
-        self.system('msiexec /i %s' % self.filename)
+        self.system('msiexec /quiet /i %s' % self.filename)
         self.unpack_name = '.'
 
     def unzip(self):
@@ -206,6 +208,17 @@ class Formula:
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
         subprocess.check_call(('cmake',)+args)
+    
+    def cmake_build(self, workdir, args=cmake_args):
+        """
+        Run cmake with the --build option, and build static & shared libs
+        """
+        srcdir = os.getcwd()
+        self.mkdir(workdir)
+        self.cd(workdir)
+        self.cmake(args+(srcdir,))
+        self.cmake(('--build', '.', '--config', 'Release'))
+        self.cd(srcdir)
 
     def scons(self, args=()):
         """
@@ -300,17 +313,15 @@ class Formula:
         self.manifest.files.append(tf)
 
     def mkdir(self, path):
-        try:
-            os.makedirs(os.path.join(winbrew.home, path))
-        except OSError, e:
-            pass
+        util.mkdir_p(path)
 
-    def copy(self, path, dest=''):
+    def copy(self, path, dest):
         """
         Copies files found at 'path' to a subfolder of winbrew.home
         """
         for root, dirs, files in os.walk(path):
-            td = os.path.join(winbrew.home, dest, root)
+            prefix = re.sub('^'+path.replace('\\', '\\\\')+'\\\\?', '', root)
+            td = os.path.join(winbrew.home, dest, prefix)
             for fn in files:
                 if not os.path.exists(td):
                     os.makedirs(td)
