@@ -104,6 +104,15 @@ def test(args):
         formula.test()
     print('PASS')
 
+def listp(args):
+    """ 
+    List package contents
+    """
+    for name in args.package:
+        formula = winbrew.Formula.formula_by_name(name)()
+        formula.manifest.load()
+        print('\n'.join(formula.manifest.files))
+
 def update(args):
     """
     Update by cloning formulas from the git repository.
@@ -232,6 +241,9 @@ def main():
     sub.add_argument('--force', '-f', action='store_true', help='force package uninstall')
     sub.add_argument('package', type=str, nargs='+', help='packages to uninstall')
 
+    sub = subparsers.add_parser('list', help='list package contents')
+    sub.add_argument('package', type=str, nargs='+', help='packages to list')
+
     sub = subparsers.add_parser('test', help='test packages')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to test')
 
@@ -259,6 +271,8 @@ def main():
             update(args)
         elif args.command == 'test':
             test(args)
+        elif args.command == 'list':
+            listp(args)
         elif args.command == 'freeze':
             freeze(args)
         elif args.command == 'download':
