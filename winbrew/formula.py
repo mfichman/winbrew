@@ -112,7 +112,7 @@ class Formula:
         Check the downloaded package against the hash
         """
         sha1 = hashlib.sha1()
-
+        os.chdir(self.workdir)
         if os.path.isfile(self.filename):
             self.sha1_update_for_file(sha1, self.filename)
         elif os.path.isdir(self.workdir):
