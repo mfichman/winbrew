@@ -78,11 +78,10 @@ class Formula:
         print('downloading %s' % self.name)
         if self.ext == '.git':
             path = os.path.join(self.workdir, self.name)
-            if not os.path.exists(self.name):
-                util.rm_rf(self.workdir)
-                util.mkdir_p(self.workdir)
-                os.chdir(self.workdir)
-                subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
+            util.rm_rf(self.workdir)
+            util.mkdir_p(self.workdir)
+            os.chdir(self.workdir)
+            subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
             self.unpack_name = self.name
         else:
             path = os.path.join(self.workdir, self.filename)
