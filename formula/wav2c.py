@@ -4,7 +4,7 @@ import winbrew
 class Wav2C(winbrew.Formula):
     url = 'https://github.com/mfichman/wav2c.git'
     homepage = 'https://github.com/mfichman/wav2c'
-    sha1 = '294b33b23eb259ec31fb73659b0c132e8efae83e'
+    sha1 = '3b4b365112e6d5b93716ff857c5aaa3a6b737859'
     build_deps = ()
     deps = ()
 

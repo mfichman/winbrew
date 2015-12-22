@@ -29,9 +29,9 @@ Download and install [Microsoft Visual Studio 2013](http://www.visualstudio.com/
 
 To use files installed by Winbrew in your builds, set these environment variables:
 
-    set PATH=%PATH%;C:\WinBrew\lib;C:\WinBrew\bin
-    set LIB=%LIB%;C:\WinBrew\lib
-    set INCLUDE=%INCLUDE%;C:\WinBrew\include
+    set PATH=%PATH%;%LOCALAPPDATA%\WinBrew\lib;%LOCALAPPDATA%\WinBrew\bin
+    set LIB=%LIB%;%LOCALAPPDATA%\WinBrew\lib
+    set INCLUDE=%INCLUDE%;%LOCALAPPDATA%\WinBrew\include
 
 
 Basic usage

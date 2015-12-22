@@ -2,6 +2,7 @@
 import winbrew
 import string
 import os
+import glob
 
 class Jpeg(winbrew.Formula):
     url = 'http://www.ijg.org/files/jpegsrc.v9a.tar.gz'
@@ -21,6 +22,12 @@ class Jpeg(winbrew.Formula):
         fd.close()
 
     def install(self):
+        sdks = glob.glob("C:\\Program Files*\\Microsoft SDKs\\Windows\\v*\\Include")
+        try:
+            sdk = sdks[0]
+        except IndexError, e:
+            self.error("no Windows SDK found")
+        os.environ['INCLUDE'] = ';'.join((sdk,os.environ['INCLUDE']))
         if not os.path.exists('jpeg.sln'):
             self.nmake(('/f', 'makefile.vc', 'setup-v10',))
         self.broken_vcxproj_workaround()
