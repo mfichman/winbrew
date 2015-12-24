@@ -54,6 +54,18 @@ are some examples:
 
     def install(self):
         self.cmake_build()
+        
+### cmake+msbuild
+
+    def install(self):
+        self.cmake_build()
+        self.msbuild(winbrew.msbuild_args+('NewPackage.vcxproj'))
+
+### cmake+nmake
+
+    def install(self):
+        self.cmake_build(('-G','NMake Makefiles'))
+        self.nmake()
 
 ### scons
 
