@@ -52,7 +52,7 @@ are some examples:
 
 ### cmake
 
-   def install(self):
+    def install(self):
         self.cmake_build()
 
 ### scons
