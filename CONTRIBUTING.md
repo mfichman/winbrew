@@ -50,11 +50,10 @@ are some examples:
     def install(self):
         self.msbuild(winbrew.msbuild_args+('NewPackage.vcxproj'))
 
-### cmake+msbuild
+### cmake
 
-    def install(self):
-        self.cmake(('-G', 'Visual Studio 12', '-DCMAKE_BUILD_TYPE=Release'))
-        self.msbuild(winbrew.msbuild_args+('NewPackage.vcxproj'))
+   def install(self):
+        self.cmake_build()
 
 ### scons
 
