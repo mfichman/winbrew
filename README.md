@@ -41,7 +41,7 @@ Open the Visual Studio 2013 command prompt, then type:
 
     winbrew install <package>
     
-Winbrew installs all packages to C:\Winbrew by default, but you can change this by setting `WINBREW_HOME`.
+Winbrew installs all packages to `%LOCALAPPDATA%` by default, but you can change this by setting `%WINBREW_HOME%`.
 
 
 Want to contribute?
