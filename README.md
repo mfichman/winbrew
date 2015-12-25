@@ -12,7 +12,7 @@ build systems: CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plet
 
 Other Windows package managers distribute software that's packaged for `msiexec` (or similar). These package managers aren't designed for developers, and don't really follow the "Homebrew spirit":
 
-* Don't duplicate what the system gives
+* Don't duplicate what the system provides already
 * Use the default system compilers
 * Build from source
 * Formulae are simple scripts
@@ -29,9 +29,9 @@ Download and install [Microsoft Visual Studio 2013](http://www.visualstudio.com/
 
 To use files installed by Winbrew in your builds, set these environment variables:
 
-    set PATH=%PATH%;C:\WinBrew\lib;C:\WinBrew\bin
-    set LIB=%LIB%;C:\WinBrew\lib
-    set INCLUDE=%INCLUDE%;C:\WinBrew\include
+    set PATH=%PATH%;%LOCALAPPDATA%\WinBrew\lib;%LOCALAPPDATA%\WinBrew\bin
+    set LIB=%LIB%;%LOCALAPPDATA%\WinBrew\lib
+    set INCLUDE=%INCLUDE%;%LOCALAPPDATA%\WinBrew\include
 
 
 Basic usage
@@ -41,7 +41,7 @@ Open the Visual Studio 2013 command prompt, then type:
 
     winbrew install <package>
     
-Winbrew installs all packages to C:\Winbrew by default, but you can change this by setting `WINBREW_HOME`.
+Winbrew installs all packages to `%LOCALAPPDATA%` by default, but you can change this by setting `%WINBREW_HOME%`.
 
 
 Want to contribute?

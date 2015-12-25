@@ -50,11 +50,22 @@ are some examples:
     def install(self):
         self.msbuild(winbrew.msbuild_args+('NewPackage.vcxproj'))
 
+### cmake
+
+    def install(self):
+        self.cmake_build()
+        
 ### cmake+msbuild
 
     def install(self):
-        self.cmake(('-G', 'Visual Studio 12', '-DCMAKE_BUILD_TYPE=Release'))
+        self.cmake_build()
         self.msbuild(winbrew.msbuild_args+('NewPackage.vcxproj'))
+
+### cmake+nmake
+
+    def install(self):
+        self.cmake_build(('-G','NMake Makefiles'))
+        self.nmake()
 
 ### scons
 
@@ -177,9 +188,9 @@ repository, you can always fork a private repository. Here's how you configure
 Winbrew to work with a private repository:
 
 1. Create your private fork of the mainline Winbrew repository
-2. Delete `C:\WinBrew`, if it exists
-3. Clone your private fork to `C:\WinBrew`
-4. Add `C:\WinBrew\bin` and `C:\WinBrew\lib` to your PATH environment variable
+2. Delete `%LOCALAPPDATA\WinBrew`, if it exists
+3. Clone your private fork to `%LOCALAPPDATA%\Winbrew`
+4. Add `%LOCALAPPDATA\WinBrew\bin` and `%LOCALAPPDATA%\WinBrew\lib` to your PATH environment variable
 
 Alternatively, install the private repository to a custom location, and set
 the `WINBREW_HOME` environment variable to the custom location.
