@@ -12,11 +12,8 @@ setup(
     packages = ['winbrew'],
     entry_points = {
         'console_scripts': (
-            'winbrew = winbrew.execute:main'
+            'winbrew = winbrew.execute:main',
+            'brew = winbrew.execute:main'
         )
     }
 )
-    
-    
-    
-    
