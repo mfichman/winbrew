@@ -3,7 +3,7 @@ import winbrew
 
 class Sqlite(winbrew.Formula):
     url = 'http://www.sqlite.org/2014/sqlite-amalgamation-3080600.zip'
-    homepage = ''
+    homepage = 'https://www.sqlite.org'
     sha1 = '6f6ab5ee38eed46ee0d9a8cd8f1e13f94bba99b3'
     build_deps = ()
     deps = ()
