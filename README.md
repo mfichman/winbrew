@@ -23,7 +23,7 @@ Winbrew provides all of the above for Windows development work.
 Installing Winbrew
 ------------------
 
-Download and install [Microsoft Visual Studio 2013](http://www.visualstudio.com/), then install Winbrew using `pip`:
+Download and install [Microsoft Visual Studio 2015](http://www.visualstudio.com/), then install Winbrew using `pip`:
 
     pip install winbrew    
 
@@ -37,7 +37,7 @@ To use files installed by Winbrew in your builds, set these environment variable
 Basic usage
 -----------
 
-Open the Visual Studio 2013 command prompt, then type:
+Open the Visual Studio 2015 command prompt, then type:
 
     winbrew install <package>
     
