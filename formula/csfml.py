@@ -4,9 +4,9 @@ import os
 import shutil
 
 class Csfml(winbrew.Formula):
-    url = 'https://github.com/LaurentGomila/CSFML/archive/master.zip'
+    url = 'https://github.com/SFML/CSFML/archive/2.3.zip'
     homepage = 'http://www.sfml-dev.org'
-    sha1 = '25c23ac5993096263c1b145347e3b8459ef4065d'
+    sha1 = 'a710dc1bfc0bfa9d7bf9296718653498f0a6fead'
     build_deps = ('cmake','sfml',)
     deps = ()
 
@@ -15,12 +15,6 @@ class Csfml(winbrew.Formula):
     }
 
     def install(self):
-        os.environ['PATH'] = ';'.join((
-            os.path.join(winbrew.cache_path, 'sfml\\sfml-master\\extlibs\\libs-msvc\\x86'),
-            os.path.join(winbrew.cache_path, 'sfml\\sfml-master\\build-static\\lib\\Release'),
-            os.environ.get('PATH', ''),
-        ))
-        
         self.cmake_build('build', winbrew.cmake_args+(
              '-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
              '-DBUILD_SHARED_LIBS=TRUE',

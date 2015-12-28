@@ -33,6 +33,7 @@ class Jpeg(winbrew.Formula):
         self.broken_vcxproj_workaround()
         self.msbuild(winbrew.msbuild_args+('jpeg.sln','/p:Configuration=Release'))
         self.lib('Release\\jpeg.lib')
+        self.includes('.')
 
     def test(self):
         pass

@@ -1,9 +1,9 @@
 import winbrew
 
 class Bullet(winbrew.Formula):
-    url = 'https://bullet.googlecode.com/files/bullet-2.82-r2704.zip'
+    url = 'https://github.com/bulletphysics/bullet3/archive/2.83.5.zip'
     homepage = 'http://bulletphysics.org'
-    sha1 = 'f4b3332ad074aef3f8c1b731c1b7b385d3386d31'
+    sha1 = '7058cc08b0dacb0441b47f4d91c9df8d92c67187'
     build_deps = ('cmake',)
     deps = ()
     options = {
@@ -16,13 +16,13 @@ class Bullet(winbrew.Formula):
         cmake_args = (
             '-DUSE_DOUBLE_PRECISION=%s' % ('ON' if self.option('double-precision') else 'OFF'), 
             '-DBUILD_DEMOS=%s' % ('ON' if self.option('build-demos') else 'OFF'),
-            '-DBUILD_EXTRAS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
+            '-DBUILD_BULLET2_DEMOS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
+            '-DBUILD_BULLET3_=OFF',
+            '-DBUILD_SHARED_LIBS=OFF',
             '-DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON',
         )
 
-        self.cmake_build('build', winbrew.cmake_args+cmake_args+(
-            '-DBUILD_SHARED_LIBS=OFF',
-        ))
+        self.cmake_build('build', winbrew.cmake_args+cmake_args)
         self.libs('build\\lib\\Release')
         self.includes('src', dest='bullet')
 
