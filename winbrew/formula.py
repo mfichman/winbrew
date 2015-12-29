@@ -109,6 +109,15 @@ class Formula:
                 break
             sha1.update(data)
 
+    def clean(self):
+        """
+        Clean old files from previous builds
+        """
+        os.chdir(self.workdir)
+        for fn in os.listdir('.'):
+            if fn != self.filename:
+                util.rm_rf(fn)
+
     def verify(self):
         """
         Check the downloaded package against the hash
@@ -179,8 +188,8 @@ class Formula:
         Apply patch data from 'diff' to the file at 'path'. 'diff' must
         contain unified diff data.
         """
-        patcher = patch.fromstring(diff)
         patch.setdebug()
+        patcher = patch.fromstring(diff)
         if not patcher.apply():
            self.error("couldn't apply patch") 
 
