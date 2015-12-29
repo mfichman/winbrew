@@ -30,6 +30,9 @@ def rm_rf(path):
            func(path)
        else:
            raise
-    shutil.rmtree(path, onerror=onerror)
+    if os.path.isdir(path):
+        shutil.rmtree(path, onerror=onerror)
+    elif os.path.isfile(path):
+        os.remove(path)
     
 
