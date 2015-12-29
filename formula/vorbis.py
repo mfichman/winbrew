@@ -11,8 +11,8 @@ class Vorbis(winbrew.Formula):
     def install(self):
         self.msbuild(args=('win32\\VS2010\\libvorbis\\libvorbis_static.vcxproj',)+winbrew.formula.msbuild_args)
         self.msbuild(args=('win32\\VS2010\\libvorbisfile\\libvorbisfile_static.vcxproj',)+winbrew.formula.msbuild_args)
-        self.lib('win32\\VS2010\\libvorbis\\Win32\\Release\\libvorbis_static.lib','vorbis.lib')
-        self.lib('win32\\VS2010\\libvorbisfile\\Win32\\Release\\libvorbisfile_static.lib','vorbisfile.lib')
+        self.lib('win32\\VS2010\\libvorbis\\x64\\Release\\libvorbis_static.lib','vorbis.lib')
+        self.lib('win32\\VS2010\\libvorbisfile\\x64\\Release\\libvorbisfile_static.lib','vorbisfile.lib')
         self.includes('include')
 
     def test(self):

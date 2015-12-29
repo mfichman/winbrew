@@ -10,14 +10,14 @@ class Openssl(winbrew.Formula):
 
     def install(self):
         os.environ['PATH'] = ';'.join((os.environ['PATH'], os.path.join(winbrew.cache_path, 'perl\\perl\\bin')))
-        self.system('perl Configure no-asm VC-WIN32 --prefix=%s' % os.path.join(winbrew.cache_path, 'openssl').replace('\\','\\\\'))
-        self.system('ms\\\\do_ms.bat')
-        self.system('nmake -f ms\\\\nt.mak')
-        self.lib('out32\\libeay32.lib')
-        self.lib('out32\\ssleay32.lib')
-        self.includes('include\\openssl', dest='openssl')
+        self.system(r'perl Configure no-asm VC-WIN64A --prefix=%s' % os.path.join(winbrew.cache_path, 'openssl').replace('\\','\\\\'))
+        self.system(r'call ms\\do_win64a.bat', shell=True)
+        self.system(r'nmake -f ms\\nt.mak')
+        self.lib(r'out32\libeay32.lib','libeay.lib')
+        self.lib(r'out32\ssleay32.lib','ssleay.lib')
+        self.includes(r'inc32\openssl', dest='openssl')
         #self.system('nmake -f ms\\ntdll.mak install')
         # Dynamic libraries
 
     def test(self):
-        self.system('nmake -f ms\\\\nt.mak test')
+        self.system(r'nmake -f ms\\nt.mak test')

@@ -10,7 +10,7 @@ class Ogg(winbrew.Formula):
 
     def install(self):
         self.msbuild(args=('win32\\VS2010\\libogg_static.sln',)+winbrew.formula.msbuild_args)
-        self.lib('win32\\VS2010\\Win32\\Release\\libogg_static.lib', dest='ogg.lib')
+        self.lib('win32\\VS2010\\x64\\Release\\libogg_static.lib', dest='ogg.lib')
         self.includes('include')
 
     def test(self):

@@ -44,6 +44,12 @@ class Sfml(winbrew.Formula):
         self.lib('build-static\\lib\\Release\\sfml-system-s.lib')
         # Installs the files twice: once with the 's' suffix, so csfml can find the file.
 
+        self.lib('build-shared\\lib\\Release\\sfml-audio.lib')
+        self.lib('build-shared\\lib\\Release\\sfml-graphics.lib')
+        self.lib('build-shared\\lib\\Release\\sfml-network.lib')
+        self.lib('build-shared\\lib\\Release\\sfml-window.lib')
+        self.lib('build-shared\\lib\\Release\\sfml-system.lib')
+
         self.lib('build-shared\\lib\\Release\\sfml-audio-2.dll')
         self.lib('build-shared\\lib\\Release\\sfml-graphics-2.dll')
         self.lib('build-shared\\lib\\Release\\sfml-network-2.dll')

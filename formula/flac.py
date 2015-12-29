@@ -11,7 +11,7 @@ class Flac(winbrew.Formula):
     def install(self):
         self.patch(PATCH_WIN_UTF8_IO)
         self.msbuild(args=(r'src\libFLAC\libFLAC_static.vcxproj',)+winbrew.formula.msbuild_args)
-        self.lib(r'src\libFLAC\objs\Release\lib\libFLAC_static.lib', dest='flac.lib')
+        self.lib(r'src\libFLAC\objs\x64\Release\lib\libFLAC_static.lib', dest='flac.lib')
         self.includes(r'include\FLAC', dest='FLAC')
 
     def test(self):

@@ -9,9 +9,8 @@ class Libnoise(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.cmake(winbrew.cmake_args)
-        self.msbuild(winbrew.msbuild_args+('libnoise.sln',))
-        self.lib('Release\\libnoise.lib')
+        self.cmake_build('build', winbrew.cmake_args)
+        self.lib('build\\Release\\libnoise.lib')
         self.includes('include')
 
     def test(self):

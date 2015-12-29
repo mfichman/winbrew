@@ -9,14 +9,7 @@ class Perl(winbrew.Formula):
     deps = ()
 
     def install(self):
-        fd = open('perl.bat', 'w')
-        fd.write('@echo off\n')
-        fd.write(os.path.join(winbrew.cache_path, 'perl\\perl\\bin\\perl.exe'))
-        fd.write(' %*')
-        fd.write('\n')
-        fd.close()
-        self.bin('perl.bat')
+        self.bin('portableshell.bat','perlshell.bat')
 
     def test(self):
         self.system('perl -v')
-
