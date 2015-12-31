@@ -9,7 +9,7 @@ class Nodejs(winbrew.Formula):
     options = {}
 
     def install(self):
-        self.system('vcbuild.bat')
+        self.system('vcbuild.bat x64')
         self.bin('Release\\node.exe')
         self.bin('deps\\npm\\bin\\npm')
         self.bin('deps\\npm\\bin\\npm.cmd')
