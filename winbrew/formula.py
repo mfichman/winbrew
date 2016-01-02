@@ -14,11 +14,13 @@ import argparse
 import hashlib
 import util
 import re
+import winbrew
+import patch
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 12')
-msbuild_args = ('/P:Configuration=Release','/p:PlatformToolset=v120')
+cmake_args = ('-G', 'Visual Studio 14 Win64', '--build', 'build64')
+msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v140', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -83,6 +85,7 @@ class Formula:
             os.chdir(self.workdir)
             subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
             self.unpack_name = self.name
+            self.filename = self.name
         else:
             path = os.path.join(self.workdir, self.filename)
             if not os.path.exists(path): 
@@ -105,6 +108,15 @@ class Formula:
             if not data:
                 break
             sha1.update(data)
+
+    def clean(self):
+        """
+        Clean old files from previous builds
+        """
+        os.chdir(self.workdir)
+        for fn in os.listdir('.'):
+            if fn != self.filename:
+                util.rm_rf(fn)
 
     def verify(self):
         """
@@ -157,6 +169,12 @@ class Formula:
             os.chdir(self.unpack_name)
         except OSError, e:
             pass # Unpack name was not a directory
+        os.environ.update({
+            'INCLUDE': ';'.join((os.environ['INCLUDE'], winbrew.include_path)),
+            'LIBPATH': ';'.join((os.environ['LIBPATH'], winbrew.lib_path)),
+            'LIB': ';'.join((os.environ['LIB'], winbrew.lib_path)),
+            'PATH': ';'.join((os.environ['PATH'], winbrew.bin_path)),
+        })
         self.install()
 
     def cd(self, path):
@@ -164,6 +182,16 @@ class Formula:
         Change directories.  Generally used by formulas in the install() method
         """
         os.chdir(path)
+
+    def patch(self, diff):
+        """
+        Apply patch data from 'diff' to the file at 'path'. 'diff' must
+        contain unified diff data.
+        """
+        patch.setdebug()
+        patcher = patch.fromstring(diff)
+        if not patcher.apply():
+           self.error("couldn't apply patch") 
 
     def msi(self):
         """

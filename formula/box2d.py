@@ -12,14 +12,12 @@ class Box2D(winbrew.Formula):
     }
 
     def install(self):
-        self.cmake(winbrew.cmake_args+(
+        self.cmake_build('build', winbrew.cmake_args+(
             '-DBOX2D_BUILD_STATIC=%s' % ('OFF' if self.option('shared') else 'ON'),
-            '-DBOX2D_BUILD_DYNAMIC=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DBOX2D_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-demos') else 'OFF'),
             '-DCMAKE_CXX_FLAGS_RELEASE=/MT',
         ))
 
-        self.msbuild(winbrew.msbuild_args+('Box2D.sln','/p:RuntimeLibrary=0'))
         self.libs('Box2D\\Release')
         self.includes('Box2D', dest='Box2D')
 

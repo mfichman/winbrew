@@ -63,6 +63,7 @@ class InstallPlan:
             print('%s already installed' % formula.name)
         for formula in self:
             formula.download()
+            formula.clean()
             formula.verify()
         for formula in self:
             formula.unpack()

@@ -2,9 +2,9 @@
 import winbrew
 
 class Ninja(winbrew.Formula):
-    url = 'git://github.com/martine/ninja.git'
+    url = 'https://github.com/ninja-build/ninja/archive/v1.6.0.zip'
     homepage = ''
-    sha1 = '6e5eb247e6df6fbce1a3e99fa45df6e3ed596394'
+    sha1 = 'a4dc454f421ff0e0cf193b34d03e3e20db4ebba2'
     build_deps = ()
     deps = ()
 

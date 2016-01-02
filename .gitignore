@@ -39,4 +39,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+.winbrewtest
+test/.winbrewtest
 *.db

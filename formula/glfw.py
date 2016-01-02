@@ -15,12 +15,11 @@ class Glfw(winbrew.Formula):
     }
 
     def install(self):
-        self.cmake(winbrew.cmake_args+(
+        self.cmake_build('build', winbrew.cmake_args+(
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DGLFW_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
             '-DGLFW_BUILD_TESTS=%s' % ('ON' if self.option('build-tests') else 'OFF'),
             '-DGLFW_BUILD_DOCS=%s' % ('ON' if self.option('build-docs') else 'OFF'),
         ))
-        self.msbuild(winbrew.msbuild_args+('GLFW.sln',))
         self.includes('include\\GLFW', 'GLFW')
         self.libs('src\\Release')

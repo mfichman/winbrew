@@ -1,15 +1,15 @@
 import winbrew
 
 class Nodejs(winbrew.Formula):
-    url = 'http://nodejs.org/dist/v0.10.29/node-v0.10.29.tar.gz'
+    url = 'http://nodejs.org/dist/v4.2.4/node-v4.2.4.tar.gz'
     homepage = 'https://nodejs.org'
-    sha1 = '0d5dc62090404f7c903f29779295758935529242'
+    sha1 = '3cfef84f3a80b9e8835f8bee5a8209a4af8c52f2'
     build_deps = ()
     deps = ()
     options = {}
 
     def install(self):
-        self.system('vcbuild.bat')
+        self.system('vcbuild.bat x64')
         self.bin('Release\\node.exe')
         self.bin('deps\\npm\\bin\\npm')
         self.bin('deps\\npm\\bin\\npm.cmd')
