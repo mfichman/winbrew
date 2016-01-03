@@ -24,29 +24,43 @@ and don't really follow the "Homebrew spirit":
 
 Winbrew provides all of the above for Windows development work.
 
+Dependencies
+------------
+* **Python** 2.x (and **pip** on PATH)
+* [Microsoft Visual Studio 2015](http://www.visualstudio.com/)
+* **GIT** 2.x or newer
+* **64-bit** platform
 
 Installing Winbrew
 ------------------
 
-Download and install [Microsoft Visual Studio
-2015](http://www.visualstudio.com/), then install Winbrew using `pip`:
+Install Winbrew using `pip`:
 
-    pip install winbrew    
+pip install winbrew    
 
 To use files installed by Winbrew in your builds, set these environment variables:
 
-    set PATH=%PATH%;%LOCALAPPDATA%\WinBrew\lib;%LOCALAPPDATA%\WinBrew\bin
-    set LIB=%LIB%;%LOCALAPPDATA%\WinBrew\lib
-    set INCLUDE=%INCLUDE%;%LOCALAPPDATA%\WinBrew\include
-
+```sh
+set PATH=%PATH%;%LOCALAPPDATA%\WinBrew\lib;%LOCALAPPDATA%\WinBrew\bin
+set LIB=%LIB%;%LOCALAPPDATA%\WinBrew\lib
+set INCLUDE=%INCLUDE%;%LOCALAPPDATA%\WinBrew\include
+```
 
 Basic usage
 -----------
 
 Open the Visual Studio 2015 x86 x64 Cross Tools command prompt, then type:
 
-    winbrew install <package>
-    
+```sh
+winbrew install <package>
+```
+
+or
+
+```sh
+brew install <package>
+```
+
 Winbrew installs all packages to `%LOCALAPPDATA%` by default, but you can
 change this by setting `%WINBREW_HOME%`. Also, note that WinBrew always
 builds 64-bit binaries.
