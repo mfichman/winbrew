@@ -47,7 +47,7 @@ class Freetype2(winbrew.Formula):
         ))
         self.lib('build\\Release\\freetype.dll')
         self.lib('build\\Release\\freetype.lib')
-        self.includes('include')
+        self.includes('include','freetype')
 
     def test(self):
         pass
