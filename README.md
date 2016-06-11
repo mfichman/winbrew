@@ -36,7 +36,9 @@ Installing Winbrew
 
 Install Winbrew using `pip`:
 
+```sh
 pip install winbrew    
+```
 
 To use files installed by Winbrew in your builds, set these environment variables:
 
@@ -49,7 +51,7 @@ set INCLUDE=%INCLUDE%;%LOCALAPPDATA%\WinBrew\include
 Basic usage
 -----------
 
-Open the Visual Studio 2015 x86 x64 Cross Tools command prompt, then type:
+Open the Visual Studio 2015 Cross Tools command prompt, then type:
 
 ```sh
 winbrew install <package>
