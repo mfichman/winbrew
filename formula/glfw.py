@@ -22,4 +22,4 @@ class Glfw(winbrew.Formula):
             '-DGLFW_BUILD_DOCS=%s' % ('ON' if self.option('build-docs') else 'OFF'),
         ))
         self.includes('include\\GLFW', 'GLFW')
-        self.libs('src\\Release')
+        self.libs('build\\src\\Release')

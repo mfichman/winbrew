@@ -12,7 +12,7 @@ class Openal(winbrew.Formula):
             '-DBUILD_SHARED_LIBS=OFF',
             '-DALSOFT_EXAMPLES=OFF',
         ))
-        self.includes('include')
+        self.includes('include\\AL','AL')
         self.lib('build\\Release\\openal32.lib', 'openal.lib')
 
     def test(self):
