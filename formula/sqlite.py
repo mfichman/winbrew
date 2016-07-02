@@ -9,7 +9,7 @@ class Sqlite(winbrew.Formula):
     deps = ()
 
     def install(self):
-        self.system('cl /c /O2 sqlite3.c shell.c')
+        self.system('cl /c /O2 /MD sqlite3.c shell.c')
         self.system('lib /out:sqlite3.lib sqlite3.obj')
         self.system('link /out:sqlite3.exe sqlite3.lib shell.obj')
         self.lib('sqlite3.lib')
