@@ -47,7 +47,7 @@ Open the Visual Studio 2015 x86 x64 Cross Tools command prompt, then type:
 
     winbrew install <package>
     
-Winbrew installs all packages to `%LOCALAPPDATA%` by default, but you can
+Winbrew installs all packages to `%LOCALAPPDATA%\WinBrew` by default, but you can
 change this by setting `%WINBREW_HOME%`. Also, note that WinBrew always
 builds 64-bit binaries.
 
