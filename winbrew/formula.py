@@ -33,8 +33,8 @@ class Formula:
     header/library directories.
     """
     def __init__(self):
-        self.filename = os.path.split(self.url)[1]
-        self.ext = os.path.splitext(self.filename)[1]
+        self.archive_name = os.path.split(self.url)[1]
+        self.ext = os.path.splitext(self.archive_name)[1]
         self.name = self.__class__.__name__.lower()
         self.workdir = os.path.abspath(os.path.join(winbrew.cache_path, self.name))
         self.manifest = Manifest(self.name)
@@ -80,20 +80,20 @@ class Formula:
         print('downloading %s' % self.name)
         if self.ext == '.git':
             path = os.path.join(self.workdir, self.name)
-            util.rm_rf(self.workdir)
             util.mkdir_p(self.workdir)
             os.chdir(self.workdir)
-            subprocess.check_call(shlex.split('git clone %s %s' % (self.url, self.name)))
+            if not os.path.exists(self.name):
+                subprocess.check_call(('git', 'clone', self.url, self.name))
             self.unpack_name = self.name
-            self.filename = self.name
+            self.archive_name = self.name
         else:
-            path = os.path.join(self.workdir, self.filename)
+            path = os.path.join(self.workdir, self.archive_name)
             if not os.path.exists(path): 
                 util.rm_rf(self.workdir)
                 util.mkdir_p(self.workdir)
                 os.chdir(self.workdir)
                 stream = urllib2.urlopen(self.url)
-                fd = open(self.filename, 'wb')
+                fd = open(self.archive_name, 'wb')
                 shutil.copyfileobj(stream, fd)
                 fd.close()
 
@@ -114,8 +114,11 @@ class Formula:
         Clean old files from previous builds
         """
         os.chdir(self.workdir)
+        if self.ext == 'git':
+            subprocess.check_call(('git', '-C', self.archive_name, 'reset', '--hard'))
+            subprocess.check_call(('git', '-C', self.archive_name, 'clean', '-dxf'))
         for fn in os.listdir('.'):
-            if fn != self.filename:
+            if fn != self.archive_name:
                 util.rm_rf(fn)
 
     def verify(self):
@@ -124,10 +127,10 @@ class Formula:
         """
         sha1 = hashlib.sha1()
         os.chdir(self.workdir)
-        if os.path.isfile(self.filename):
-            self.sha1_update_for_file(sha1, self.filename)
-        elif os.path.isdir(self.workdir):
-            for subdir, dirs, files in os.walk(self.workdir):
+        if os.path.isfile(self.archive_name):
+            self.sha1_update_for_file(sha1, self.archive_name)
+        elif os.path.isdir(self.archive_name):
+            for subdir, dirs, files in os.walk(self.archive_name):
                 files = [f for f in files if not f[0] == '.']
                 dirs[:] = [d for d in dirs if not d[0] == '.']
                 for file in files:
@@ -197,14 +200,14 @@ class Formula:
         """
         Install a MSI-style installer
         """
-        self.system('msiexec /quiet /i %s' % self.filename)
+        self.system('msiexec /quiet /i %s' % self.archive_name)
         self.unpack_name = '.'
 
     def unzip(self):
         """
         Unzip the downloaded zip file into the current working directory
         """ 
-        fd = open(self.filename, 'rb')
+        fd = open(self.archive_name, 'rb')
         zf = zipfile.ZipFile(fd)
         self.unpack_name = os.path.commonprefix(zf.namelist())
         if os.path.exists(self.unpack_name):
@@ -216,7 +219,7 @@ class Formula:
         """
         Extract the downloaded tar file into the current working directory
         """
-        tf = tarfile.open(self.filename, mode='r:%s' % compression)
+        tf = tarfile.open(self.archive_name, mode='r:%s' % compression)
         self.unpack_name = os.path.commonprefix(tf.getnames())
         if os.path.exists(self.unpack_name):
             pass 
