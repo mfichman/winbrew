@@ -193,8 +193,10 @@ class Formula:
         """
         patch.setdebug()
         patcher = patch.fromstring(diff)
+        if not patcher:
+            self.error("couldn't apply patch")
         if not patcher.apply():
-           self.error("couldn't apply patch") 
+            self.error("couldn't apply patch") 
 
     def msi(self):
         """

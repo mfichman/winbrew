@@ -9,7 +9,10 @@ class Vim(winbrew.Formula):
     homepage = 'https://vim.org'
     sha1 = 'c9bf8dc08a14dcc881f6e3317f7b5ac508443320'
     build_deps = ()
-    deps = ()
+    deps = (
+        'luajit',
+        'ruby',
+    )
 
     options = {
         'disable-gui': 'Disable GUI',
@@ -40,13 +43,17 @@ class Vim(winbrew.Formula):
             'PYTHON=%s' % ('' if self.option('disable-python') else sys.prefix),
             'PYTHON_VER=27',
             'DYNAMIC_PYTHON=yes',
+            'RUBY=%s' % ('' if self.option('disable-ruby') else winbrew.config.home),
+            'RUBY_VER=23',
+            'RUBY_VER_LONG=2.3.0',
+            'RUBY_MSVCRT_NAME=vcruntime140',
+            'DYNAMIC_RUBY=yes',
             'VIMRUNTIMEDIR=%s' % vim_path,
         ))
         self.bin('gvim.exe')
+        self.bin('vimrun.exe')
         self.cd('..')
         self.copy('runtime', 'bin\\vim74')
-
-        
 
     def test(self):
         self.system('vim --version')
