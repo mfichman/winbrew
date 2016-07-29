@@ -173,10 +173,25 @@ class Formula:
         except OSError, e:
             pass # Unpack name was not a directory
         os.environ.update({
-            'INCLUDE': ';'.join((os.environ['INCLUDE'], winbrew.include_path)),
-            'LIBPATH': ';'.join((os.environ['LIBPATH'], winbrew.lib_path)),
-            'LIB': ';'.join((os.environ['LIB'], winbrew.lib_path)),
-            'PATH': ';'.join((os.environ['PATH'], winbrew.bin_path)),
+            'INCLUDE': ';'.join((
+                os.environ['INCLUDE'], 
+                winbrew.sdk_include_path,
+                winbrew.include_path,
+            )),
+            'LIBPATH': ';'.join((
+                os.environ['LIBPATH'],
+                winbrew.sdk_lib_path,
+                winbrew.lib_path)),
+            'LIB': ';'.join((
+                os.environ['LIB'], 
+                winbrew.sdk_lib_path,
+                winbrew.lib_path,
+            )),
+            'PATH': ';'.join((
+                os.environ['PATH'], 
+                winbrew.sdk_bin_path,
+                winbrew.bin_path
+            )),
         })
         self.install()
 
@@ -240,21 +255,24 @@ class Formula:
         """
         subprocess.check_call(('nmake',)+args)
 
-    def cmake(self, args=cmake_args):
+    def cmake(self, args=cmake_args, env=os.environ):
         """
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
-        subprocess.check_call(('cmake',)+args)
+        subprocess.check_call(('cmake',)+args, env=env)
     
     def cmake_build(self, workdir, args=cmake_args):
         """
         Run cmake with the --build option, and build static & shared libs
         """
+        env = os.environ.copy()
+        env.update({ 'UseEnv': 'true' })
+
         srcdir = os.getcwd()
         self.mkdir(workdir)
         self.cd(workdir)
         self.cmake(args+(srcdir,))
-        self.cmake(('--build', '.', '--config', 'Release'))
+        self.cmake(('--build', '.', '--config', 'Release'), env=env)
         self.cd(srcdir)
 
     def scons(self, args=()):
