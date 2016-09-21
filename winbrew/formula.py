@@ -49,7 +49,7 @@ class Formula:
         """
         parser = argparse.ArgumentParser(prog=self.name)
         for name, desc in self.options.iteritems(): 
-            parser.add_argument('--%s' % name, action='store_true', help=desc)
+            parser.add_argument('--%s' % name, nargs='?', const=True, default=False, help=desc)
         parser.add_argument('remainder', nargs=argparse.REMAINDER)
         self.selected_options = parser.parse_args(args)
         return self.selected_options.remainder
