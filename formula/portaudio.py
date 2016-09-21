@@ -10,7 +10,7 @@ class Portaudio(winbrew.Formula):
 
     def install(self):
         self.cmake_build('bld')
-        self.lib(r'bld\Release\portaudio_x64.dll', 'portaudio.dll')
+        self.lib(r'bld\Release\portaudio_x64.dll', 'portaudio_x64.dll')
         self.lib(r'bld\Release\portaudio_x64.lib', 'portaudio.lib')
         self.lib(r'bld\Release\portaudio_x64.exp', 'portaudio.exp')
         self.lib(r'bld\Release\portaudio_static_x64.lib', 'portaudio-static.lib')

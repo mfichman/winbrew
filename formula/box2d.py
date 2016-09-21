@@ -1,9 +1,9 @@
 import winbrew
 
 class Box2D(winbrew.Formula):
-    url = 'https://box2d.googlecode.com/files/Box2D_v2.2.1.zip'
+    url = 'https://github.com/erincatto/Box2D/archive/v2.3.1.zip'
     homepage = 'http://box2d.org'
-    sha1 = 'f97e75227a19b01858b1431e5f3eb6b8827bed12'
+    sha1 = 'a821af6da1ffcae7e8954f7c15af5215bf644cbf'
     build_deps = ('cmake',)
     deps = ()
     options = {
@@ -12,6 +12,7 @@ class Box2D(winbrew.Formula):
     }
 
     def install(self):
+        self.cd('Box2D')
         self.cmake_build('build', winbrew.cmake_args+(
             '-DBOX2D_BUILD_STATIC=%s' % ('OFF' if self.option('shared') else 'ON'),
             '-DBOX2D_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-demos') else 'OFF'),

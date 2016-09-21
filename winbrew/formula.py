@@ -19,7 +19,7 @@ import patch
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 14 Win64', '--build', 'build64')
+cmake_args = ('-G', 'Visual Studio 14 2015 Win64', '--build', 'build64')
 msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v140', '/p:UseEnv=true')
 
 class FormulaException(Exception):
