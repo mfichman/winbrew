@@ -19,8 +19,8 @@ import patch
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 14 2015 Win64', '--build', 'build64')
-msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v140', '/p:UseEnv=true')
+cmake_args = ('-G', 'Visual Studio 15 2017 Win64', '--build', 'build64')
+msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v141', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -48,7 +48,7 @@ class Formula:
         Parse formula options.
         """
         parser = argparse.ArgumentParser(prog=self.name)
-        for name, desc in self.options.iteritems(): 
+        for name, desc in self.options.iteritems():
             parser.add_argument('--%s' % name, nargs='?', const=True, default=False, help=desc)
         parser.add_argument('remainder', nargs=argparse.REMAINDER)
         self.selected_options = parser.parse_args(args)
@@ -88,7 +88,7 @@ class Formula:
             self.archive_name = self.name
         else:
             path = os.path.join(self.workdir, self.archive_name)
-            if not os.path.exists(path): 
+            if not os.path.exists(path):
                 util.rm_rf(self.workdir)
                 util.mkdir_p(self.workdir)
                 os.chdir(self.workdir)
@@ -174,7 +174,7 @@ class Formula:
             pass # Unpack name was not a directory
         os.environ.update({
             'INCLUDE': ';'.join((
-                os.environ['INCLUDE'], 
+                os.environ['INCLUDE'],
                 winbrew.sdk_include_path,
                 winbrew.include_path,
             )),
@@ -183,12 +183,12 @@ class Formula:
                 winbrew.sdk_lib_path,
                 winbrew.lib_path)),
             'LIB': ';'.join((
-                os.environ['LIB'], 
+                os.environ['LIB'],
                 winbrew.sdk_lib_path,
                 winbrew.lib_path,
             )),
             'PATH': ';'.join((
-                os.environ['PATH'], 
+                os.environ['PATH'],
                 winbrew.sdk_bin_path,
                 winbrew.bin_path
             )),
@@ -211,7 +211,7 @@ class Formula:
         if not patcher:
             self.error("couldn't apply patch")
         if not patcher.apply():
-            self.error("couldn't apply patch") 
+            self.error("couldn't apply patch")
 
     def msi(self):
         """
@@ -223,7 +223,7 @@ class Formula:
     def unzip(self):
         """
         Unzip the downloaded zip file into the current working directory
-        """ 
+        """
         fd = open(self.archive_name, 'rb')
         zf = zipfile.ZipFile(fd)
         self.unpack_name = os.path.commonprefix(zf.namelist())
@@ -239,7 +239,7 @@ class Formula:
         tf = tarfile.open(self.archive_name, mode='r:%s' % compression)
         self.unpack_name = os.path.commonprefix(tf.getnames())
         if os.path.exists(self.unpack_name):
-            pass 
+            pass
         else:
             tf.extractall()
 
@@ -260,7 +260,7 @@ class Formula:
         Run cmake.  Optionally, the caller can set arguments to pass to cmake.
         """
         subprocess.check_call(('cmake',)+args, env=env)
-    
+
     def cmake_build(self, workdir, args=cmake_args):
         """
         Run cmake with the --build option, and build static & shared libs
@@ -289,7 +289,7 @@ class Formula:
 
     def libs(self, path):
         """
-        Specify a folder containing library files (DLLs and static libraries). 
+        Specify a folder containing library files (DLLs and static libraries).
         All library files in the folder are copied to the winbrew library folder.
         """
         if path[-1] != '\\':
@@ -354,7 +354,7 @@ class Formula:
 
     def bin(self, path, dest=''):
         """
-        Specify a single binary executable.  The file is copied to the winbrew 
+        Specify a single binary executable.  The file is copied to the winbrew
         binaries bolder.
         """
         td = os.path.join(winbrew.bin_path, os.path.dirname(dest))
@@ -383,7 +383,7 @@ class Formula:
                 tf = os.path.join(td, fn)
                 shutil.copyfile(os.path.join(root, fn), tf)
                 self.manifest.files.append(tf)
-    
+
     def error(self, msg):
         """
         Indicates that there was an error while building the package.
@@ -395,7 +395,7 @@ class Formula:
     @staticmethod
     def formula_by_name(name):
         """
-        Finds the formula class for the given formula name.  Throws an exception 
+        Finds the formula class for the given formula name.  Throws an exception
         if the formula doesn't exist.  Looks for a module in the formula dir first;
         if the module isn't found there, falls back to the default installation.
         """

@@ -2,9 +2,9 @@
 import winbrew
 
 class Libnoise(winbrew.Formula):
-    url = 'https://github.com/eXpl0it3r/libnoise.git'
+    url = 'https://github.com/eXpl0it3r/libnoise/archive/778ac138e86afbaeef7d260c8aaea3972384b433.zip'
     homepage = 'http://libnoise.sourceforge.net/glossary/index.html'
-    sha1 = 'c0fb4c67899fe2877d817e48eb7e58b03472a9a0'
+    sha1 = 'bd16c660ac386ca55561a3e818131a2197ac320f'
     build_deps = ('cmake',)
     deps = ()
 

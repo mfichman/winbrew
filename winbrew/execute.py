@@ -1,4 +1,4 @@
-import winbrew 
+import winbrew
 import itertools
 import argparse
 import sys
@@ -19,15 +19,18 @@ class InstallPlan:
         self.marked = set()
         self.temp = set()
         self.order = []
-        self.args = args
         self.preinstalled = []
+        if args.force:
+            self.forced = set(formulas)
+        else:
+            self.forced = set()
         for formula in formulas:
             self.visit(formula)
 
     def visit(self, formula):
         """
         Visit the node with the given name and all children in a depth-first
-        search.  
+        search.
         """
         if formula.name in self.temp:
             raise InstallException('circular dependency')
@@ -35,10 +38,10 @@ class InstallPlan:
             self.temp.add(formula.name)
             for dep_name in itertools.chain(formula.deps, formula.build_deps):
                 dep = winbrew.Formula.formula_by_name(dep_name)()
-                self.visit(dep) 
+                self.visit(dep)
             self.temp.remove(formula.name)
             self.marked.add(formula.name)
-            if self.args.force or not formula.manifest.installed:
+            if formula in self.forced or not formula.manifest.installed:
                 # Only install a package if it's not already installed
                 self.order.append(formula)
             else:
@@ -56,7 +59,7 @@ class InstallPlan:
         Install all packages in the install plan
         """
         os.environ['PATH'] = os.pathsep.join((
-            os.environ['PATH'], 
+            os.environ['PATH'],
             winbrew.bin_path,
         ))
         for formula in self.preinstalled:
@@ -80,7 +83,7 @@ def uninstall(args):
         formula = winbrew.Formula.formula_by_name(name)()
         if not args.force and not formula.manifest.installed:
             print('%s is not installed' % formula.name)
-            continue 
+            continue
         formula.manifest.load()
         for fn in formula.manifest.files:
             try:
@@ -97,7 +100,7 @@ def uninstall(args):
         formula.manifest.delete()
 
 def test(args):
-    """ 
+    """
     Test a package.
     """
     for name in args.package:
@@ -106,7 +109,7 @@ def test(args):
     print('PASS')
 
 def listp(args):
-    """ 
+    """
     List package contents
     """
     for name in args.package:
@@ -155,6 +158,26 @@ def install(args):
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
 
+def reinstall(args):
+    """
+    Reinstall packages
+    """
+    package = args.package
+    if args.all:
+        package += [manifest.name for manifest in winbrew.Manifest.all()]
+
+    args.force = True
+    try:
+        formulas = []
+        while len(package) > 0:
+            name = package.pop(0)
+            (formula, package) = formula_from_args(package, name)
+            formulas.append(formula)
+        InstallPlan(formulas, args).execute()
+    except InstallException, e:
+        sys.stderr.write('error: %s\n' % str(e))
+        sys.exit(1)
+
 def edit(args):
     """
     Edit a package.
@@ -164,7 +187,7 @@ def edit(args):
         sys.stderr.write('error: file formula not found: %s\n' % args.name)
         sys.exit(1)
 
-    editor = os.environ.get('EDITOR', 'notepad') 
+    editor = os.environ.get('EDITOR', 'notepad')
     try:
         subprocess.check_call((editor, path), shell=True)
     except subprocess.CalledProcessError, e:
@@ -203,7 +226,7 @@ class %(name)s(winbrew.Formula):
 
     path = os.path.join(winbrew.formula_path, '%s.py' % name)
     if not os.path.exists(path):
-        util.mkdir_p(os.path.split(path)[0]) 
+        util.mkdir_p(os.path.split(path)[0])
         fd = open(path, 'w')
         fd.write(template % {'name': name.title(), 'url': args.url})
         fd.close()
@@ -238,6 +261,10 @@ def main():
     sub.add_argument('--force', '-f', action='store_true', help='force package install (completely reinstall it)')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
+    sub = subparsers.add_parser('reinstall', help='reinstall packages')
+    sub.add_argument('--all', '-a', action='store_true', help='reinstall all packages')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to reinstall')
+
     sub = subparsers.add_parser('uninstall', help='uninstall packages')
     sub.add_argument('--force', '-f', action='store_true', help='force package uninstall')
     sub.add_argument('package', type=str, nargs='+', help='packages to uninstall')
@@ -259,13 +286,15 @@ def main():
 
     try:
         init()
-        
+
         if args.command == 'create':
             create(args)
         elif args.command == 'edit':
             edit(args)
         elif args.command == 'install':
             install(args)
+        elif args.command == 'reinstall':
+            reinstall(args)
         elif args.command == 'uninstall':
             uninstall(args)
         elif args.command == 'update':
@@ -285,8 +314,8 @@ def main():
         sys.stderr.write('error: %s\n' % str(e))
         sys.stderr.flush()
         sys.exit(1)
-        
-    
+
+
 if __name__ == '__main__':
     main()
 

@@ -3,9 +3,9 @@ import winbrew
 import os
 
 class Ruby(winbrew.Formula):
-    url = 'https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz'
+    url = 'https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz'
     homepage = 'https://www.ruby-lang.org'
-    sha1 = 'c39b4001f7acb4e334cb60a0f4df72d434bef711'
+    sha1 = '1014ee699071aa2ddd501907d18cbe15399c997d'
     build_deps = ()
     deps = ()
 
@@ -28,9 +28,9 @@ class Ruby(winbrew.Formula):
         self.copy(r'install\lib\ruby', dest=r'lib\ruby')
         self.copy(r'install\share\doc\ruby', dest=r'share\doc\ruby')
         self.copy(r'install\share\ri', dest=r'share\ri')
-        self.lib(r'install\bin\x64-vcruntime140-ruby230.dll')
-        self.lib(r'install\lib\x64-vcruntime140-ruby230.lib')
-        self.lib(r'install\lib\x64-vcruntime140-ruby230-static.lib')
+        self.lib(r'install\bin\x64-vcruntime141-ruby230.dll')
+        self.lib(r'install\lib\x64-vcruntime141-ruby230.lib')
+        self.lib(r'install\lib\x64-vcruntime141-ruby230-static.lib')
 
     def test(self):
         pass
@@ -50,7 +50,7 @@ PATCH_WIN32_PIOINFO = r"""
 +++ win32\win32.c
 @@ -2321,6 +2321,21 @@ typedef struct {
  #endif
- 
+
  /* License: Ruby's */
 +#if RUBY_MSVCRT_VERSION >= 140
 +typedef struct {
@@ -75,19 +75,19 @@ PATCH_WIN32_PIOINFO = r"""
  #endif
  }	ioinfo;
 +#endif
- 
+
  #if !defined _CRTIMP || defined __MINGW32__
  #undef _CRTIMP
  #define _CRTIMP __declspec(dllimport)
  #endif
- 
+
 +#if RUBY_MSVCRT_VERSION >= 140
 +static ioinfo ** __pioinfo = NULL;
 +#else
  EXTERN_C _CRTIMP ioinfo * __pioinfo[];
 +#endif
  static inline ioinfo* _pioinfo(int);
- 
+
 -#define IOINFO_L2E			5
 +#define IOINFO_L2E	(RUBY_MSVCRT_VERSION >= 140 ? 6 : 5)
  #define IOINFO_ARRAY_ELTS	(1 << IOINFO_L2E)
@@ -126,7 +126,7 @@ PATCH_WIN32_PIOINFO = r"""
 +#endif
 +#else
      int fd;
- 
+
      fd = _open("NUL", O_RDONLY);
 @@ -2370,6 +2418,7 @@ set_pioinfo_extra(void)
  	/* not found, maybe something wrong... */

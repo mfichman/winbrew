@@ -2,9 +2,9 @@ import winbrew
 import os
 
 class Cmake(winbrew.Formula):
-    url = 'https://cmake.org/files/v3.4/cmake-3.4.1-win32-x86.zip'
+    url = 'https://cmake.org/files/v3.7/cmake-3.7.2-win32-x86.zip'
     homepage = 'http://www.cmake.org'
-    sha1 = '4894baeafc0368d6530bf2c6bfe4fc94056bd04a'
+    sha1 = 'c80c17e858ecfebfaf16fe8af18b174d2600c4e6'
     build_deps = ()
     deps = ()
 

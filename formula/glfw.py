@@ -2,9 +2,9 @@ import winbrew
 import os
 
 class Glfw(winbrew.Formula):
-    url = 'http://downloads.sourceforge.net/project/glfw/glfw/3.0.4/glfw-3.0.4.zip'
+    url = 'https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.zip'
     homepage = 'http://www.glfw.org'
-    sha1 = '1b7b3e4afe6d17726ad57a119942d9a533af6910'
+    sha1 = 'd40d8d491e53c105a01a02b4b53242ab7b2d27c3'
     build_deps = ('cmake',)
     deps = ()
     options = {
@@ -22,4 +22,4 @@ class Glfw(winbrew.Formula):
             '-DGLFW_BUILD_DOCS=%s' % ('ON' if self.option('build-docs') else 'OFF'),
         ))
         self.includes('include\\GLFW', 'GLFW')
-        self.libs('build\\src\\Release')
+        self.lib('build\\src\\Release\\glfw3.lib', 'glfw.lib')

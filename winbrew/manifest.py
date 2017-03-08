@@ -5,7 +5,7 @@ import util
 
 class Manifest:
     """
-    Stores a list of all files installed by a formula.  This class is used to 
+    Stores a list of all files installed by a formula.  This class is used to
     determine which files to uninstall, and to check for conflicts between
     formulas.
     """
@@ -16,15 +16,19 @@ class Manifest:
 
     def save(self):
         """
-        Write the manifest to the manifest file directory 
+        Write the manifest to the manifest file directory
         """
-        for path in self.files:
-            query = 'REPLACE INTO InstalledFile (path, formula) VALUES (?, ?)'
-            self.db().cursor().execute(query, (path, self.name))
-        self.db().commit()        
+        query = 'DELETE FROM InstalledFile where formula=?'
+        self.db().cursor().execute(query, (self.name,))
+
+        values = [(path, self.name) for path in self.files]
+        query = 'INSERT INTO InstalledFile (path, formula) VALUES (?, ?)'
+        self.db().cursor().executemany(query, values)
+
+        self.db().commit()
 
     def load(self):
-        """ 
+        """
         Read the manifest from the manifest file directory
         """
         query = 'SELECT path FROM InstalledFile WHERE formula=?'
@@ -37,7 +41,7 @@ class Manifest:
         """
         query = 'DELETE FROM InstalledFile WHERE formula=?'
         self.db().cursor().execute(query, (self.name,))
-        self.db().commit()        
+        self.db().commit()
 
     @property
     def installed(self):
@@ -50,7 +54,7 @@ class Manifest:
 
     @classmethod
     def all(self):
-        """ 
+        """
         List all installed packages
         """
         query = 'SELECT DISTINCT formula FROM InstalledFile'
@@ -65,7 +69,7 @@ class Manifest:
             self._db = sqlite3.connect(os.path.join(winbrew.manifest_path, 'manifest.db'))
             self.migrate()
         return self._db
-        
+
     @classmethod
     def migrate(self):
         """

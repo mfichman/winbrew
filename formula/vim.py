@@ -1,17 +1,15 @@
-
 import winbrew
 import os
 import sys
 import subprocess
 
 class Vim(winbrew.Formula):
-    url = 'https://github.com/vim/vim/archive/v7.4.2084.zip'
+    url = 'https://github.com/vim/vim/archive/v8.0.0430.zip'
     homepage = 'https://vim.org'
-    sha1 = 'c9bf8dc08a14dcc881f6e3317f7b5ac508443320'
+    sha1 = '8702e52daa4122103808f9e628e2d0e4a7127eff'
     build_deps = ()
     deps = (
         'luajit',
-        'ruby',
     )
 
     options = {
@@ -34,8 +32,7 @@ class Vim(winbrew.Formula):
         vim_path = os.path.join(winbrew.config.home, 'bin\\vim74')
 
         self.cd('src')
-        self.system('msvc2010.bat')
-        self.nmake(('-f', 'Make_mvc.mak', 
+        self.nmake(('-f', 'Make_mvc.mak',
             'GUI=%s' % ('no' if self.option('disable-gui') else 'yes'),
             'LUA=%s' % ('' if self.option('disable-lua') else winbrew.config.home),
             'LUA_VER=51',
@@ -43,17 +40,12 @@ class Vim(winbrew.Formula):
             'PYTHON=%s' % ('' if self.option('disable-python') else sys.prefix),
             'PYTHON_VER=27',
             'DYNAMIC_PYTHON=yes',
-            'RUBY=%s' % ('' if self.option('disable-ruby') else winbrew.config.home),
-            'RUBY_VER=23',
-            'RUBY_VER_LONG=2.3.0',
-            'RUBY_MSVCRT_NAME=vcruntime140',
-            'DYNAMIC_RUBY=yes',
             'VIMRUNTIMEDIR=%s' % vim_path,
         ))
         self.bin('gvim.exe')
         self.bin('vimrun.exe')
         self.cd('..')
-        self.copy('runtime', 'bin\\vim74')
+        self.copy('runtime', 'bin\\vim80')
 
     def test(self):
         self.system('vim --version')
