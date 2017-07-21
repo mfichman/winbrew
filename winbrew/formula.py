@@ -84,6 +84,8 @@ class Formula:
             os.chdir(self.workdir)
             if not os.path.exists(self.name):
                 subprocess.check_call(('git', 'clone', self.url, self.name))
+                if getattr(self, 'tag'):
+                    subprocess.check_call(('git', 'checkout', tab))
             self.unpack_name = self.name
             self.archive_name = self.name
         else:
@@ -249,11 +251,11 @@ class Formula:
         """
         subprocess.check_call(shlex.split(cmd), shell=shell)
 
-    def nmake(self, args=()):
+    def nmake(self, args=(), env=os.environ):
         """
         Run nmake.  Optionally, the caller can set the arguments to pass to nmake.
         """
-        subprocess.check_call(('nmake',)+args)
+        subprocess.check_call(('nmake',)+args, env=env)
 
     def cmake(self, args=cmake_args, env=os.environ):
         """

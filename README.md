@@ -11,7 +11,7 @@ Windows has a tricky ecosystem when it comes to building and packaging native
 (`./configure`, `make install`) Windows developers use many build systems:
 CMake, Boost jam, SCons, plain ol' msbuild, NMake, etc. This plethora of build
 systems makes finding/building dependencies for the latest Visual Studio
-runtime version a real pain. 
+runtime version a real pain.
 
 Other Windows package managers distribute software that's packaged for
 `msiexec` (or similar). These package managers aren't designed for developers,
@@ -29,9 +29,9 @@ Installing Winbrew
 ------------------
 
 Download and install [Microsoft Visual Studio
-2015](http://www.visualstudio.com/), then install Winbrew using `pip`:
+2017](http://www.visualstudio.com/), then install Winbrew using `pip`:
 
-    pip install winbrew    
+    pip install winbrew
 
 To use files installed by Winbrew in your builds, set these environment variables:
 
@@ -43,14 +43,24 @@ To use files installed by Winbrew in your builds, set these environment variable
 Basic usage
 -----------
 
-Open the Visual Studio 2015 x86 x64 Cross Tools command prompt, then type:
+Open the Visual Studio 2017 x86 x64 Cross Tools command prompt, then type:
 
     winbrew install <package>
-    
+
 Winbrew installs all packages to `%LOCALAPPDATA%\WinBrew` by default, but you can
 change this by setting `%WINBREW_HOME%`. Also, note that WinBrew always
 builds 64-bit binaries.
 
+
+Visual Studio version support
+-----------------------------
+
+Winbrew supports 64-bit builds using the latest Visual Studio version, which is
+currently Visual Studio 2017.
+
+Winbrew may work with 32-bit builds and older Visual Studio versions with minor
+tweaks to individual formulas. However, keep in mind that 32-bit builds and
+older Visual Studio versions aren't officially supported.
 
 Want to contribute?
 -------------------
