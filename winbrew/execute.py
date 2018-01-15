@@ -64,7 +64,7 @@ class InstallPlan:
             winbrew.bin_path,
         ))
         for formula in self.preinstalled:
-            print('%s already installed' % formula.name)
+            print(('%s already installed' % formula.name))
         for formula in self:
             formula.download()
             formula.clean()
@@ -83,7 +83,7 @@ def uninstall(args):
     for name in args.package:
         formula = winbrew.Formula.formula_by_name(name)()
         if not args.force and not formula.manifest.installed:
-            print('%s is not installed' % formula.name)
+            print(('%s is not installed' % formula.name))
             continue
         formula.manifest.load()
         for fn in formula.manifest.files:
@@ -116,7 +116,7 @@ def listp(args):
     for name in args.package:
         formula = winbrew.Formula.formula_by_name(name)()
         formula.manifest.load()
-        print('\n'.join(formula.manifest.files))
+        print(('\n'.join(formula.manifest.files)))
 
 def update(args):
     """
@@ -239,12 +239,12 @@ def freeze(args):
     """
     Output installed packages.
     """
-    print('\n'.join([manifest.name for manifest in winbrew.Manifest.all()]))
+    print(('\n'.join([manifest.name for manifest in winbrew.Manifest.all()])))
 
 def init():
     if not os.path.exists(os.path.join(winbrew.home, '.git')):
         cmd = ('git', 'clone', winbrew.formula_url, winbrew.home)
-        print(' '.join(cmd))
+        print((' '.join(cmd)))
         subprocess.check_call(cmd, shell=True)
 
 def main():

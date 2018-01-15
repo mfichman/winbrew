@@ -14,7 +14,7 @@ class Jpeg(winbrew.Formula):
         # The vcxproj has unprintable characters in it...strip those, so that
         # msbuild doesn't crash
         fd = open('jpeg.vcxproj')
-        data = filter(lambda c: c in string.printable, fd.read())
+        data = [c for c in fd.read() if c in string.printable]
         fd.close()
         fd = open('jpeg.vcxproj', 'w')
         fd.write(data)
@@ -24,7 +24,7 @@ class Jpeg(winbrew.Formula):
         sdks = glob.glob("C:\\Program Files*\\Microsoft SDKs\\Windows\\v*\\Include")
         try:
             sdk = sdks[0]
-        except IndexError, e:
+        except IndexError as e:
             self.error("no Windows SDK found")
         os.environ['INCLUDE'] = ';'.join((sdk,os.environ['INCLUDE']))
         if not os.path.exists('jpeg.sln'):

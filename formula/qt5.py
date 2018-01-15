@@ -20,7 +20,7 @@ class Qt5(winbrew.Formula):
                 os.environ['PATH'],
             )),
         })
-        print(env['PATH'])
+        print((env['PATH']))
         self.system('configure.bat -nomake examples -opensource')
         self.nmake(env=env)
 

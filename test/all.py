@@ -12,7 +12,7 @@ def test_case(case):
 
 def test_module(name):
     module = __import__(name)
-    for name, item in module.__dict__.iteritems():
+    for name, item in module.__dict__.items():
         if inspect.isclass(item) and issubclass(item, winbrewtest.TestCase):
             test_case(item)
 

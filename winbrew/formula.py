@@ -3,7 +3,7 @@ import sys
 import os
 import zipfile
 import tarfile
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import errno
 import glob
 import shutil
@@ -49,7 +49,7 @@ class Formula:
         Parse formula options.
         """
         parser = argparse.ArgumentParser(prog=self.name)
-        for name, desc in self.options.iteritems():
+        for name, desc in list(self.options.items()):
             parser.add_argument('--%s' % name, nargs='?', const=True, default=False, help=desc)
         parser.add_argument('remainder', nargs=argparse.REMAINDER)
         self.selected_options = parser.parse_args(args)
@@ -78,7 +78,7 @@ class Formula:
         """
         Download from the source URL via HTTP or git
         """
-        print('downloading %s' % self.name)
+        print(('downloading %s' % self.name))
         if self.ext == '.git':
             path = os.path.join(self.workdir, self.name)
             winbrew.util.mkdir_p(self.workdir)
@@ -148,7 +148,7 @@ class Formula:
         """
         Extract the project from its zip/tar file if necessary
         """
-        print('unpacking %s' % self.name)
+        print(('unpacking %s' % self.name))
         os.chdir(self.workdir)
         if self.ext == '.zip':
             self.unzip()
@@ -169,7 +169,7 @@ class Formula:
         """
         Prepare the package for installation -- then install it.
         """
-        print('installing %s' % self.name)
+        print(('installing %s' % self.name))
         os.chdir(self.workdir)
         try:
             os.chdir(self.unpack_name)

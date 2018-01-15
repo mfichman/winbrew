@@ -4,6 +4,7 @@ bin
 cache
 *.py[cod]
 *.swp
+*.bak
 
 # C extensions
 *.so

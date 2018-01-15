@@ -17,7 +17,7 @@ class Sdl2(winbrew.Formula):
         sdks = glob.glob("C:\\Program Files*\\Microsoft DirectX SDK*")
         try:
             sdk = sdks[0]
-        except IndexError, e:
+        except IndexError as e:
             self.error("no DirectX SDK found")
         os.environ['LIBPATH'] = ';'.join((
             os.environ.get('LIBPATH', ''),
