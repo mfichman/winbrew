@@ -3,7 +3,7 @@ import sys
 import os
 import zipfile
 import tarfile
-import urllib2
+import urllib
 import errno
 import glob
 import shutil
@@ -12,10 +12,11 @@ import imp
 import winbrew
 import argparse
 import hashlib
-import util
 import re
-import winbrew
 import patch
+
+import winbrew
+import winbrew.util
 from winbrew.manifest import Manifest
 
 # Default arguments for the supported build tools
@@ -80,7 +81,7 @@ class Formula:
         print('downloading %s' % self.name)
         if self.ext == '.git':
             path = os.path.join(self.workdir, self.name)
-            util.mkdir_p(self.workdir)
+            winbrew.util.mkdir_p(self.workdir)
             os.chdir(self.workdir)
             if not os.path.exists(self.name):
                 subprocess.check_call(('git', 'clone', self.url, self.name))
@@ -91,10 +92,10 @@ class Formula:
         else:
             path = os.path.join(self.workdir, self.archive_name)
             if not os.path.exists(path):
-                util.rm_rf(self.workdir)
-                util.mkdir_p(self.workdir)
+                winbrew.util.rm_rf(self.workdir)
+                winbrew.util.mkdir_p(self.workdir)
                 os.chdir(self.workdir)
-                stream = urllib2.urlopen(self.url)
+                stream = urllib.request.urlopen(self.url)
                 fd = open(self.archive_name, 'wb')
                 shutil.copyfileobj(stream, fd)
                 fd.close()
@@ -121,7 +122,7 @@ class Formula:
             subprocess.check_call(('git', '-C', self.archive_name, 'clean', '-dxf'))
         for fn in os.listdir('.'):
             if fn != self.archive_name:
-                util.rm_rf(fn)
+                winbrew.util.rm_rf(fn)
 
     def verify(self):
         """
@@ -172,7 +173,7 @@ class Formula:
         os.chdir(self.workdir)
         try:
             os.chdir(self.unpack_name)
-        except OSError, e:
+        except OSError as e:
             pass # Unpack name was not a directory
         os.environ.update({
             'INCLUDE': ';'.join((
@@ -370,7 +371,7 @@ class Formula:
         self.manifest.files.append(tf)
 
     def mkdir(self, path):
-        util.mkdir_p(path)
+        winbrew.util.mkdir_p(path)
 
     def copy(self, path, dest):
         """
@@ -405,7 +406,7 @@ class Formula:
             full_name = 'winbrew.formula.%s' % name
             path = os.path.join(winbrew.formula_path, '%s.py' % name)
             module = imp.load_source(full_name, path)
-        except IOError, e:
+        except IOError as e:
             raise FormulaException('formula "%s" not found' % name)
         return getattr(module, name.title())
 

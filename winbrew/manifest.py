@@ -1,7 +1,8 @@
-import winbrew
 import os
 import sqlite3
-import util
+
+import winbrew
+import winbrew.util
 
 class Manifest:
     """
@@ -65,7 +66,7 @@ class Manifest:
     @classmethod
     def db(self):
         if not getattr(self, '_db', None):
-            util.mkdir_p(winbrew.manifest_path)
+            winbrew.util.mkdir_p(winbrew.manifest_path)
             self._db = sqlite3.connect(os.path.join(winbrew.manifest_path, 'manifest.db'))
             self.migrate()
         return self._db

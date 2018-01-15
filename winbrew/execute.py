@@ -1,11 +1,12 @@
-import winbrew
 import itertools
 import argparse
 import sys
 import os
 import errno
 import subprocess
-import util
+
+import winbrew
+import winbrew.util
 
 class InstallException(Exception):
     pass
@@ -88,14 +89,14 @@ def uninstall(args):
         for fn in formula.manifest.files:
             try:
                 os.remove(fn)
-            except OSError, e:
+            except OSError as e:
                 pass
             # Clean up parent directories if empty
             while True:
                 fn, end = os.path.split(fn)
                 try:
                     os.rmdir(fn)
-                except OSError, e:
+                except OSError as e:
                     break
         formula.manifest.delete()
 
@@ -154,7 +155,7 @@ def install(args):
             (formula, package) = formula_from_args(package, name)
             formulas.append(formula)
         InstallPlan(formulas, args).execute()
-    except InstallException, e:
+    except InstallException as e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
 
@@ -174,7 +175,7 @@ def reinstall(args):
             (formula, package) = formula_from_args(package, name)
             formulas.append(formula)
         InstallPlan(formulas, args).execute()
-    except InstallException, e:
+    except InstallException as e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
 
@@ -190,9 +191,9 @@ def edit(args):
     editor = os.environ.get('EDITOR', 'notepad')
     try:
         subprocess.check_call((editor, path), shell=True)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         pass
-    except SystemError, e:
+    except SystemError as e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.stderr.flush()
         sys.exit(1)
@@ -226,7 +227,7 @@ class %(name)s(winbrew.Formula):
 
     path = os.path.join(winbrew.formula_path, '%s.py' % name)
     if not os.path.exists(path):
-        util.mkdir_p(os.path.split(path)[0])
+        winbrew.util.mkdir_p(os.path.split(path)[0])
         fd = open(path, 'w')
         fd.write(template % {'name': name.title(), 'url': args.url})
         fd.close()
@@ -310,7 +311,7 @@ def main():
         else:
             sys.stderr.write('error: unknown command')
             sys.exit(1)
-    except winbrew.FormulaException, e:
+    except winbrew.FormulaException as e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.stderr.flush()
         sys.exit(1)
