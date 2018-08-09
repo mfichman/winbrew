@@ -11,7 +11,7 @@ setup(
     url = 'http://github.com/mfichman/winbrew',
     packages = ['winbrew',],
     install_requires = [
-        'patch>=1.15,<2',
+        'patch>=1.16,<2',
     ],
     entry_points = {
         'console_scripts': [

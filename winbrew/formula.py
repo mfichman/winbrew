@@ -210,7 +210,7 @@ class Formula:
         contain unified diff data.
         """
         patch.setdebug()
-        patcher = patch.fromstring(diff)
+        patcher = patch.fromstring(bytes(diff))
         if not patcher:
             self.error("couldn't apply patch")
         if not patcher.apply():

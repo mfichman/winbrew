@@ -14,8 +14,8 @@ class Sqlite(winbrew.Formula):
         self.system('link /out:sqlite3.exe sqlite3.lib shell.obj')
         self.lib('sqlite3.lib')
         self.bin('sqlite3.exe')
-	self.include('sqlite3.h')
-        self.include('sqlite3ext.h') 
+        self.include('sqlite3.h')
+        self.include('sqlite3ext.h')
 
     def test(self):
         pass
