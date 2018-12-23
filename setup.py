@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'winbrew',
-    version = '1.2.1',
+    version = '1.2.2',
     author = 'Matt Fichman',
     author_email = 'matt.fichman@gmail.com',
     description = ['Native package installer for Windows, a la Homebrew'],
