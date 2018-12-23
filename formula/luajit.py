@@ -49,4 +49,13 @@ PATCH_BUILD_STATIC_MD = r"""
  @if errorlevel 1 goto :BAD
  %LJLIB% /OUT:%LJLIBNAME% lj_*.obj lib_*.obj
  @if errorlevel 1 goto :BAD
+@@ -90,7 +90,7 @@
+ if exist %LJDLLNAME%.manifest^
+   %LJMT% -manifest %LJDLLNAME%.manifest -outputresource:%LJDLLNAME%;2
+
+-%LJCOMPILE% luajit.c
++%LJCOMPILE% /MD luajit.c
+ @if errorlevel 1 goto :BAD
+ %LJLINK% /out:luajit.exe luajit.obj %LJLIBNAME%
+ @if errorlevel 1 goto :BAD
 """
