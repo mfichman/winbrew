@@ -358,7 +358,7 @@ class Formula:
     def bin(self, path, dest=''):
         """
         Specify a single binary executable.  The file is copied to the winbrew
-        binaries bolder.
+        binaries folder.
         """
         td = os.path.join(winbrew.bin_path, os.path.dirname(dest))
         if not os.path.exists(td):

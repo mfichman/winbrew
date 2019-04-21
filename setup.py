@@ -2,10 +2,10 @@ from setuptools import setup
 
 setup(
     name = 'winbrew',
-    version = '1.2.2',
+    version = '1.2.3',
     author = 'Matt Fichman',
     author_email = 'matt.fichman@gmail.com',
-    description = ['Native package installer for Windows, a la Homebrew'],
+    description = 'Native package installer for Windows, a la Homebrew',
     license = 'MIT',
     keywords = ['installer', 'windows', 'package'],
     url = 'http://github.com/mfichman/winbrew',

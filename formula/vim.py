@@ -4,9 +4,9 @@ import sys
 import subprocess
 
 class Vim(winbrew.Formula):
-    url = 'https://github.com/vim/vim/archive/v8.0.0430.zip'
+    url = 'https://github.com/vim/vim/archive/v8.1.1124.zip'
     homepage = 'https://vim.org'
-    sha1 = '8702e52daa4122103808f9e628e2d0e4a7127eff'
+    sha1 = '0cda0593d1ae6348410fb6370976c07103322c50'
     build_deps = ()
     deps = (
         'luajit',
@@ -29,23 +29,23 @@ class Vim(winbrew.Formula):
             os.path.join(winbrew.config.include_path, 'luajit'),
         ))
 
-        vim_path = os.path.join(winbrew.config.home, 'bin\\vim74')
+        vim_path = os.path.join(winbrew.config.home, 'bin\\vim81')
 
         self.cd('src')
         self.nmake(('-f', 'Make_mvc.mak',
             'GUI=%s' % ('no' if self.option('disable-gui') else 'yes'),
-            'LUA=%s' % ('' if self.option('disable-lua') else winbrew.config.home),
+            'LUA=%s' % ('no' if self.option('disable-lua') else winbrew.config.home),
             'LUA_VER=51',
             'DYNAMIC_LUA=yes',
-            'PYTHON=%s' % ('' if self.option('disable-python') else sys.prefix),
-            'PYTHON_VER=27',
-            'DYNAMIC_PYTHON=yes',
+            'PYTHON3=%s' % ('no' if self.option('disable-python') else sys.prefix),
+            'PYTHON3_VER=35',
+            'DYNAMIC_PYTHON3=yes',
             'VIMRUNTIMEDIR=%s' % vim_path,
         ))
         self.bin('gvim.exe')
         self.bin('vimrun.exe')
         self.cd('..')
-        self.copy('runtime', 'bin\\vim80')
+        self.copy('runtime', 'bin\\vim81')
 
     def test(self):
         self.system('vim --version')
