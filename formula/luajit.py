@@ -7,8 +7,10 @@ class Luajit(winbrew.Formula):
     build_deps = ()
     deps = ()
 
+    def patch(self):
+        self.apply_patch(PATCH_BUILD_STATIC_MD)
+
     def build(self):
-        self.patch(PATCH_BUILD_STATIC_MD)
         self.cd('src')
         self.system('msvcbuild.bat static')
         shutil.move('lua51.lib', 'lua51-static.lib')

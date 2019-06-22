@@ -28,10 +28,12 @@ class Sdl(winbrew.Formula):
             os.path.join(sdk, 'Include')
         ))
 
-    def install(self):
+    def build(self):
         self.directx()
         self.cd('VisualC')
         self.msbuild(winbrew.msbuild_args+('/p:VCBuildAdditionalOptions=/useenv', 'SDL.sln'))
+
+    def install(self):
         self.libs('SDL\\Release')
         self.cd('..')
         self.includes('include', 'SDL')

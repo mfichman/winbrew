@@ -3,7 +3,8 @@ import shutil
 import winbrew.util
 import zipfile
 import tarfile
-import urllib.request, urllib.parse, urllib.error
+import urllib
+import subprocess
 
 class Archive:
     """
@@ -49,20 +50,31 @@ class Archive:
         winbrew.util.rm_rf(self.work_dir)
         winbrew.util.mkdir_p(self.work_dir)
 
-        with open(self.path, 'wb') as fd, urllib.request.urlopen(self.url) as stream:
+        with open(self.path, 'wb') as fd, self.urlopen() as stream:
             shutil.copyfileobj(stream, fd)
+
+    def urlopen(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11'
+        }
+
+        request = urllib.request.Request(self.url, headers=headers)
+        return urllib.request.urlopen(request)
 
     def clean(self):
         for fn in os.listdir(self.work_dir):
             if fn != self.name:
-                winbrew.util.rm_rf(fn)
+                winbrew.util.rm_rf(os.path.join(self.work_dir, fn))
+    @property
+    def unpack_dir(self):
+        return os.path.join(self.work_dir, self.unpack_name)
 
 class ZipArchive(Archive):
     def __init__(self, url, work_dir, name):
         super(ZipArchive, self).__init__(url, work_dir, name)
 
     @property
-    def unpack_dir(self):
+    def unpack_name(self):
         with self.zipfile() as zf:
             return os.path.commonprefix(zf.namelist())
 
@@ -80,7 +92,7 @@ class TarArchive(Archive):
         self.compression = compression
 
     @property
-    def unpack_dir(self):
+    def unpack_name(self):
         with self.tarfile() as tf:
             return os.path.commonprefix(tf.getnames())
 
@@ -88,7 +100,7 @@ class TarArchive(Archive):
         return tarfile.open(self.path, mode='r:%s' % self.compression)
 
     def unpack(self):
-        if os.path.exists(self.path): return # already extracted
+        if os.path.exists(self.unpack_dir): return # already extracted
         with self.tarfile() as tf: tf.extractall(self.work_dir)
 
 class MsiArchive(Archive):
@@ -96,7 +108,7 @@ class MsiArchive(Archive):
         super(MsiArchive, self).__init__(url, work_dir, name)
 
     @property
-    def unpack_dir(self):
+    def unpack_name(self):
         return '.'
 
     def unpack(self):
@@ -107,7 +119,7 @@ class GitArchive(Archive):
         super(GitArchive, self).__init__(url, work_dir, name)
 
     @property
-    def unpack_dir(self):
+    def unpack_name(self):
         return self.name
 
     def unpack(self):
@@ -119,9 +131,7 @@ class GitArchive(Archive):
 
         if os.path.exists(self.path): return
 
-        subprocess.check_call(('git', 'clone', self.url, self.path))
-        if getattr(self, 'tag'):
-            subprocess.check_call(('git', 'checkout', tab))
+        subprocess.check_call(('git', 'clone', '--quiet', self.url, self.path))
 
     def clean(self):
         subprocess.check_call(('git', '-C', self.unpack_dir, 'reset', '--hard'))

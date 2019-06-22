@@ -9,8 +9,10 @@ class Ruby(winbrew.Formula):
     build_deps = ()
     deps = ()
 
+    def patch(self):
+        self.apply_patch(PATCH_WIN32_PIOINFO)
+
     def install(self):
-        self.patch(PATCH_WIN32_PIOINFO)
         self.mkdir('bld')
         self.cd('bld')
         self.system(r'..\\win32\\configure.bat --target=x64-mswin64 --prefix=.\\install', shell=True)

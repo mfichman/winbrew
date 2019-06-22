@@ -4,7 +4,7 @@ import glob
 import os
 
 def test_case(case):
-    test = case() 
+    test = case()
     functions = inspect.getmembers(test)
     for name, fn in functions:
         if name.startswith('test_'):
@@ -22,8 +22,8 @@ def test_all():
         if file not in ('all.py', 'winbrewtest.py'):
             file = os.path.splitext(file)[0]
             test_module(file)
-    
+
 
 if __name__ == '__main__':
     test_all()
-    
+

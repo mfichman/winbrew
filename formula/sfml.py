@@ -19,9 +19,11 @@ class Sfml(winbrew.Formula):
         if os.path.exists('extlibs\\libs-msvc'):
             shutil.rmtree('extlibs\\libs-msvc')
 
-    def build(self):
+    def patch(self):
         self.broken_extlibs_workaround()
-        self.patch(PATCH_FIND_VORBIS)
+        self.apply_patch(PATCH_FIND_VORBIS)
+
+    def build(self):
         self.cmake_build('build-static', winbrew.cmake_args+(
             '-DJPEG_INCLUDE_DIR=%s' % winbrew.include_path,
             '-DCMAKE_INCLUDE_DIR=%s' % winbrew.include_path,

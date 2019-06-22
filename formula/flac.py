@@ -8,8 +8,10 @@ class Flac(winbrew.Formula):
     build_deps = ('cmake','ogg')
     deps = ('ogg',)
 
+    def patch(self):
+        self.apply_patch(PATCH_WIN_UTF8_IO)
+
     def build(self):
-        self.patch(PATCH_WIN_UTF8_IO)
         self.msbuild(args=(r'src\libFLAC\libFLAC_static.vcxproj',)+winbrew.formula.msbuild_args)
 
     def install(self):

@@ -3,15 +3,14 @@ import os
 
 class Qt5(winbrew.Formula):
     url = 'https://github.com/qt/qt5.git'
-    change = 'v5.9.0-alpha1'
+    #tag = 'v5.9.0-alpha1'
     homepage = 'https://www.qt.io'
-    sha1 = 'bfe7e2e9568d93f6f517facde00be5f953fc20cd'
+    sha1 = '020954eb0240fa18e488afb8adc3e948b0e08907'
     build_deps = ()
     deps = ()
 
     def build(self):
-        env = os.environ.copy()
-        env.update({
+        os.environ.update({
             'QTMAKESPEC': 'win32-msvc2017',
             'PATH': os.pathsep.join((
                 '{0}\\qt5\\qtbase\\bin'.format(os.getcwd()),
@@ -21,7 +20,7 @@ class Qt5(winbrew.Formula):
             )),
         })
         self.system('configure.bat -nomake examples -opensource')
-        self.nmake(env=env)
+        self.nmake()
 
     def test(self):
         pass

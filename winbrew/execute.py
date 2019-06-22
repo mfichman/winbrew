@@ -24,6 +24,8 @@ class InstallPlan:
         self.temp = set()
         self.forced = set(formulas) if self.args.force else set()
 
+        self.env = os.environ.copy()
+
         for formula in formulas:
             self.visit(formula)
 
@@ -37,7 +39,7 @@ class InstallPlan:
         if formula.name not in self.marked:
             self.temp.add(formula.name)
             for dep_name in itertools.chain(formula.deps, formula.build_deps):
-                dep = winbrew.Formula.formula_by_name(dep_name)()
+                dep = winbrew.Formula.find_by_name(dep_name)
                 self.visit(dep)
             self.temp.remove(formula.name)
             self.marked.add(formula.name)
@@ -54,42 +56,16 @@ class InstallPlan:
         """
         return iter(self.order)
 
-    def setenv(self):
-        """
-        Set up install environment
-        """
-        os.environ.update({
-            'INCLUDE': os.pathsep.join((
-                os.environ['INCLUDE'],
-                winbrew.sdk_include_path,
-                winbrew.include_path,
-            )),
-            'LIBPATH': os.pathsep.join((
-                os.environ['LIBPATH'],
-                winbrew.sdk_lib_path,
-                winbrew.lib_path)),
-            'LIB': os.pathsep.join((
-                os.environ['LIB'],
-                winbrew.sdk_lib_path,
-                winbrew.lib_path,
-            )),
-            'PATH': os.pathsep.join((
-                os.environ['PATH'],
-                winbrew.sdk_bin_path,
-                winbrew.bin_path
-            )),
-        })
-
     def execute(self):
         """
         Install all packages in the install plan
         """
-        self.setenv()
-
         for formula in self.preinstalled:
             print(('%s already installed' % formula.name))
 
         self.download()
+        self.unpack()
+        self.patch()
         self.build()
         self.install()
 
@@ -100,21 +76,25 @@ class InstallPlan:
             formula.download()
             formula.clean()
             formula.verify()
+
+    def unpack(self):
         for formula in self:
             formula.unpack()
+
+    def patch(self):
+        for formula in self:
+            formula.patch()
 
     def build(self):
         if self.args.skip_build: return
 
         for formula in self:
-            formula.setenv()
             formula.build()
 
     def install(self):
         if self.args.skip_install: return
 
         for formula in self:
-            formula.setenv()
             formula.install()
             formula.manifest.save()
 
@@ -124,7 +104,7 @@ def uninstall(args):
     that depend on this package.  For now, just nuke the installed files.
     """
     for name in args.package:
-        formula = winbrew.Formula.formula_by_name(name)()
+        formula = winbrew.Formula.find_by_name(name)
         if not args.force and not formula.manifest.installed:
             print(('%s is not installed' % formula.name))
             continue
@@ -148,7 +128,7 @@ def test(args):
     Test a package.
     """
     for name in args.package:
-        formula = winbrew.Formula.formula_by_name(name)()
+        formula = winbrew.Formula.find_by_name(name)
         formula.test()
     print('PASS')
 
@@ -157,7 +137,7 @@ def listp(args):
     List package contents
     """
     for name in args.package:
-        formula = winbrew.Formula.formula_by_name(name)()
+        formula = winbrew.Formula.find_by_name(name)
         formula.manifest.load()
         print(('\n'.join(formula.manifest.files)))
 
@@ -173,7 +153,7 @@ def formula_from_args(args, name):
     """
     Parse formulas/formula arguments.
     """
-    formula = winbrew.Formula.formula_by_name(name)()
+    formula = winbrew.Formula.find_by_name(name)
     args = formula.parse_options(args)
     return (formula, args)
 
@@ -182,7 +162,7 @@ def download(args):
     Download a formula, but don't unpack or install it
     """
     for name in args.package:
-        formula = winbrew.Formula.formula_by_name(name)()
+        formula = winbrew.Formula.find_by_name(name)
         formula.download()
         formula.verify()
 
@@ -206,21 +186,12 @@ def reinstall(args):
     """
     Reinstall packages
     """
-    package = args.package
     if args.all:
-        package += [manifest.name for manifest in winbrew.Manifest.all()]
+        args.package += [manifest.name for manifest in winbrew.Manifest.all()]
 
     args.force = True
-    try:
-        formulas = []
-        while len(package) > 0:
-            name = package.pop(0)
-            (formula, package) = formula_from_args(package, name)
-            formulas.append(formula)
-        InstallPlan(formulas, args).execute()
-    except InstallException as e:
-        sys.stderr.write('error: %s\n' % str(e))
-        sys.exit(1)
+
+    install(args)
 
 def edit(args):
     """
@@ -260,6 +231,9 @@ class %(name)s(winbrew.Formula):
     sha1 = ''
     build_deps = ()
     deps = ()
+
+    def build(self):
+        pass
 
     def install(self):
         pass
@@ -310,6 +284,9 @@ def main():
 
     sub = subparsers.add_parser('reinstall', help='reinstall packages')
     sub.add_argument('--all', '-a', action='store_true', help='reinstall all packages')
+    sub.add_argument('--skip-download', action='store_true', help='skip download step')
+    sub.add_argument('--skip-build', action='store_true', help='skip build step')
+    sub.add_argument('--skip-install', action='store_true', help='skip install step')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to reinstall')
 
     sub = subparsers.add_parser('uninstall', help='uninstall packages')

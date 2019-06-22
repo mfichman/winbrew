@@ -24,6 +24,61 @@ msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v141', '/p:UseEn
 class FormulaException(Exception):
     pass
 
+class FormulaProxy:
+    def __init__(self, formula):
+        self.formula = formula
+
+    @property
+    def name(self):
+        return self.formula.name
+
+    @property
+    def deps(self):
+        return self.formula.deps
+
+    @property
+    def manifest(self):
+        return self.formula.manifest
+
+    @property
+    def build_deps(self):
+        return self.formula.build_deps
+
+    def parse_options(self, args):
+        return self.formula.parse_options(args)
+
+    def download(self):
+        self.formula.download()
+
+    def build(self):
+        print(('testing %s' % self.name))
+        self.formula.setenv()
+        self.formula.build()
+
+    def clean(self):
+        self.formula.clean()
+
+    def unpack(self):
+        print(('unpacking %s' % self.name))
+        self.formula.unpack()
+
+    def install(self):
+        print(('installing %s' % self.name))
+        self.formula.setenv()
+        self.formula.install()
+
+    def test(self):
+        print(('testing %s' % self.name))
+        self.formula.text()
+
+    def patch(self):
+        self.formula.setenv()
+        self.formula.patch()
+
+    def verify(self):
+        print(('verifying %s' % self.name))
+        self.formula.verify()
+
 class Formula:
     """
     A formula describes all the steps that must be taken to build the package.
@@ -77,30 +132,55 @@ class Formula:
         """
         pass
 
+    def patch(self):
+        """
+        Apply patches for the package.
+        """
+        pass
+
     def download(self):
         """
         Download from the source URL via HTTP or git
         """
-        print(('downloading %s' % self.name))
         self.archive.download()
+        if getattr(self, 'tag', None):
+            subprocess.check_call(('git', '-C', self.archive.unpack_dir, 'fetch', '--tags'))
+            subprocess.check_call(('git', '-C', self.archive.unpack_dir, 'checkout', self.tag, '--quiet'))
 
-    def sha1_update_for_file(self, sha1, filename):
+    def setenv(self):
         """
-        Verify one file
+        Prepare the package for installation.
         """
-        fd = open(filename, 'rb')
-        chunk_size = 8192
-        while True:
-            data = fd.read(chunk_size)
-            if not data:
-                break
-            sha1.update(data)
+        os.environ.clear()
+        os.environ.update(winbrew.env)
+        os.environ.update({
+            'INCLUDE': os.pathsep.join((
+                winbrew.env['INCLUDE'],
+                winbrew.sdk_include_path,
+                winbrew.include_path,
+            )),
+            'LIBPATH': os.pathsep.join((
+                winbrew.env['LIBPATH'],
+                winbrew.sdk_lib_path,
+                winbrew.lib_path)),
+            'LIB': os.pathsep.join((
+                winbrew.env['LIB'],
+                winbrew.sdk_lib_path,
+                winbrew.lib_path,
+            )),
+            'PATH': os.pathsep.join((
+                winbrew.env['PATH'],
+                winbrew.sdk_bin_path,
+                winbrew.bin_path
+            )),
+        })
 
-    def clean(self):
-        """
-        Clean old files from previous builds
-        """
-        self.archive.clean()
+        os.chdir(self.work_dir)
+
+        try:
+            os.chdir(self.archive.unpack_dir)
+        except OSError as e:
+            pass # Unpack name was not a directory
 
     def verify(self):
         """
@@ -122,23 +202,29 @@ class Formula:
         if self.sha1 != sha1.hexdigest():
             raise FormulaException("can't verify package %s: hash doesn't match: %s" % (self.name, sha1.hexdigest()))
 
+    def sha1_update_for_file(self, sha1, filename):
+        """
+        Verify one file
+        """
+        fd = open(filename, 'rb')
+        chunk_size = 8192
+        while True:
+            data = fd.read(chunk_size)
+            if not data:
+                break
+            sha1.update(data)
+
+    def clean(self):
+        """
+        Clean old files from previous builds
+        """
+        self.archive.clean()
+
     def unpack(self):
         """
         Extract the project from its zip/tar file if necessary
         """
-        print(('unpacking %s' % self.name))
         self.archive.unpack()
-
-    def setenv(self):
-        """
-        Prepare the package for installation.
-        """
-        print(('installing %s' % self.name))
-        os.chdir(self.work_dir)
-        try:
-            os.chdir(self.archive.unpack_dir)
-        except OSError as e:
-            pass # Unpack name was not a directory
 
     def cd(self, path):
         """
@@ -146,7 +232,7 @@ class Formula:
         """
         os.chdir(path)
 
-    def patch(self, diff):
+    def apply_patch(self, diff):
         """
         Apply patch data from 'diff' to the file at 'path'. 'diff' must
         contain unified diff data.
@@ -308,7 +394,7 @@ class Formula:
         sys.exit(1)
 
     @staticmethod
-    def formula_by_name(name):
+    def find_by_name(name):
         """
         Finds the formula class for the given formula name.  Throws an exception
         if the formula doesn't exist.  Looks for a module in the formula dir first;
@@ -320,6 +406,6 @@ class Formula:
             module = imp.load_source(full_name, path)
         except IOError as e:
             raise FormulaException('formula "%s" not found' % name)
-        return getattr(module, name.title())
+        return FormulaProxy(getattr(module, name.title())())
 
 

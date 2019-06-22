@@ -1,14 +1,16 @@
 import winbrew
 
 class Glew(winbrew.Formula):
-    url = 'http://downloads.sourceforge.net/project/glew/glew/1.13.0/glew-1.13.0.zip'
-    homepage = 'http://glew.sourceforge.net'
-    sha1 = 'e68946a4f56a10e19f6012662c7734eefd148df3'
+    url = 'https://github.com/nigels-com/glew/releases/download/glew-2.1.0/glew-2.1.0.zip'
+    homepage = 'https://github.com/nigels-com/glew'
+    sha1 = '85ea9f4d1279b107019e48b9174c34e86c634830'
     build_deps = ()
     deps = ()
 
+    def patch(self):
+        self.apply_patch(PATCH_MULTITHREADED_DLL)
+
     def build(self):
-        self.patch(PATCH_MULTITHREADED_DLL)
         self.msbuild(winbrew.msbuild_args+('build\\vc12\\glew_static.vcxproj','/p:Configuration=Release'))
         self.msbuild(winbrew.msbuild_args+('build\\vc12\\glew_shared.vcxproj','/p:Configuration=Release'))
 
@@ -23,8 +25,8 @@ class Glew(winbrew.Formula):
 PATCH_MULTITHREADED_DLL = r"""
 --- build\vc12\glew_static.vcxproj
 +++ build\vc12\glew_static.vcxproj
-@@ -228,7 +228,7 @@
-   </ItemDefinitionGroup>
+@@ -106,7 +106,7 @@
+   </PropertyGroup>
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
 -      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -32,7 +34,7 @@ PATCH_MULTITHREADED_DLL = r"""
        <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
        <StringPooling>true</StringPooling>
        <FunctionLevelLinking>true</FunctionLevelLinking>
-@@ -253,7 +253,7 @@
+@@ -132,7 +132,7 @@
    </ItemDefinitionGroup>
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
      <ClCompile>
@@ -41,30 +43,11 @@ PATCH_MULTITHREADED_DLL = r"""
        <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
        <StringPooling>true</StringPooling>
        <FunctionLevelLinking>true</FunctionLevelLinking>
-@@ -278,7 +278,7 @@
-   </ItemDefinitionGroup>
-   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release MX|Win32'">
-     <ClCompile>
--      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-+      <RuntimeLibrary>MultiThreadedDll</RuntimeLibrary>
-       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-       <StringPooling>true</StringPooling>
-       <FunctionLevelLinking>true</FunctionLevelLinking>
-@@ -303,7 +303,7 @@
-   </ItemDefinitionGroup>
-   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release MX|x64'">
-     <ClCompile>
--      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-+      <RuntimeLibrary>MultiThreadedDll</RuntimeLibrary>
-       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-       <StringPooling>true</StringPooling>
-       <FunctionLevelLinking>true</FunctionLevelLinking>
-@@ -397,4 +397,4 @@
+@@ -229,4 +229,4 @@
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">
    </ImportGroup>
 -</Project>
-\ No newline at end of file
 +</Project>
-    """
+"""
 

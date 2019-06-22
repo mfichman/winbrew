@@ -4,21 +4,26 @@ import os
 import glob
 
 class Jpeg(winbrew.Formula):
-    url = 'http://www.ijg.org/files/jpegsrc.v9a.tar.gz'
+    url = 'https://ijg.org/files/jpegsr9c.zip'
     homepage = 'www.ilg.org'
-    sha1 = 'd65ed6f88d318f7380a3a5f75d578744e732daca'
+    sha1 = '9ca086c960ffc4bff821ba194c8d0a15f69eae09'
     build_deps = ()
     deps = ()
 
     def broken_vcxproj_workaround(self):
-        # The vcxproj has unprintable characters in it...strip those, so that
+        # The vcxproj has a BOM mark in it...strip those, so that
         # msbuild doesn't crash
-        fd = open('jpeg.vcxproj')
-        data = [c for c in fd.read() if c in string.printable]
-        fd.close()
-        fd = open('jpeg.vcxproj', 'w')
-        fd.write(data)
-        fd.close()
+        with open('jpeg.vcxproj', 'rb') as fd:
+            data = fd.read().decode('utf-8-sig')
+
+        with open('jpeg.vcxproj', 'w') as fd:
+            fd.write(data)
+
+    def patch(self):
+        if not os.path.exists('jpeg.sln'):
+            self.nmake(('/f', 'makefile.vc', 'setup-v15',))
+        self.broken_vcxproj_workaround()
+        self.apply_patch(PATCH_X64_COMPILE)
 
     def build(self):
         sdks = glob.glob("C:\\Program Files*\\Microsoft SDKs\\Windows\\v*\\Include")
@@ -26,11 +31,9 @@ class Jpeg(winbrew.Formula):
             sdk = sdks[0]
         except IndexError as e:
             self.error("no Windows SDK found")
-        os.environ['INCLUDE'] = ';'.join((sdk,os.environ['INCLUDE']))
+        os.environ['INCLUDE'] = ';'.join((sdk, os.environ['INCLUDE']))
         if not os.path.exists('jpeg.sln'):
-            self.nmake(('/f', 'makefile.vc', 'setup-v10',))
-        self.broken_vcxproj_workaround()
-        self.patch(PATCH_X64_COMPILE)
+            self.nmake(('/f', 'makefile.vc', 'setup-v15',))
         self.msbuild(winbrew.msbuild_args+('jpeg.vcxproj',))
 
     def install(self):
@@ -46,7 +49,7 @@ PATCH_X64_COMPILE = r"""
 +++ jpeg.vcxproj
 @@ -1,9 +1,9 @@
  <?xml version="1.0" encoding="utf-8"?>
- <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
    <ItemGroup Label="ProjectConfigurations">
 -    <ProjectConfiguration Include="Release|Win32">
 +    <ProjectConfiguration Include="Release|x64">
@@ -56,22 +59,8 @@ PATCH_X64_COMPILE = r"""
      </ProjectConfiguration>
    </ItemGroup>
    <ItemGroup>
-@@ -63,18 +63,18 @@
-     <ClCompile Include="jmemnobs.c" />
-     <ClCompile Include="jquant1.c" />
-     <ClCompile Include="jquant2.c">
--      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Disabled</Optimization>
--      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</BufferSecurityCheck>
-+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Disabled</Optimization>
-+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BufferSecurityCheck>
-     </ClCompile>
-     <ClCompile Include="jutils.c" />
-   </ItemGroup>
-   <PropertyGroup Label="Globals">
-     <ProjectGuid>{019DBD2A-273D-4BA4-BF86-B5EFE2ED76B1}</ProjectGuid>
--    <Keyword>Win32Proj</Keyword>
-+    <Keyword>x64Proj</Keyword>
-     <RootNamespace>jpeg</RootNamespace>
+@@ -72,7 +72,7 @@
+     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
    </PropertyGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 -  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -79,7 +68,7 @@ PATCH_X64_COMPILE = r"""
      <ConfigurationType>StaticLibrary</ConfigurationType>
      <UseDebugLibraries>false</UseDebugLibraries>
      <WholeProgramOptimization>true</WholeProgramOptimization>
-@@ -83,12 +83,12 @@
+@@ -82,12 +82,12 @@
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
    <ImportGroup Label="ExtensionSettings">
    </ImportGroup>
@@ -94,4 +83,10 @@ PATCH_X64_COMPILE = r"""
      <ClCompile>
        <WarningLevel>Level3</WarningLevel>
        <PrecompiledHeader>NotUsing</PrecompiledHeader>
+@@ -108,4 +108,4 @@
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+-</Project>
++</Project>
 """
