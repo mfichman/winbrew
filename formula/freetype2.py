@@ -11,7 +11,7 @@ class Freetype2(winbrew.Formula):
     build_deps = ('cmake',)
     deps = ()
 
-    def install(self):
+    def build(self):
         # Set the FT_EXPORT and FT_BASE macros for dll-mode so that symbols are
         # exported by the DLL.
         if not os.path.exists('include\\config\\ftoption.h.orig'):
@@ -40,11 +40,14 @@ class Freetype2(winbrew.Formula):
             '-DCMAKE_C_FLAGS="-D_CRT_SECURE_NO_WARNINGS -DFREETYPE_STATIC"',
             '-DBUILD_SHARED_LIBS=OFF',
         ))
-        self.lib('build\\Release\\freetype.lib','freetype-static.lib')
+        shutil.move('build\\Release\\freetype.lib','build\\Release\\freetype-static.lib')
         self.cmake_build('build', winbrew.cmake_args+(
             '-DCMAKE_C_FLAGS="-D_CRT_SECURE_NO_WARNINGS"',
             '-DBUILD_SHARED_LIBS=ON',
         ))
+
+    def install(self):
+        self.lib('build\\Release\\freetype-static.lib')
         self.lib('build\\Release\\freetype.dll')
         self.lib('build\\Release\\freetype.lib')
         self.includes('include','freetype')

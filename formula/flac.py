@@ -8,9 +8,11 @@ class Flac(winbrew.Formula):
     build_deps = ('cmake','ogg')
     deps = ('ogg',)
 
-    def install(self):
+    def build(self):
         self.patch(PATCH_WIN_UTF8_IO)
         self.msbuild(args=(r'src\libFLAC\libFLAC_static.vcxproj',)+winbrew.formula.msbuild_args)
+
+    def install(self):
         self.lib(r'src\libFLAC\objs\x64\Release\lib\libFLAC_static.lib', dest='flac.lib')
         self.includes(r'include\FLAC', dest='FLAC')
 
@@ -18,7 +20,7 @@ class Flac(winbrew.Formula):
         pass
 
 PATCH_WIN_UTF8_IO = r"""
---- src\libFLAC\libFLAC_static.vcxproj 
+--- src\libFLAC\libFLAC_static.vcxproj
 +++ src\libFLAC\libFLAC_static.vcxproj
 @@ -198,6 +198,7 @@
      <ClCompile Include="ogg_encoder_aspect.c" />

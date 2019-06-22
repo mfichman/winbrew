@@ -8,8 +8,10 @@ class Glslang(winbrew.Formula):
     build_deps = ('cmake',)
     deps = ()
 
-    def install(self):
+    def build(self):
         self.cmake_build('build', winbrew.cmake_args)
+
+    def install(self):
         self.bin('build\\StandAlone\\Release\\glslangValidator.exe')
 
     def test(self):

@@ -8,10 +8,12 @@ class Apitrace(winbrew.Formula):
     build_deps = ('cmake', 'zlib', 'libpng', 'qt5')
     deps = ()
 
-    def install(self):
+    def build(self):
         self.cmake_build('build', winbrew.cmake_args+(
             '-DENABLE_GUI=TRUE'
         ))
+
+    def install(self):
         self.bin('build/Release/apitrace.exe')
         self.bin('build/Release/d3dretrace.exe')
         self.bin('build/Release/glretrace.exe')

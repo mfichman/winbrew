@@ -8,8 +8,10 @@ class Wav2C(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         self.system('cl.exe main.c wavdata.c /Fe:wav2c')
+
+    def install(self):
         self.bin('wav2c.exe')
 
     def test(self):

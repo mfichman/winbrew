@@ -8,7 +8,7 @@ class Sfml(winbrew.Formula):
     sha1 = '8dfcf39ee08238cba6fd391a91aac803d670cb79'
     build_deps = ('cmake',)
     deps = ('glew', 'freetype2', 'jpeg', 'openal', 'flac', 'vorbis')
-    
+
     options = {
         'build-examples': 'Build example programs',
     }
@@ -19,7 +19,7 @@ class Sfml(winbrew.Formula):
         if os.path.exists('extlibs\\libs-msvc'):
             shutil.rmtree('extlibs\\libs-msvc')
 
-    def install(self):
+    def build(self):
         self.broken_extlibs_workaround()
         self.patch(PATCH_FIND_VORBIS)
         self.cmake_build('build-static', winbrew.cmake_args+(
@@ -37,6 +37,7 @@ class Sfml(winbrew.Formula):
             '-DBUILD_SHARED_LIBS=ON',
         ))
 
+    def install(self):
         self.lib('build-static\\lib\\Release\\sfml-audio-s.lib')
         self.lib('build-static\\lib\\Release\\sfml-graphics-s.lib')
         self.lib('build-static\\lib\\Release\\sfml-network-s.lib')

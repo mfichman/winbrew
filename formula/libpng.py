@@ -8,8 +8,10 @@ class Libpng(winbrew.Formula):
     build_deps = ('zlib','cmake')
     deps = ('zlib',)
 
-    def install(self):
+    def build(self):
         self.cmake_build('build')
+
+    def install(self):
         self.lib('build\\Release\\libpng16.dll','libpng.dll')
         self.lib('build\\Release\\libpng16.lib','libpng.lib')
         self.lib('build\\Release\\libpng16_static.lib','libpng-static.lib')

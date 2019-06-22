@@ -7,14 +7,17 @@ class Luajit(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         self.patch(PATCH_BUILD_STATIC_MD)
-
         self.cd('src')
         self.system('msvcbuild.bat static')
-        self.lib('lua51.lib', 'lua51-static.lib')
-
+        shutil.move('lua51.lib', 'lua51-static.lib')
         self.system('msvcbuild.bat')
+
+    def install(self):
+        self.cd('src')
+        self.lib('lua51-static.lib')
+
         self.include('lua.hpp', dest='luajit-2.0\\lua.hpp')
         self.include('luajit.h', dest='luajit-2.0\\luajit.h')
         self.include('lua.h', dest='luajit-2.0\\lua.h')

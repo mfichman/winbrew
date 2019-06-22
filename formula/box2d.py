@@ -11,7 +11,7 @@ class Box2D(winbrew.Formula):
         'shared': 'Build shared libraries',
     }
 
-    def install(self):
+    def build(self):
         self.cd('Box2D')
         self.cmake_build('build', winbrew.cmake_args+(
             '-DBOX2D_BUILD_STATIC=%s' % ('OFF' if self.option('shared') else 'ON'),
@@ -19,6 +19,8 @@ class Box2D(winbrew.Formula):
             '-DCMAKE_CXX_FLAGS_RELEASE=/MT',
         ))
 
+    def install(self):
+        self.cd('Box2D')
         self.libs('Box2D\\Release')
         self.includes('Box2D', dest='Box2D')
 

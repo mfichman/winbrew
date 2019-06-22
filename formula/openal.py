@@ -7,12 +7,14 @@ class Openal(winbrew.Formula):
     build_deps = ('cmake',)
     deps = ()
 
-    def install(self): 
+    def build(self):
         self.cmake_build('build', winbrew.cmake_args+(
             '-DBUILD_SHARED_LIBS=OFF',
             '-DALSOFT_EXAMPLES=OFF',
             '-DALSOFT_BACKEND_PORTAUDIO=OFF'
         ))
+
+    def install(self):
         self.includes('include\\AL','AL')
         self.lib('build\\Release\\openal32.lib', 'openal.lib')
 

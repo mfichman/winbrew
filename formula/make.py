@@ -9,9 +9,11 @@ class Make(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         shutil.copy('config.h.W32','config.h')
         self.system('build_w32.bat')
+
+    def install(self):
         self.bin('WinRel\\gnumake.exe', 'make.exe')
 
     def test(self):

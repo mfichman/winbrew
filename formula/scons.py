@@ -8,7 +8,7 @@ class Scons(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         self.system('python setup.py install')
 
     def test(self):

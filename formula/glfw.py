@@ -14,12 +14,14 @@ class Glfw(winbrew.Formula):
         'shared': 'Build shared libraries',
     }
 
-    def install(self):
+    def build(self):
         self.cmake_build('build', winbrew.cmake_args+(
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DGLFW_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
             '-DGLFW_BUILD_TESTS=%s' % ('ON' if self.option('build-tests') else 'OFF'),
             '-DGLFW_BUILD_DOCS=%s' % ('ON' if self.option('build-docs') else 'OFF'),
         ))
+
+    def install(self):
         self.includes('include\\GLFW', 'GLFW')
         self.lib('build\\src\\Release\\glfw3.lib', 'glfw.lib')

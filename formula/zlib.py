@@ -8,11 +8,13 @@ class Zlib(winbrew.Formula):
     build_deps = ('cmake',)
     deps = ()
 
-    def install(self):
+    def build(self):
         self.cmake_build('build')
         self.lib('build\\Release\\zlib.dll')
         self.lib('build\\Release\\zlib.lib')
         self.lib('build\\Release\\zlibstatic.lib','zlib-static.lib')
+
+    def install(self):
         self.include('zlib.h')
         self.include('zutil.h')
         self.include('build\\zconf.h')

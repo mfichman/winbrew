@@ -9,7 +9,7 @@ class Qt5(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         env = os.environ.copy()
         env.update({
             'QTMAKESPEC': 'win32-msvc2017',
@@ -20,7 +20,6 @@ class Qt5(winbrew.Formula):
                 os.environ['PATH'],
             )),
         })
-        print((env['PATH']))
         self.system('configure.bat -nomake examples -opensource')
         self.nmake(env=env)
 

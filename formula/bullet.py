@@ -12,9 +12,9 @@ class Bullet(winbrew.Formula):
         'build-extras': 'Build extra library',
     }
 
-    def install(self):
+    def build(self):
         cmake_args = (
-            '-DUSE_DOUBLE_PRECISION=%s' % ('ON' if self.option('double-precision') else 'OFF'), 
+            '-DUSE_DOUBLE_PRECISION=%s' % ('ON' if self.option('double-precision') else 'OFF'),
             '-DBUILD_DEMOS=%s' % ('ON' if self.option('build-demos') else 'OFF'),
             '-DBUILD_BULLET2_DEMOS=%s' % ('ON' if self.option('build-extras') else 'OFF'),
             '-DBUILD_BULLET3_=OFF',
@@ -23,6 +23,8 @@ class Bullet(winbrew.Formula):
         )
 
         self.cmake_build('build', winbrew.cmake_args+cmake_args)
+
+    def install(self):
         self.libs('build\\lib\\Release')
         self.includes('src', dest='bullet')
 

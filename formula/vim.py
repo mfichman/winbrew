@@ -22,7 +22,7 @@ class Vim(winbrew.Formula):
     def _ruby_path(self):
         return os.path.split(os.path.split(subprocess.check_output('where ruby'))[0])[0]
 
-    def install(self):
+    def build(self):
         os.environ['SDK_INCLUDE_DIR'] = os.path.join(winbrew.config.sdk_path, 'include')
         os.environ['INCLUDE'] = ';'.join((
             os.environ['INCLUDE'],
@@ -42,9 +42,10 @@ class Vim(winbrew.Formula):
             'DYNAMIC_PYTHON3=yes',
             'VIMRUNTIMEDIR=%s' % vim_path,
         ))
-        self.bin('gvim.exe')
-        self.bin('vimrun.exe')
-        self.cd('..')
+
+    def install(self):
+        self.bin('src\\gvim.exe')
+        self.bin('src\\vimrun.exe')
         self.copy('runtime', 'bin\\vim81')
 
     def test(self):

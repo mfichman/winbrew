@@ -7,11 +7,12 @@ class Glew(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def install(self):
+    def build(self):
         self.patch(PATCH_MULTITHREADED_DLL)
         self.msbuild(winbrew.msbuild_args+('build\\vc12\\glew_static.vcxproj','/p:Configuration=Release'))
         self.msbuild(winbrew.msbuild_args+('build\\vc12\\glew_shared.vcxproj','/p:Configuration=Release'))
 
+    def install(self):
         self.lib('lib\\Release\\x64\\glew32s.lib', 'glew.lib')
         self.lib('bin\\Release\\x64\\glew32.dll', 'glew.dll')
         self.includes('include')

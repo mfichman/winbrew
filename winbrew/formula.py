@@ -1,9 +1,6 @@
 import subprocess
 import sys
 import os
-import zipfile
-import tarfile
-import urllib.request, urllib.parse, urllib.error
 import errno
 import glob
 import shutil
@@ -18,6 +15,7 @@ import patch
 import winbrew
 import winbrew.util
 from winbrew.manifest import Manifest
+from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
 cmake_args = ('-G', 'Visual Studio 15 2017 Win64', '--build', 'build64')
@@ -34,10 +32,9 @@ class Formula:
     header/library directories.
     """
     def __init__(self):
-        self.archive_name = os.path.split(self.url)[1]
-        self.ext = os.path.splitext(self.archive_name)[1]
         self.name = self.__class__.__name__.lower()
-        self.workdir = os.path.abspath(os.path.join(winbrew.cache_path, self.name))
+        self.work_dir = os.path.abspath(os.path.join(winbrew.cache_path, self.name))
+        self.archive = Archive.create(self.url, self.work_dir, self.name)
         self.manifest = Manifest(self.name)
         try:
             self.options
@@ -62,6 +59,12 @@ class Formula:
         """
         return getattr(self.selected_options, name.replace('-', '_'))
 
+    def build(self):
+        """
+        Builds the package.
+        """
+        pass
+
     def install(self):
         """
         Installs the package.
@@ -79,26 +82,7 @@ class Formula:
         Download from the source URL via HTTP or git
         """
         print(('downloading %s' % self.name))
-        if self.ext == '.git':
-            path = os.path.join(self.workdir, self.name)
-            winbrew.util.mkdir_p(self.workdir)
-            os.chdir(self.workdir)
-            if not os.path.exists(self.name):
-                subprocess.check_call(('git', 'clone', self.url, self.name))
-                if getattr(self, 'tag'):
-                    subprocess.check_call(('git', 'checkout', tab))
-            self.unpack_name = self.name
-            self.archive_name = self.name
-        else:
-            path = os.path.join(self.workdir, self.archive_name)
-            if not os.path.exists(path):
-                winbrew.util.rm_rf(self.workdir)
-                winbrew.util.mkdir_p(self.workdir)
-                os.chdir(self.workdir)
-                stream = urllib.request.urlopen(self.url)
-                fd = open(self.archive_name, 'wb')
-                shutil.copyfileobj(stream, fd)
-                fd.close()
+        self.archive.download()
 
     def sha1_update_for_file(self, sha1, filename):
         """
@@ -116,24 +100,18 @@ class Formula:
         """
         Clean old files from previous builds
         """
-        os.chdir(self.workdir)
-        if self.ext == 'git':
-            subprocess.check_call(('git', '-C', self.archive_name, 'reset', '--hard'))
-            subprocess.check_call(('git', '-C', self.archive_name, 'clean', '-dxf'))
-        for fn in os.listdir('.'):
-            if fn != self.archive_name:
-                winbrew.util.rm_rf(fn)
+        self.archive.clean()
 
     def verify(self):
         """
         Check the downloaded package against the hash
         """
         sha1 = hashlib.sha1()
-        os.chdir(self.workdir)
-        if os.path.isfile(self.archive_name):
-            self.sha1_update_for_file(sha1, self.archive_name)
-        elif os.path.isdir(self.archive_name):
-            for subdir, dirs, files in os.walk(self.archive_name):
+        os.chdir(self.work_dir)
+        if os.path.isfile(self.archive.name):
+            self.sha1_update_for_file(sha1, self.archive.name)
+        elif os.path.isdir(self.archive.name):
+            for subdir, dirs, files in os.walk(self.archive.name):
                 files = [f for f in files if not f[0] == '.']
                 dirs[:] = [d for d in dirs if not d[0] == '.']
                 for file in files:
@@ -149,54 +127,18 @@ class Formula:
         Extract the project from its zip/tar file if necessary
         """
         print(('unpacking %s' % self.name))
-        os.chdir(self.workdir)
-        if self.ext == '.zip':
-            self.unzip()
-        elif self.ext == '.gz':
-            self.untar()
-        elif self.ext == '.tgz':
-            self.untar()
-        elif self.ext == '.bz2':
-            self.untar(compression='bz2')
-        elif self.ext == '.msi':
-            self.msi()
-        elif self.ext == '.git':
-            pass
-        else:
-            raise Exception('unknown file type')
+        self.archive.unpack()
 
-    def setup(self):
+    def setenv(self):
         """
-        Prepare the package for installation -- then install it.
+        Prepare the package for installation.
         """
         print(('installing %s' % self.name))
-        os.chdir(self.workdir)
+        os.chdir(self.work_dir)
         try:
-            os.chdir(self.unpack_name)
+            os.chdir(self.archive.unpack_dir)
         except OSError as e:
             pass # Unpack name was not a directory
-        os.environ.update({
-            'INCLUDE': ';'.join((
-                os.environ['INCLUDE'],
-                winbrew.sdk_include_path,
-                winbrew.include_path,
-            )),
-            'LIBPATH': ';'.join((
-                os.environ['LIBPATH'],
-                winbrew.sdk_lib_path,
-                winbrew.lib_path)),
-            'LIB': ';'.join((
-                os.environ['LIB'],
-                winbrew.sdk_lib_path,
-                winbrew.lib_path,
-            )),
-            'PATH': ';'.join((
-                os.environ['PATH'],
-                winbrew.sdk_bin_path,
-                winbrew.bin_path
-            )),
-        })
-        self.install()
 
     def cd(self, path):
         """
@@ -209,42 +151,12 @@ class Formula:
         Apply patch data from 'diff' to the file at 'path'. 'diff' must
         contain unified diff data.
         """
-        patch.setdebug()
-        patcher = patch.fromstring(bytes(diff))
+        #patch.setdebug() broken for python 3
+        patcher = patch.fromstring(bytes(diff, 'utf-8'))
         if not patcher:
-            self.error("couldn't apply patch")
+            self.error("couldn't parse patch")
         if not patcher.apply():
             self.error("couldn't apply patch")
-
-    def msi(self):
-        """
-        Install a MSI-style installer
-        """
-        self.system('msiexec /quiet /i %s' % self.archive_name)
-        self.unpack_name = '.'
-
-    def unzip(self):
-        """
-        Unzip the downloaded zip file into the current working directory
-        """
-        fd = open(self.archive_name, 'rb')
-        zf = zipfile.ZipFile(fd)
-        self.unpack_name = os.path.commonprefix(zf.namelist())
-        if os.path.exists(self.unpack_name):
-            pass # already extracted
-        else:
-            zf.extractall()
-
-    def untar(self, compression='gz'):
-        """
-        Extract the downloaded tar file into the current working directory
-        """
-        tf = tarfile.open(self.archive_name, mode='r:%s' % compression)
-        self.unpack_name = os.path.commonprefix(tf.getnames())
-        if os.path.exists(self.unpack_name):
-            pass
-        else:
-            tf.extractall()
 
     def system(self, cmd, shell=False):
         """

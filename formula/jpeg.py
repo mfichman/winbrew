@@ -20,7 +20,7 @@ class Jpeg(winbrew.Formula):
         fd.write(data)
         fd.close()
 
-    def install(self):
+    def build(self):
         sdks = glob.glob("C:\\Program Files*\\Microsoft SDKs\\Windows\\v*\\Include")
         try:
             sdk = sdks[0]
@@ -32,6 +32,8 @@ class Jpeg(winbrew.Formula):
         self.broken_vcxproj_workaround()
         self.patch(PATCH_X64_COMPILE)
         self.msbuild(winbrew.msbuild_args+('jpeg.vcxproj',))
+
+    def install(self):
         self.lib('x64\\Release\\jpeg.lib')
         self.includes('.')
 

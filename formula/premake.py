@@ -7,10 +7,12 @@ class Premake(winbrew.Formula):
     build_deps = ()
     deps = ('')
 
-    def install(self):
+    def build(self):
         self.cd('build\\vs2010')
         self.msbuild()
-        self.cd('..\\..\\bin\\release')
+
+    def install(self):
+        self.cd('bin\\release')
         self.bin('premake4.exe')
 
     def test(self):

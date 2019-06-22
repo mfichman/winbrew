@@ -14,11 +14,13 @@ class Csfml(winbrew.Formula):
         'build-examples': 'Build example programs',
     }
 
-    def install(self):
+    def build(self):
         self.cmake_build('build', winbrew.cmake_args+(
              '-DSFML_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
              '-DBUILD_SHARED_LIBS=TRUE',
         ))
+
+    def install(self):
         self.lib('build\\lib\\Release\\csfml-audio-2.dll', 'csfml-audio.dll')
         self.lib('build\\lib\\Release\\csfml-graphics-2.dll', 'csfml-graphics.dll')
         self.lib('build\\lib\\Release\\csfml-network-2.dll', 'csfml-network.dll')

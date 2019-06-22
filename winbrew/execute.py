@@ -17,14 +17,13 @@ class InstallPlan:
     packages.
     """
     def __init__(self, formulas, args):
-        self.marked = set()
-        self.temp = set()
+        self.args = args
         self.order = []
         self.preinstalled = []
-        if args.force:
-            self.forced = set(formulas)
-        else:
-            self.forced = set()
+        self.marked = set()
+        self.temp = set()
+        self.forced = set(formulas) if self.args.force else set()
+
         for formula in formulas:
             self.visit(formula)
 
@@ -55,24 +54,68 @@ class InstallPlan:
         """
         return iter(self.order)
 
+    def setenv(self):
+        """
+        Set up install environment
+        """
+        os.environ.update({
+            'INCLUDE': os.pathsep.join((
+                os.environ['INCLUDE'],
+                winbrew.sdk_include_path,
+                winbrew.include_path,
+            )),
+            'LIBPATH': os.pathsep.join((
+                os.environ['LIBPATH'],
+                winbrew.sdk_lib_path,
+                winbrew.lib_path)),
+            'LIB': os.pathsep.join((
+                os.environ['LIB'],
+                winbrew.sdk_lib_path,
+                winbrew.lib_path,
+            )),
+            'PATH': os.pathsep.join((
+                os.environ['PATH'],
+                winbrew.sdk_bin_path,
+                winbrew.bin_path
+            )),
+        })
+
     def execute(self):
         """
         Install all packages in the install plan
         """
-        os.environ['PATH'] = os.pathsep.join((
-            os.environ['PATH'],
-            winbrew.bin_path,
-        ))
+        self.setenv()
+
         for formula in self.preinstalled:
             print(('%s already installed' % formula.name))
+
+        self.download()
+        self.build()
+        self.install()
+
+    def download(self):
+        if self.args.skip_download: return
+
         for formula in self:
             formula.download()
             formula.clean()
             formula.verify()
         for formula in self:
             formula.unpack()
+
+    def build(self):
+        if self.args.skip_build: return
+
         for formula in self:
-            formula.setup()
+            formula.setenv()
+            formula.build()
+
+    def install(self):
+        if self.args.skip_install: return
+
+        for formula in self:
+            formula.setenv()
+            formula.install()
             formula.manifest.save()
 
 def uninstall(args):
@@ -260,6 +303,9 @@ def main():
 
     sub = subparsers.add_parser('install', help='install packages')
     sub.add_argument('--force', '-f', action='store_true', help='force package install (completely reinstall it)')
+    sub.add_argument('--skip-download', action='store_true', help='skip download step')
+    sub.add_argument('--skip-build', action='store_true', help='skip build step')
+    sub.add_argument('--skip-install', action='store_true', help='skip install step')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
     sub = subparsers.add_parser('reinstall', help='reinstall packages')
