@@ -1,9 +1,10 @@
 import winbrew
+import shutil
 
 class Luajit(winbrew.Formula):
-    url = 'http://luajit.org/download/LuaJIT-2.0.3.zip'
+    url = 'http://luajit.org/download/LuaJIT-2.0.5.zip'
     homepage = 'http://luajit.org'
-    sha1 = 'de92685a7d59210be14a409b1596ea0bece15cfe'
+    sha1 = '89c5792d5c560c6c73d8b98565422468d100835b'
     build_deps = ()
     deps = ()
 
@@ -18,7 +19,6 @@ class Luajit(winbrew.Formula):
 
     def install(self):
         self.cd('src')
-        self.lib('lua51-static.lib')
 
         self.include('lua.hpp', dest='luajit-2.0\\lua.hpp')
         self.include('luajit.h', dest='luajit-2.0\\luajit.h')
