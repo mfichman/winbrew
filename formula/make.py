@@ -9,8 +9,10 @@ class Make(winbrew.Formula):
     build_deps = ()
     deps = ()
 
-    def build(self):
+    def patch(self):
         shutil.copy('config.h.W32','config.h')
+
+    def build(self):
         self.system('build_w32.bat')
 
     def install(self):

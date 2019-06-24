@@ -18,8 +18,8 @@ from winbrew.manifest import Manifest
 from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 15 2017 Win64', '--build', 'build64')
-msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v141', '/p:UseEnv=true')
+cmake_args = ('-G', 'Visual Studio 16 2019', '-A', 'x64', '--build', 'build64')
+msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v142', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -48,10 +48,11 @@ class FormulaProxy:
         return self.formula.parse_options(args)
 
     def download(self):
+        print(('downloading %s' % self.name))
         self.formula.download()
 
     def build(self):
-        print(('testing %s' % self.name))
+        print(('building %s' % self.name))
         self.formula.setenv()
         self.formula.build()
 
@@ -76,7 +77,6 @@ class FormulaProxy:
         self.formula.patch()
 
     def verify(self):
-        print(('verifying %s' % self.name))
         self.formula.verify()
 
 class Formula:
@@ -143,9 +143,6 @@ class Formula:
         Download from the source URL via HTTP or git
         """
         self.archive.download()
-        if getattr(self, 'tag', None):
-            subprocess.check_call(('git', '-C', self.archive.unpack_dir, 'fetch', '--tags'))
-            subprocess.check_call(('git', '-C', self.archive.unpack_dir, 'checkout', self.tag, '--quiet'))
 
     def setenv(self):
         """

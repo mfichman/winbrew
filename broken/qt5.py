@@ -2,8 +2,7 @@ import winbrew
 import os
 
 class Qt5(winbrew.Formula):
-    url = 'https://github.com/qt/qt5.git'
-    #tag = 'v5.9.0-alpha1'
+    url = 'https://github.com/qt/qt5.git#v5.9.0-alpha1'
     homepage = 'https://www.qt.io'
     sha1 = '020954eb0240fa18e488afb8adc3e948b0e08907'
     build_deps = ()

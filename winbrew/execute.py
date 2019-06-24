@@ -70,8 +70,6 @@ class InstallPlan:
         self.install()
 
     def download(self):
-        if self.args.skip_download: return
-
         for formula in self:
             formula.download()
             formula.clean()
@@ -86,14 +84,10 @@ class InstallPlan:
             formula.patch()
 
     def build(self):
-        if self.args.skip_build: return
-
         for formula in self:
             formula.build()
 
     def install(self):
-        if self.args.skip_install: return
-
         for formula in self:
             formula.install()
             formula.manifest.save()
@@ -277,16 +271,10 @@ def main():
 
     sub = subparsers.add_parser('install', help='install packages')
     sub.add_argument('--force', '-f', action='store_true', help='force package install (completely reinstall it)')
-    sub.add_argument('--skip-download', action='store_true', help='skip download step')
-    sub.add_argument('--skip-build', action='store_true', help='skip build step')
-    sub.add_argument('--skip-install', action='store_true', help='skip install step')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
     sub = subparsers.add_parser('reinstall', help='reinstall packages')
     sub.add_argument('--all', '-a', action='store_true', help='reinstall all packages')
-    sub.add_argument('--skip-download', action='store_true', help='skip download step')
-    sub.add_argument('--skip-build', action='store_true', help='skip build step')
-    sub.add_argument('--skip-install', action='store_true', help='skip install step')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to reinstall')
 
     sub = subparsers.add_parser('uninstall', help='uninstall packages')

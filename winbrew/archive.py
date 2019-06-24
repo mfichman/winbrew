@@ -82,7 +82,7 @@ class ZipArchive(Archive):
         return zipfile.ZipFile(self.path)
 
     def unpack(self):
-        if os.path.exists(self.unpack_dir): return # already extracted
+        #if os.path.exists(self.unpack_dir): return # already extracted
         with self.zipfile() as zf: zf.extractall(self.work_dir)
 
 class TarArchive(Archive):
@@ -118,22 +118,26 @@ class GitArchive(Archive):
     def __init__(self, url, work_dir, name):
         super(GitArchive, self).__init__(url, work_dir, name)
 
+        try:
+            self.tag = self.url.split('#')[1]
+        except IndexError:
+            self.tag = None
+
     @property
     def unpack_name(self):
-        return self.name
+        return name + '-build'
 
     def unpack(self):
-        pass
+        subprocess.check_call(('git', 'clone', self.path, self.unpack_dir))
+
+        if self.tag:
+            subprocess.check_call(('git', '-C', self.unpack_dir, 'fetch', '--tags'))
+            subprocess.check_call(('git', '-C', self.unpack_dir, 'checkout', self.tag, '--quiet'))
 
     def download(self):
+        if os.path.exists(self.path): return
+
         winbrew.util.rm_rf(self.work_dir)
         winbrew.util.mkdir_p(self.work_dir)
 
-        if os.path.exists(self.path): return
-
-        subprocess.check_call(('git', 'clone', '--quiet', self.url, self.path))
-
-    def clean(self):
-        subprocess.check_call(('git', '-C', self.unpack_dir, 'reset', '--hard'))
-        subprocess.check_call(('git', '-C', self.unpack_dir, 'clean', '-dxf'))
-
+        subprocess.check_call(('git', 'clone', self.url, self.path))
