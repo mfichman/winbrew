@@ -4,7 +4,7 @@ import os
 class Perl(winbrew.Formula):
     url = 'http://strawberryperl.com/download/5.18.4.1/strawberry-perl-5.18.4.1-32bit-portable.zip'
     homepage = 'http://strawberryperl.com'
-    sha1 = 'f6118ba24e4430a7ddab1200746725f262117fbf'
+    sha1 = '8ff44654df738d5750be070d4801d14a7f49541b'
     build_deps = ()
     deps = ()
 

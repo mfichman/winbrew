@@ -19,7 +19,6 @@ class InstallPlan:
     def __init__(self, formulas, args):
         self.args = args
         self.order = []
-        self.preinstalled = []
         self.marked = set()
         self.temp = set()
         self.forced = set(formulas) if self.args.force else set()
@@ -43,11 +42,7 @@ class InstallPlan:
                 self.visit(dep)
             self.temp.remove(formula.name)
             self.marked.add(formula.name)
-            if formula in self.forced or not formula.manifest.installed:
-                # Only install a package if it's not already installed
-                self.order.append(formula)
-            else:
-                self.preinstalled.append(formula)
+            self.order.append(formula)
 
     def __iter__(self):
         """
@@ -60,28 +55,18 @@ class InstallPlan:
         """
         Install all packages in the install plan
         """
-        for formula in self.preinstalled:
-            print(('%s already installed' % formula.name))
-
         self.download()
         self.unpack()
-        self.patch()
         self.build()
         self.install()
 
     def download(self):
         for formula in self:
             formula.download()
-            formula.clean()
-            formula.verify()
 
     def unpack(self):
         for formula in self:
             formula.unpack()
-
-    def patch(self):
-        for formula in self:
-            formula.patch()
 
     def build(self):
         for formula in self:
@@ -89,8 +74,7 @@ class InstallPlan:
 
     def install(self):
         for formula in self:
-            formula.install()
-            formula.manifest.save()
+            formula.install(force=formula in self.forced)
 
 def uninstall(args):
     """
@@ -99,23 +83,7 @@ def uninstall(args):
     """
     for name in args.package:
         formula = winbrew.Formula.find_by_name(name)
-        if not args.force and not formula.manifest.installed:
-            print(('%s is not installed' % formula.name))
-            continue
-        formula.manifest.load()
-        for fn in formula.manifest.files:
-            try:
-                os.remove(fn)
-            except OSError as e:
-                pass
-            # Clean up parent directories if empty
-            while True:
-                fn, end = os.path.split(fn)
-                try:
-                    os.rmdir(fn)
-                except OSError as e:
-                    break
-        formula.manifest.delete()
+        formula.uninstall(force=args.force)
 
 def test(args):
     """
@@ -132,7 +100,6 @@ def listp(args):
     """
     for name in args.package:
         formula = winbrew.Formula.find_by_name(name)
-        formula.manifest.load()
         print(('\n'.join(formula.manifest.files)))
 
 def update(args):
@@ -143,14 +110,6 @@ def update(args):
     cmd = ('git', 'pull')
     subprocess.check_call(cmd, shell=True)
 
-def formula_from_args(args, name):
-    """
-    Parse formulas/formula arguments.
-    """
-    formula = winbrew.Formula.find_by_name(name)
-    args = formula.parse_options(args)
-    return (formula, args)
-
 def download(args):
     """
     Download a formula, but don't unpack or install it
@@ -158,20 +117,31 @@ def download(args):
     for name in args.package:
         formula = winbrew.Formula.find_by_name(name)
         formula.download()
-        formula.verify()
+
+def clean(args):
+    """
+    Clean a formula from the cache
+    """
+    for name in args.package:
+        formula = winbrew.Formula.find_by_name(name)
+        formula.clean()
 
 def install(args):
     """
     Install a package and dependencies.
     """
-    package = args.package
     try:
         formulas = []
-        while len(package) > 0:
-            name = package.pop(0)
-            (formula, package) = formula_from_args(package, name)
+
+        for i, name in enumerate(args.package):
+            formula = winbrew.Formula.find_by_name(name)
+            formula.parse_options(args.package[i+1:])
+
             formulas.append(formula)
-        InstallPlan(formulas, args).execute()
+
+        plan = InstallPlan(formulas, args)
+        plan.execute()
+
     except InstallException as e:
         sys.stderr.write('error: %s\n' % str(e))
         sys.exit(1)
@@ -294,6 +264,9 @@ def main():
     sub = subparsers.add_parser('download', help='download formulas without installing them')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to download')
 
+    sub = subparsers.add_parser('clean', help='clean formulas from the cache')
+    sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to clean')
+
     args = parser.parse_args()
 
     try:
@@ -319,6 +292,8 @@ def main():
             freeze(args)
         elif args.command == 'download':
             download(args)
+        elif args.command == 'clean':
+            clean(args)
         else:
             sys.stderr.write('error: unknown command')
             sys.exit(1)

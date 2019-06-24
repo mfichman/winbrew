@@ -48,36 +48,55 @@ class FormulaProxy:
         return self.formula.parse_options(args)
 
     def download(self):
+        if self.formula.manifest.status != 'uninstalled': return
         print(('downloading %s' % self.name))
         self.formula.download()
+        self.formula.verify()
+        self.formula.manifest.status = 'downloaded'
+        self.formula.manifest.save()
+
+    def unpack(self):
+        if self.formula.manifest.status != 'downloaded': return
+        print(('unpacking %s' % self.name))
+        self.formula.setenv()
+        self.formula.unpack()
+        self.formula.patch()
+        self.formula.manifest.status = 'unpacked'
+        self.formula.manifest.save()
 
     def build(self):
+        if self.formula.manifest.status != 'unpacked': return
         print(('building %s' % self.name))
         self.formula.setenv()
         self.formula.build()
+        self.formula.manifest.status = 'built'
+        self.formula.manifest.save()
+
+    def install(self, force=False):
+        if self.formula.manifest.status != 'built' and not force:
+            print(('%s already installed' % self.formula.name))
+            return
+        print(('installing %s' % self.name))
+        self.formula.setenv()
+        self.formula.install()
+        self.formula.manifest.status = 'installed'
+        self.formula.manifest.save()
+
+    def uninstall(self, force=False):
+        if self.formula.manifest.status != 'installed' and not force:
+            print(('%s not installed' % self.formula.name))
+            return
+        print(('uninstalling %s' % self.name))
+        self.formula.uninstall()
+        self.formula.manifest.status = 'uninstalled'
+        self.formula.manifest.save()
 
     def clean(self):
         self.formula.clean()
 
-    def unpack(self):
-        print(('unpacking %s' % self.name))
-        self.formula.unpack()
-
-    def install(self):
-        print(('installing %s' % self.name))
-        self.formula.setenv()
-        self.formula.install()
-
     def test(self):
         print(('testing %s' % self.name))
         self.formula.text()
-
-    def patch(self):
-        self.formula.setenv()
-        self.formula.patch()
-
-    def verify(self):
-        self.formula.verify()
 
 class Formula:
     """
@@ -91,6 +110,7 @@ class Formula:
         self.work_dir = os.path.abspath(os.path.join(winbrew.cache_path, self.name))
         self.archive = Archive.create(self.url, self.work_dir, self.name)
         self.manifest = Manifest(self.name)
+        self.manifest.load()
         try:
             self.options
         except AttributeError:
@@ -143,6 +163,24 @@ class Formula:
         Download from the source URL via HTTP or git
         """
         self.archive.download()
+
+    def uninstall(self):
+        """
+        Uninstalls the package.
+        """
+        for fn in self.manifest.files:
+            try:
+                os.remove(fn)
+            except OSError as e:
+                pass
+            # Clean up parent directories if empty
+            while True:
+                fn, end = os.path.split(fn)
+                try:
+                    os.rmdir(fn)
+                except OSError as e:
+                    break
+        self.manifest.delete()
 
     def setenv(self):
         """
@@ -215,7 +253,7 @@ class Formula:
         """
         Clean old files from previous builds
         """
-        self.archive.clean()
+        winbrew.util.rm_rf(self.work_dir)
 
     def unpack(self):
         """

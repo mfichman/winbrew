@@ -45,8 +45,6 @@ class Archive:
         self.path = os.path.join(work_dir, name)
 
     def download(self):
-        if os.path.exists(self.path): return
-
         winbrew.util.rm_rf(self.work_dir)
         winbrew.util.mkdir_p(self.work_dir)
 
@@ -82,7 +80,6 @@ class ZipArchive(Archive):
         return zipfile.ZipFile(self.path)
 
     def unpack(self):
-        #if os.path.exists(self.unpack_dir): return # already extracted
         with self.zipfile() as zf: zf.extractall(self.work_dir)
 
 class TarArchive(Archive):
@@ -100,7 +97,6 @@ class TarArchive(Archive):
         return tarfile.open(self.path, mode='r:%s' % self.compression)
 
     def unpack(self):
-        if os.path.exists(self.unpack_dir): return # already extracted
         with self.tarfile() as tf: tf.extractall(self.work_dir)
 
 class MsiArchive(Archive):
@@ -135,8 +131,6 @@ class GitArchive(Archive):
             subprocess.check_call(('git', '-C', self.unpack_dir, 'checkout', self.tag, '--quiet'))
 
     def download(self):
-        if os.path.exists(self.path): return
-
         winbrew.util.rm_rf(self.work_dir)
         winbrew.util.mkdir_p(self.work_dir)
 
