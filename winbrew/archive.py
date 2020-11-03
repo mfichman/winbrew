@@ -121,13 +121,14 @@ class GitArchive(Archive):
 
     @property
     def unpack_name(self):
-        return name + '-build'
+        return self.name + '-build'
 
     def unpack(self):
-        subprocess.check_call(('git', 'clone', self.path, self.unpack_dir))
+        subprocess.check_call(('git', 'clone', '--shallow', self.path, self.unpack_dir))
 
         if self.tag:
-            subprocess.check_call(('git', '-C', self.unpack_dir, 'fetch', '--tags'))
+            subprocess.check_call(('git', '-C', self.unpack_dir, 'fetch', self.tag))
+            subprocess.check_call(('git', '-C', self.unpack_dir, 'tag', self.tag, 'FETCH_HEAD'))
             subprocess.check_call(('git', '-C', self.unpack_dir, 'checkout', self.tag, '--quiet'))
 
     def download(self):

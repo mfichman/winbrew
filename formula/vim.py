@@ -4,7 +4,7 @@ import sys
 import subprocess
 
 class Vim(winbrew.Formula):
-    url = 'https://github.com/vim/vim/archive/v8.1.1124.zip'
+    url = 'https://github.com/vim/vim/archive/v8.2.1943.zip'
     homepage = 'https://vim.org'
     sha1 = '0cda0593d1ae6348410fb6370976c07103322c50'
     build_deps = ()
