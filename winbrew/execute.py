@@ -267,6 +267,10 @@ def main():
     sub = subparsers.add_parser('clean', help='clean formulas from the cache')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to clean')
 
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     args = parser.parse_args()
 
     try:
