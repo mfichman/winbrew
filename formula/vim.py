@@ -6,7 +6,7 @@ import subprocess
 class Vim(winbrew.Formula):
     url = 'https://github.com/vim/vim/archive/v8.2.1943.zip'
     homepage = 'https://vim.org'
-    sha1 = '0cda0593d1ae6348410fb6370976c07103322c50'
+    sha1 = 'cdbb54b2f1a43570b6ed633496e3fda41c26c36d'
     build_deps = ()
     deps = (
         'luajit',
@@ -29,7 +29,7 @@ class Vim(winbrew.Formula):
             os.path.join(winbrew.config.include_path, 'luajit'),
         ))
 
-        vim_path = os.path.join(winbrew.config.home, 'bin\\vim81')
+        vim_path = os.path.join(winbrew.config.home, 'bin\\vim82')
 
         self.cd('src')
         self.nmake(('-f', 'Make_mvc.mak',
@@ -38,7 +38,7 @@ class Vim(winbrew.Formula):
             'LUA_VER=51',
             'DYNAMIC_LUA=yes',
             'PYTHON3=%s' % ('no' if self.option('disable-python') else sys.prefix),
-            'PYTHON3_VER=35',
+            'PYTHON3_VER=37',
             'DYNAMIC_PYTHON3=yes',
             'VIMRUNTIMEDIR=%s' % vim_path,
         ))
@@ -46,7 +46,7 @@ class Vim(winbrew.Formula):
     def install(self):
         self.bin('src\\gvim.exe')
         self.bin('src\\vimrun.exe')
-        self.copy('runtime', 'bin\\vim81')
+        self.copy('runtime', 'bin\\vim82')
 
     def test(self):
         self.system('vim --version')

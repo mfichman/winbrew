@@ -3,14 +3,11 @@ import winbrew
 import shutil
 
 class Make(winbrew.Formula):
-    url = 'http://gnu.mirrors.pair.com/make/make-4.2.tar.gz'
+    url = 'http://gnu.mirrors.pair.com/make/make-4.3.tar.gz'
     homepage = 'http://gnuwin32.sourceforge.net/packages/make.htm'
-    sha1 = '0ae8f44ad73e66d8f7b91e7e2e39ed8a8f2c7428'
+    sha1 = '3c40e5b49b893dbb14f1e2e1f8fe89b7298cc51d'
     build_deps = ()
     deps = ()
-
-    def patch(self):
-        shutil.copy('config.h.W32','config.h')
 
     def build(self):
         self.system('build_w32.bat')
