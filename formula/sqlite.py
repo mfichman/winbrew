@@ -2,9 +2,9 @@
 import winbrew
 
 class Sqlite(winbrew.Formula):
-    url = 'https://www.sqlite.org/2019/sqlite-amalgamation-3290000.zip'
+    url = 'https://www.sqlite.org/2020/sqlite-amalgamation-3340000.zip'
     homepage = 'https://www.sqlite.org'
-    sha1 = 'a0eba79e5d1627946aead47e100a8a6f9f6fafff'
+    sha1 = '0b664afaea760e5f4e675ac2afc80c1e65090af2'
     build_deps = ()
     deps = ()
 
