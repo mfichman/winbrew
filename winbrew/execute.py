@@ -21,7 +21,11 @@ class InstallPlan:
         self.order = []
         self.marked = set()
         self.temp = set()
-        self.forced = set(formulas) if self.args.force else set()
+
+        self.initial_formulas = set(formulas)
+        self.force_rebuild = args.force_rebuild
+        self.force_reinstall = args.force_reinstall
+        self.force_redownload = args.force_redownload
 
         self.env = os.environ.copy()
 
@@ -62,7 +66,7 @@ class InstallPlan:
 
     def download(self):
         for formula in self:
-            formula.download()
+            formula.download(force=(formula in self.initial_formulas) and self.force_redownload)
 
     def unpack(self):
         for formula in self:
@@ -70,11 +74,11 @@ class InstallPlan:
 
     def build(self):
         for formula in self:
-            formula.build()
+            formula.build(force=(formula in self.initial_formulas) and self.force_rebuild)
 
     def install(self):
         for formula in self:
-            formula.install(force=formula in self.forced)
+            formula.install(force=(formula in self.initial_formulas) and self.force_reinstall)
 
 def uninstall(args):
     """
@@ -153,7 +157,9 @@ def reinstall(args):
     if args.all:
         args.package += [manifest.name for manifest in winbrew.Manifest.all()]
 
-    args.force = True
+    args.force_reinstall = True
+    args.force_rebuild = True
+    args.force_redownload = True
 
     install(args)
 
@@ -240,7 +246,9 @@ def main():
     sub.add_argument('name', type=str, help='package source name')
 
     sub = subparsers.add_parser('install', help='install packages')
-    sub.add_argument('--force', '-f', action='store_true', help='force package install (completely reinstall it)')
+    sub.add_argument('--force-reinstall', action='store_true', help='force package reinstall (completely reinstall it)')
+    sub.add_argument('--force-rebuild', action='store_true', help='force package rebuild (completely rebuild it)')
+    sub.add_argument('--force-redownload', action='store_true', help='force package rebuild (completely rebuild it)')
     sub.add_argument('package', type=str, nargs=argparse.REMAINDER, help='packages to install')
 
     sub = subparsers.add_parser('reinstall', help='reinstall packages')

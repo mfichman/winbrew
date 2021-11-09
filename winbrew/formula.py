@@ -18,7 +18,7 @@ from winbrew.manifest import Manifest
 from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 16 2019', '-A', 'x64', '--build', 'build64')
+cmake_args = ('-G', 'Visual Studio 16 2019', '-A', 'x64')
 msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v142', '/p:UseEnv=true')
 
 class FormulaException(Exception):
@@ -47,8 +47,8 @@ class FormulaProxy:
     def parse_options(self, args):
         return self.formula.parse_options(args)
 
-    def download(self):
-        if self.formula.manifest.status != 'uninstalled': return
+    def download(self, force=False):
+        if self.formula.manifest.status != 'uninstalled' and not force: return
         print(('downloading %s' % self.name))
         self.formula.download()
         self.formula.verify()
@@ -64,7 +64,7 @@ class FormulaProxy:
         self.formula.manifest.status = 'unpacked'
         self.formula.manifest.save()
 
-    def build(self):
+    def build(self, force=False):
         if self.formula.manifest.status != 'unpacked': return
         print(('building %s' % self.name))
         self.formula.setenv()
@@ -305,6 +305,7 @@ class Formula:
         env.update({ 'UseEnv': 'true' })
 
         srcdir = os.getcwd()
+
         self.mkdir(workdir)
         self.cd(workdir)
         self.cmake(args+(srcdir,))
@@ -402,6 +403,24 @@ class Formula:
             tf = os.path.join(td, os.path.split(path)[-1])
         shutil.copyfile(path, tf)
         self.manifest.files.append(tf)
+
+    def bins(self, path):
+        """
+        Specify a folder containing binary files (DLLs and executables libraries).
+        All binary files in the folder are copied to the winbrew binary folder.
+        """
+        if path[-1] != '\\':
+            path += '\\'
+        for root, dirs, files in os.walk(path):
+            td = os.path.join(winbrew.bin_path, root.replace(path, ''))
+            if not os.path.exists(td):
+                os.makedirs(td)
+            for fn in files:
+                bin_files = ('.exe', '.dll')
+                if os.path.splitext(fn)[1] in bin_files:
+                    tf = os.path.join(td, fn)
+                    shutil.copyfile(os.path.join(root, fn), tf)
+                    self.manifest.files.append(tf)
 
     def mkdir(self, path):
         winbrew.util.mkdir_p(path)

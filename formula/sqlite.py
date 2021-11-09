@@ -2,14 +2,14 @@
 import winbrew
 
 class Sqlite(winbrew.Formula):
-    url = 'https://www.sqlite.org/2020/sqlite-amalgamation-3340000.zip'
+    url = 'https://www.sqlite.org/2021/sqlite-amalgamation-3360000.zip'
     homepage = 'https://www.sqlite.org'
-    sha1 = '0b664afaea760e5f4e675ac2afc80c1e65090af2'
+    sha1 = '0c049c365896b71b6e291c9a262d2d0fbce7b4e6'
     build_deps = ()
     deps = ()
 
     def build(self):
-        self.system('cl /c /O2 /MD sqlite3.c shell.c')
+        self.system('cl /c /O2 /MD /DSQLITE_ENABLE_JSON1 sqlite3.c shell.c')
         self.system('lib /out:sqlite3.lib sqlite3.obj')
         self.system('link /out:sqlite3.exe sqlite3.lib shell.obj')
 

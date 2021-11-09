@@ -25,6 +25,8 @@ class Archive:
             return TarArchive(url, work_dir, name, compression='gz')
         elif ext == '.bz2':
             return TarArchive(url, work_dir, name, compression='bz2')
+        elif ext == '.xz':
+            return TarArchive(url, work_dir, name, compression='xz')
         elif ext == '.msi':
             return MsiArchive(url, work_dir, name)
         elif ext == '.git':
@@ -124,7 +126,7 @@ class GitArchive(Archive):
         return self.name + '-build'
 
     def unpack(self):
-        subprocess.check_call(('git', 'clone', '--shallow', self.path, self.unpack_dir))
+        subprocess.check_call(('git', 'clone', self.path, self.unpack_dir))
 
         if self.tag:
             subprocess.check_call(('git', '-C', self.unpack_dir, 'fetch', self.tag))
