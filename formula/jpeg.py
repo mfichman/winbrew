@@ -4,9 +4,9 @@ import os
 import glob
 
 class Jpeg(winbrew.Formula):
-    url = 'https://ijg.org/files/jpegsr9c.zip'
+    url = 'https://ijg.org/files/jpegsr9d.zip'
     homepage = 'www.ilg.org'
-    sha1 = '9ca086c960ffc4bff821ba194c8d0a15f69eae09'
+    sha1 = 'ed10aa2b5a0fcfe74f8a6f7611aeb346b06a1f99'
     build_deps = ()
     deps = ()
 
@@ -21,9 +21,9 @@ class Jpeg(winbrew.Formula):
 
     def patch(self):
         if not os.path.exists('jpeg.sln'):
-            self.nmake(('/f', 'makefile.vc', 'setup-v15',))
+            self.nmake(('/f', 'makefile.vc', 'setup-v16',))
         self.broken_vcxproj_workaround()
-        self.apply_patch(PATCH_X64_COMPILE)
+        #self.apply_patch(PATCH_X64_COMPILE)
 
     def build(self):
         sdks = glob.glob("C:\\Program Files*\\Microsoft SDKs\\Windows\\v*\\Include")
@@ -33,11 +33,11 @@ class Jpeg(winbrew.Formula):
             self.error("no Windows SDK found")
         os.environ['INCLUDE'] = ';'.join((sdk, os.environ['INCLUDE']))
         if not os.path.exists('jpeg.sln'):
-            self.nmake(('/f', 'makefile.vc', 'setup-v15',))
+            self.nmake(('/f', 'makefile.vc', 'setup-v16',))
         self.msbuild(winbrew.msbuild_args+('jpeg.vcxproj',))
 
     def install(self):
-        self.lib('x64\\Release\\jpeg.lib')
+        self.lib('Release\\x64\\jpeg.lib')
         self.includes('.')
 
     def test(self):

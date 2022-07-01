@@ -14,8 +14,10 @@ class Glfw(winbrew.Formula):
         'shared': 'Build shared libraries',
     }
 
+    def patch(self):
+        self.apply_patch(PATCH_GLFW_FLOAT_PIXEL_TYPE)
+
     def build(self):
-        self.apply_patch(GLFW_FLOAT_PIXEL_TYPE)
         self.cmake_build('build', winbrew.cmake_args+(
             '-DBUILD_SHARED_LIBS=%s' % ('ON' if self.option('shared') else 'OFF'),
             '-DGLFW_BUILD_EXAMPLES=%s' % ('ON' if self.option('build-examples') else 'OFF'),
@@ -28,7 +30,7 @@ class Glfw(winbrew.Formula):
         self.lib('build\\src\\Release\\glfw3.lib', 'glfw.lib')
 
 
-GLFW_FLOAT_PIXEL_TYPE = """
+PATCH_GLFW_FLOAT_PIXEL_TYPE = """
 diff --git a/include/GLFW/glfw3.h b/include/GLFW/glfw3.h
 index a33c5645..665c1b75 100644
 --- a/include/GLFW/glfw3.h

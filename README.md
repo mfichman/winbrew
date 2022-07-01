@@ -28,7 +28,7 @@ Winbrew provides all of the above for Windows development work.
 Installing Winbrew
 ------------------
 
-Download and install [Microsoft Visual Studio 2019](http://www.visualstudio.com/),
+Download and install [Microsoft Visual Studio 2022](http://www.visualstudio.com/),
 then install Winbrew using `pip`:
 
     pip install winbrew
@@ -43,7 +43,7 @@ To use files installed by Winbrew in your builds, set these environment variable
 Basic usage
 -----------
 
-Open the Visual Studio 2019 x64 Native Tools command prompt, then type:
+Open the Visual Studio 2022 x64 Native Tools command prompt, then type:
 
     winbrew install <package>
 
@@ -56,7 +56,7 @@ Visual Studio version support
 -----------------------------
 
 Winbrew supports 64-bit builds using the latest Visual Studio version, which is
-currently Visual Studio 2019.
+currently Visual Studio 2022.
 
 Winbrew may work with 32-bit builds and older Visual Studio versions with minor
 tweaks to individual formulas. However, keep in mind that 32-bit builds and

@@ -4,9 +4,9 @@ import sys
 import subprocess
 
 class Vim(winbrew.Formula):
-    url = 'https://github.com/vim/vim/archive/v8.2.1943.zip'
+    url = 'https://github.com/vim/vim/archive/refs/tags/v8.2.4969.zip'
     homepage = 'https://vim.org'
-    sha1 = 'cdbb54b2f1a43570b6ed633496e3fda41c26c36d'
+    sha1 = 'cb04f1dd72ea3d64ba2715d27deb832d8eef83c5'
     build_deps = ()
     deps = (
         'luajit',

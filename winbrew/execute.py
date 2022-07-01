@@ -174,7 +174,7 @@ def edit(args):
 
     editor = os.environ.get('EDITOR', 'notepad')
     try:
-        subprocess.check_call((editor, path), shell=True)
+        subprocess.Popen((editor, path), shell=True, start_new_session=True)
     except subprocess.CalledProcessError as e:
         pass
     except SystemError as e:

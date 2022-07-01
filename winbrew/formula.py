@@ -18,8 +18,8 @@ from winbrew.manifest import Manifest
 from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 16 2019', '-A', 'x64')
-msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v142', '/p:UseEnv=true')
+cmake_args = ('-G', 'Visual Studio 17 2022', '-A', 'x64')
+msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v143', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -60,6 +60,7 @@ class FormulaProxy:
         print(('unpacking %s' % self.name))
         self.formula.setenv()
         self.formula.unpack()
+        self.formula.setenv()
         self.formula.patch()
         self.formula.manifest.status = 'unpacked'
         self.formula.manifest.save()
@@ -89,7 +90,7 @@ class FormulaProxy:
         print(('uninstalling %s' % self.name))
         self.formula.uninstall()
         self.formula.manifest.status = 'uninstalled'
-        self.formula.manifest.save()
+        self.formula.manifest.delete()
 
     def clean(self):
         self.formula.clean()
@@ -180,7 +181,6 @@ class Formula:
                     os.rmdir(fn)
                 except OSError as e:
                     break
-        self.manifest.delete()
 
     def setenv(self):
         """

@@ -2,9 +2,9 @@
 import winbrew
 
 class Glslang(winbrew.Formula):
-    url = 'https://github.com/KhronosGroup/glslang/archive/7.8.2853.zip'
+    url = 'https://github.com/KhronosGroup/glslang/archive/refs/tags/11.6.0.zip'
     homepage = 'https://github.com/KhronosGroup/glslang'
-    sha1 = '8f7e1ba2bab166e39182790974564d27d6d628c8'
+    sha1 = '21935279a2eeeef1aca82675815885b7845259bb'
     build_deps = ('cmake',)
     deps = ()
 

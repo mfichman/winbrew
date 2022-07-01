@@ -31,6 +31,8 @@ class Archive:
             return MsiArchive(url, work_dir, name)
         elif ext == '.git':
             return GitArchive(url, work_dir, package_name)
+        elif ext == '.exe':
+            return ExeArchive(url, work_dir, package_name)
         else:
             raise Exception('unknown archive file type')
 
@@ -138,3 +140,14 @@ class GitArchive(Archive):
         winbrew.util.mkdir_p(self.work_dir)
 
         subprocess.check_call(('git', 'clone', self.url, self.path))
+
+class ExeArchive(Archive):
+    def __init__(self, url, work_dir, name):
+        super(ExeArchive, self).__init__(url, work_dir, name)
+
+    @property
+    def unpack_name(self):
+        return '.'
+
+    def unpack(self):
+        pass
