@@ -279,17 +279,23 @@ class Formula:
         if not patcher.apply():
             self.error("couldn't apply patch")
 
-    def system(self, cmd, shell=False):
+    def system(self, cmd, shell=False, env=os.environ):
         """
         Run a build command.  Used by formulas in the install() method
         """
-        subprocess.check_call(shlex.split(cmd), shell=shell)
+        subprocess.check_call(shlex.split(cmd), shell=shell, env=env)
 
     def nmake(self, args=(), env=os.environ):
         """
         Run nmake.  Optionally, the caller can set the arguments to pass to nmake.
         """
         subprocess.check_call(('nmake',)+args, env=env)
+
+    def make(self, args=(), env=os.environ):
+        """
+        Run make.  Optionally, the caller can set the arguments to pass to nmake.
+        """
+        subprocess.check_call(('make',)+args, env=env)
 
     def cmake(self, args=cmake_args, env=os.environ):
         """

@@ -12,8 +12,8 @@ class Neovimqt(winbrew.Formula):
         pass
 
     def install(self):
-        self.bin('bin//nvim-qt.exe')
-        self.bins('bin')
+        self.copy('bin', 'bin')
+        self.copy('share', 'share')
 
     def test(self):
         pass
