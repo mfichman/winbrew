@@ -2,9 +2,10 @@ import winbrew
 import shutil
 
 class Luajit(winbrew.Formula):
-    url = 'http://luajit.org/download/LuaJIT-2.0.5.zip'
-    homepage = 'http://luajit.org'
-    sha1 = '89c5792d5c560c6c73d8b98565422468d100835b'
+    url = 'https://luajit.org/git/luajit.git'
+    homepage = 'https://luajit.org'
+    sha1 = 'd492cc10a77c5b8aa626e06a85ca432117a95a23'
+
     build_deps = ()
     deps = ()
 
@@ -12,6 +13,7 @@ class Luajit(winbrew.Formula):
         self.apply_patch(PATCH_BUILD_STATIC_MD)
 
     def build(self):
+        self.system('git checkout v2.1')
         self.cd('src')
         self.system('msvcbuild.bat static')
         shutil.move('lua51.lib', 'lua51-static.lib')
@@ -20,12 +22,11 @@ class Luajit(winbrew.Formula):
     def install(self):
         self.cd('src')
 
-        self.include('lua.hpp', dest='luajit-2.0\\lua.hpp')
-        self.include('luajit.h', dest='luajit-2.0\\luajit.h')
-        self.include('lua.h', dest='luajit-2.0\\lua.h')
-        self.include('lualib.h', dest='luajit-2.0\\lualib.h')
-        self.include('lauxlib.h', dest='luajit-2.0\\lauxlib.h')
-        self.include('luaconf.h', dest='luajit-2.0\\luaconf.h')
+        self.include('lua.hpp', dest='luajit-2.1\\lua.hpp')
+        self.include('luajit.h', dest='luajit-2.1\\luajit.h')
+        self.include('lua.h', dest='luajit-2.1\\lua.h')
+        self.include('lualib.h', dest='luajit-2.1\\lualib.h')
+        self.include('lauxlib.h', dest='luajit-2.1\\lauxlib.h')
 
         # For packages that require standard Lua
         self.include('lua.hpp', dest='lua.hpp')
@@ -45,6 +46,7 @@ class Luajit(winbrew.Formula):
             self.bin(src, dst)
         self.libs('.')
         self.bin('luajit.exe')
+        self.bin('lua51.dll')
 
     def test(self):
         self.system('luajit -v')
@@ -53,22 +55,13 @@ class Luajit(winbrew.Formula):
 PATCH_BUILD_STATIC_MD = r"""
 --- src\msvcbuild.bat
 +++ src\msvcbuild.bat
-@@ -76,7 +76,7 @@
- @if errorlevel 1 goto :BAD
- @goto :MTDLL
- :STATIC
--%LJCOMPILE% lj_*.c lib_*.c
-+%LJCOMPILE% /MD lj_*.c lib_*.c
- @if errorlevel 1 goto :BAD
- %LJLIB% /OUT:%LJLIBNAME% lj_*.obj lib_*.obj
- @if errorlevel 1 goto :BAD
-@@ -90,7 +90,7 @@
- if exist %LJDLLNAME%.manifest^
-   %LJMT% -manifest %LJDLLNAME%.manifest -outputresource:%LJDLLNAME%;2
-
--%LJCOMPILE% luajit.c
-+%LJCOMPILE% /MD luajit.c
- @if errorlevel 1 goto :BAD
- %LJLINK% /out:luajit.exe luajit.obj %LJLIBNAME%
- @if errorlevel 1 goto :BAD
-"""
+@@ -17,7 +17,7 @@
+ @setlocal
+ @rem Add more debug flags here, e.g. DEBUGCFLAGS=/DLUA_USE_ASSERT
+ @set DEBUGCFLAGS=
+-@set LJCOMPILE=cl /nologo /c /O2 /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_STDIO_INLINE=__declspec(dllexport)__inline
++@set LJCOMPILE=cl /nologo /c /O2 /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_STDIO_INLINE=__declspec(dllexport)__inline /MD
+ @set LJDYNBUILD=/DLUA_BUILD_AS_DLL /MD
+ @set LJDYNBUILD_DEBUG=/DLUA_BUILD_AS_DLL /MDd 
+ @set LJCOMPILETARGET=/Zi
+ """

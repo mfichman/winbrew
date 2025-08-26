@@ -2,9 +2,9 @@ import winbrew
 import os
 
 class Llvm(winbrew.Formula):
-    url = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/llvm-project-13.0.0.src.tar.xz'
+    url = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.6/llvm-project-16.0.6.src.tar.xz'
     homepage = 'https://llvm.org'
-    sha1 = 'c8ebad168710ede8c281bf81c79ef7e85213e274'
+    sha1 = '92eaedd6f1dde08751441afcd0a3d0fbfdf95d42'
     build_deps = ('cmake',)
     deps = ()
 
@@ -14,10 +14,12 @@ class Llvm(winbrew.Formula):
         self.cmake_build('../build', winbrew.cmake_args+(
             f'-DLLVM_TARGETS_TO_BUILD=host',
             f'-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;lld;lldb',
-            f'-DLLVM_ENABLE_PLUGINS=on',
-            f'-DLLVM_ENABLE_ASSERTIONS=on',
+            #f'-DLLVM_ENABLE_RUNTIMES=compiler-rt',
+            #f'-DLLVM_DIR={path}/build/lib/cmake',
+            #f'-DLLVM_CMAKE_DIR={path}/build/lib/cmake/llvm',
             f'-DCMAKE_BUILD_TYPE=release',
             f'-DCMAKE_INSTALL_PREFIX={path}/install',
+            
         ))
 
     def install(self):
