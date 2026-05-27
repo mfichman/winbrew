@@ -2,7 +2,7 @@
 import winbrew
 
 class Portaudio(winbrew.Formula):
-    url = 'http://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz'
+    url = 'https://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz'
     homepage = 'https://portaudio.com'
     sha1 = 'b7e9b9c53d993f6d110487ef56a3d4529d21b2f1'
     build_deps = ('cmake',)
