@@ -18,8 +18,8 @@ from winbrew.manifest import Manifest
 from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 17 2022', '-A', 'x64')
-msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v143', '/p:UseEnv=true')
+cmake_args = ('-G', 'Visual Studio 18 2026', '-A', 'x64')
+msbuild_args = ('/P:Configuration=Release', '/p:Platform=x64', '/p:PlatformToolset=v145', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -97,7 +97,7 @@ class FormulaProxy:
 
     def test(self):
         print(('testing %s' % self.name))
-        self.formula.text()
+        self.formula.test()
 
 class Formula:
     """
