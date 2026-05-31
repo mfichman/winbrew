@@ -2,9 +2,9 @@
 import winbrew
 
 class Zlib(winbrew.Formula):
-    url = 'https://zlib.net/zlib-1.2.11.tar.gz'
+    url = 'https://zlib.net/fossils/zlib-1.3.1.tar.gz'
     homepage = 'http://www.zlib.net/'
-    sha1 = 'e6d119755acdf9104d7ba236b1242696940ed6dd'
+    sha1 = 'f535367b1a11e2f9ac3bec723fb007fbc0d189e5'
     build_deps = ('cmake',)
     deps = ()
 

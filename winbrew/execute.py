@@ -59,10 +59,25 @@ class InstallPlan:
         """
         Install all packages in the install plan
         """
-        self.download()
-        self.unpack()
-        self.build()
-        self.install()
+        manifest_snapshots = {}
+        for formula in self:
+            manifest_snapshots[formula.name] = (
+                formula.manifest.status,
+                list(formula.manifest.files),
+            )
+
+        try:
+            self.download()
+            self.unpack()
+            self.build()
+            self.install()
+        except Exception:
+            for formula in self:
+                status, files = manifest_snapshots[formula.name]
+                formula.manifest.status = status
+                formula.manifest.files = files
+                formula.manifest.save()
+            raise
 
     def download(self):
         for formula in self:
