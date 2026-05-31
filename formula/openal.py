@@ -1,9 +1,9 @@
 import winbrew
 
 class Openal(winbrew.Formula):
-    url = 'https://www.openal-soft.org/openal-releases/openal-soft-1.21.1.tar.bz2'
+    url = 'https://github.com/kcat/openal-soft/archive/refs/tags/1.21.1.tar.gz'
     homepage = 'https://www.openal-soft.org'
-    sha1 = 'f39b81a9ce22419e106259cf424405291520b8f3'
+    sha1 = '57acf4fa55180eeb16721ac5ec0df541f586df40'
     build_deps = ('cmake',)
     deps = ()
 

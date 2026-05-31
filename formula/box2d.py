@@ -3,7 +3,7 @@ import winbrew
 class Box2D(winbrew.Formula):
     url = 'https://github.com/erincatto/Box2D/archive/v2.3.1.zip'
     homepage = 'http://box2d.org'
-    sha1 = 'a821af6da1ffcae7e8954f7c15af5215bf644cbf'
+    sha1 = '43e25583321d61f248753c441c5fad127e9e0dc7'
     build_deps = ('cmake',)
     deps = ()
     options = {

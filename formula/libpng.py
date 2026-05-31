@@ -2,7 +2,7 @@
 import winbrew
 
 class Libpng(winbrew.Formula):
-    url = 'https://netactuate.dl.sourceforge.net/project/libpng/libpng16/1.6.37/lpng1637.zip'
+    url = 'https://download.sourceforge.net/libpng/lpng1637.zip'
     homepage = 'http://www.libpng.org/pub/png/libpng.html'
     sha1 = 'a3fe518a427981c34f2eca964a73ab04e10e3309'
     build_deps = ('zlib','cmake')

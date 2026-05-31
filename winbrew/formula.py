@@ -18,8 +18,8 @@ from winbrew.manifest import Manifest
 from winbrew.archive import Archive
 
 # Default arguments for the supported build tools
-cmake_args = ('-G', 'Visual Studio 17 2022', '-A', 'x64')
-msbuild_args = ('/P:Configuration=Release', '/p:PlatformToolset=v143', '/p:UseEnv=true')
+cmake_args = ('-G', 'Visual Studio 18 2026', '-A', 'x64', '-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
+msbuild_args = ('/P:Configuration=Release', '/p:Platform=x64', '/p:PlatformToolset=v145', '/p:UseEnv=true')
 
 class FormulaException(Exception):
     pass
@@ -27,6 +27,7 @@ class FormulaException(Exception):
 class FormulaProxy:
     def __init__(self, formula):
         self.formula = formula
+        self.original_files = list(formula.manifest.files)
 
     @property
     def name(self):
@@ -69,6 +70,8 @@ class FormulaProxy:
         if self.formula.manifest.status != 'unpacked': return
         print(('building %s' % self.name))
         self.formula.setenv()
+        if force:
+            self.formula.manifest.files = []
         self.formula.build()
         self.formula.manifest.status = 'built'
         self.formula.manifest.save()
@@ -80,6 +83,13 @@ class FormulaProxy:
         print(('installing %s' % self.name))
         self.formula.setenv()
         self.formula.install()
+        if force:
+            current_files = set(self.formula.manifest.files)
+            for path in set(self.original_files) - current_files:
+                try:
+                    os.remove(path)
+                except OSError:
+                    pass
         self.formula.manifest.status = 'installed'
         self.formula.manifest.save()
 
@@ -97,7 +107,7 @@ class FormulaProxy:
 
     def test(self):
         print(('testing %s' % self.name))
-        self.formula.text()
+        self.formula.test()
 
 class Formula:
     """

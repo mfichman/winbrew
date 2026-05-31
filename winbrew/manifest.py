@@ -20,9 +20,13 @@ class Manifest:
         """
         Write the manifest to the manifest file directory
         """
-        values = [(path, self.name) for path in self.files]
-        query = 'REPLACE INTO InstalledFile (path, formula) VALUES (?, ?)'
-        self.db().cursor().executemany(query, values)
+        if self.status == 'installed':
+            query = 'DELETE FROM InstalledFile WHERE formula=?'
+            self.db().cursor().execute(query, (self.name,))
+
+            values = [(path, self.name) for path in self.files]
+            query = 'REPLACE INTO InstalledFile (path, formula) VALUES (?, ?)'
+            self.db().cursor().executemany(query, values)
         query = 'REPLACE INTO Formula (name, status) VALUES (?, ?)'
         self.db().cursor().execute(query, (self.name, self.status))
         self.db().commit()

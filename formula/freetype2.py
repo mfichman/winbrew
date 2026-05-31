@@ -5,18 +5,20 @@ import os
 import re
 
 class Freetype2(winbrew.Formula):
-    url = 'http://downloads.sourceforge.net/project/freetype/freetype2/2.5.2/freetype-2.5.2.tar.bz2'
+    url = 'https://download.savannah.gnu.org/releases/freetype/freetype-2.14.3.tar.xz'
     homepage = 'http://freetype.org'
-    sha1 = '72731cf405b9f7c0b56d144130a8daafa262b729'
+    sha1 = '62e26b89a057ad4f1e28af977945d5c1975a8e67'
     build_deps = ('cmake',)
     deps = ()
 
     def build(self):
         # Set the FT_EXPORT and FT_BASE macros for dll-mode so that symbols are
         # exported by the DLL.
-        if not os.path.exists('include\\config\\ftoption.h.orig'):
-            shutil.copyfile('include\\config\\ftoption.h','include\\config\\ftoption.h.orig')
-        with open('include\\config\\ftoption.h.orig') as infile, open('include\\config\\ftoption.h', 'w') as outfile:
+        ftoption = 'include\\freetype\\config\\ftoption.h'
+        ftoption_orig = ftoption + '.orig'
+        if not os.path.exists(ftoption_orig):
+            shutil.copyfile(ftoption, ftoption_orig)
+        with open(ftoption_orig) as infile, open(ftoption, 'w') as outfile:
             for line in infile:
                 if re.search('#define FT_EXPORT\(',line):
                     outfile.write('#ifndef FREETYPE_STATIC\n')
@@ -50,7 +52,7 @@ class Freetype2(winbrew.Formula):
         self.lib('build\\Release\\freetype-static.lib')
         self.lib('build\\Release\\freetype.dll')
         self.lib('build\\Release\\freetype.lib')
-        self.includes('include','freetype')
+        self.includes('include\\freetype','freetype')
 
     def test(self):
         pass

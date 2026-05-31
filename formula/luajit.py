@@ -4,13 +4,20 @@ import shutil
 class Luajit(winbrew.Formula):
     url = 'https://luajit.org/git/luajit.git'
     homepage = 'https://luajit.org'
-    sha1 = 'd492cc10a77c5b8aa626e06a85ca432117a95a23'
+    sha1 = '847d9df60f3ebbd5bd122918bd9371ab84c4cb9b'
 
     build_deps = ()
     deps = ()
 
     def patch(self):
-        self.apply_patch(PATCH_BUILD_STATIC_MD)
+        path = 'src\\msvcbuild.bat'
+        with open(path) as infile:
+            data = infile.read()
+        data = data.replace(
+            '/D_CRT_STDIO_INLINE=__declspec(dllexport)__inline',
+            '/D_CRT_STDIO_INLINE=__declspec(dllexport)__inline /MD')
+        with open(path, 'w') as outfile:
+            outfile.write(data)
 
     def build(self):
         self.system('git checkout v2.1')
